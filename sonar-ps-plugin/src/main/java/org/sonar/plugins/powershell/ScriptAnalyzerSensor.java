@@ -13,13 +13,18 @@ import org.sonar.api.batch.sensor.issue.NewIssueLocation;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.api.scan.filesystem.PathResolver;
 import org.sonar.api.utils.TempFolder;
+import org.sonar.api.utils.log.Logger;
+import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.powershell.issues.Objects;
 import org.sonar.plugins.powershell.issues.Objects.Object.Property;
 
 public class ScriptAnalyzerSensor implements org.sonar.api.batch.sensor.Sensor {
 
 	private FileSystem fileSystem;
+
 	private TempFolder folder;
+
+	private static final Logger LOGGER = Loggers.get(ScriptAnalyzerSensor.class);
 
 	public ScriptAnalyzerSensor(final FileSystem fileSystem, final TempFolder folder) {
 		this.fileSystem = fileSystem;
@@ -37,13 +42,21 @@ public class ScriptAnalyzerSensor implements org.sonar.api.batch.sensor.Sensor {
 
 		try {
 			final File results = folder.newFile();
-			File baseDir = fileSystem.baseDir().toPath().toFile();
+			final File baseDir = fileSystem.baseDir().toPath().toFile();
 			final String command = String.format(this.psCommand,
 					fileSystem.baseDir().toPath().toFile().getAbsolutePath(),
 					results.toPath().toFile().getAbsolutePath());
 
-			final Process process = new ProcessBuilder("powershell.exe", command).start();
-			final int returnVal = process.waitFor();
+			try {
+				LOGGER.info(String.format("Starting running powershell analysis: %s", command));
+				final Process process = new ProcessBuilder("powershell.exe", command).start();
+				process.waitFor();
+				LOGGER.info("Finished running powershell analysis");
+
+			} catch (Throwable e) {
+				LOGGER.warn("Error executing Powershell script analyzer", e);
+				return;
+			}
 
 			JAXBContext jaxbContext = JAXBContext.newInstance(Objects.class);
 
@@ -53,15 +66,16 @@ public class ScriptAnalyzerSensor implements org.sonar.api.batch.sensor.Sensor {
 				try {
 					final List<Objects.Object.Property> props = o.getProperty();
 					final String ruleName = getProperty("RuleName", props);
-					String initialFile = getProperty("File", props);
+					final String initialFile = getProperty("File", props);
 					final String fsFile = new PathResolver().relativePath(baseDir, new File(initialFile));
 
 					final String message = getProperty("Message", props);
 					final int line = Integer.parseInt(getProperty("Line", props));
-					RuleKey ruleKey = RuleKey.of(ScriptAnalyzerRulesDefinition.repositoryName, ruleName);
-					NewIssue issue = context.newIssue().forRule(ruleKey);
+					final RuleKey ruleKey = RuleKey.of(ScriptAnalyzerRulesDefinition.getRepositoryKeyForLanguage(),
+							ruleName);
+					final NewIssue issue = context.newIssue().forRule(ruleKey);
 
-					org.sonar.api.batch.fs.InputFile file = fileSystem
+					final org.sonar.api.batch.fs.InputFile file = fileSystem
 							.inputFile(fileSystem.predicates().and(fileSystem.predicates().hasRelativePath(fsFile)));
 
 					if (file == null) {
@@ -69,17 +83,17 @@ public class ScriptAnalyzerSensor implements org.sonar.api.batch.sensor.Sensor {
 						continue;
 					}
 
-					NewIssueLocation loc = issue.newLocation().message(message).on(file).at(file.selectLine(line));
-
+					final NewIssueLocation loc = issue.newLocation().message(message).on(file)
+							.at(file.selectLine(line));
 					issue.at(loc);
 					issue.save();
 				} catch (Throwable e) {
-					e.printStackTrace();
+					LOGGER.warn("Unexpected exception while adding issue", e);
 				}
 
 			}
 		} catch (Throwable e) {
-			e.printStackTrace();
+			LOGGER.warn("Unexpected exception while running analysis", e);
 		}
 
 	}

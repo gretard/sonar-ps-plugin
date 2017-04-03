@@ -7,6 +7,6 @@ import org.sonar.api.utils.ValidationMessages;
 public class PowershellQualityProfile extends ProfileDefinition {
 
 	public RulesProfile createProfile(final ValidationMessages validation) {
-		return RulesProfile.create("Powershell Rules", PowershellLanguage.KEY);
+		return RulesProfile.create(Constants.PROFILE_NAME, PowershellLanguage.KEY);
 	}
 }

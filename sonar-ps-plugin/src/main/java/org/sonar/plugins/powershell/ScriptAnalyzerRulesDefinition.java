@@ -10,26 +10,40 @@ import org.sonar.api.utils.log.Loggers;
 
 public class ScriptAnalyzerRulesDefinition implements RulesDefinition {
 
-	private final String rulesDefinition = "/powershell-rules.xml";
+	protected static final String KEY = "psanalyzer";
 
-	public static final String repositoryName = "PSScriptAnalyzer";
+	protected static final String NAME = "PsAnalyzer";
+
+	protected static final String rulesDefinition = "/powershell-rules.xml";
 
 	private static final Logger LOGGER = Loggers.get(ScriptAnalyzerRulesDefinition.class);
 
-	public void define(final Context context) {
+	private void defineRulesForLanguage(final Context context, final String repositoryKey, final String repositoryName,
+			String languageKey) {
+		final NewRepository repository = context.createRepository(repositoryKey, languageKey).setName(repositoryName);
 
-		final NewRepository repository = context.createRepository(PowershellLanguage.KEY, PowershellLanguage.NAME)
-				.setName(repositoryName);
-		try {
-			final InputStream input = this.getClass().getResourceAsStream(this.rulesDefinition);
+		final InputStream rulesXml = this.getClass().getResourceAsStream(rulesDefinition);
+		if (rulesXml != null) {
 			final RulesDefinitionXmlLoader rulesLoader = new RulesDefinitionXmlLoader();
-			rulesLoader.load(repository, input, StandardCharsets.UTF_8.name());
-
-		} catch (final Throwable e) {
-			LOGGER.warn("Error occured while adding rules", e);
+			rulesLoader.load(repository, rulesXml, StandardCharsets.UTF_8.name());
+			LOGGER.info("Loaded: " + repository.rules().size());
 		}
-		repository.done();
 
+		repository.done();
+	}
+
+	public void define(final Context context) {
+		final String repositoryKey = ScriptAnalyzerRulesDefinition.getRepositoryKeyForLanguage();
+		final String repositoryName = ScriptAnalyzerRulesDefinition.getRepositoryNameForLanguage();
+		defineRulesForLanguage(context, repositoryKey, repositoryName, PowershellLanguage.KEY);
+	}
+
+	public static String getRepositoryKeyForLanguage() {
+		return PowershellLanguage.KEY.toLowerCase() + "-" + KEY;
+	}
+
+	public static String getRepositoryNameForLanguage() {
+		return PowershellLanguage.KEY.toUpperCase() + " " + NAME;
 	}
 
 }
