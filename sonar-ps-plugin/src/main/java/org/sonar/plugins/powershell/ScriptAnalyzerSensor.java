@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 
+import org.apache.commons.lang.SystemUtils;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
@@ -24,8 +25,11 @@ public class ScriptAnalyzerSensor implements org.sonar.api.batch.sensor.Sensor {
 
 	private TempFolder folder;
 
-	private static final Logger LOGGER = Loggers.get(ScriptAnalyzerSensor.class);
+	private final String psCommand = "(Invoke-ScriptAnalyzer -Path '%s' -Recurse | Select-Object RuleName, Message, Line, Column, Severity, @{Name='File';Expression={$_.Extent.File }} | ConvertTo-Xml).Save('%s')";
 
+	private static final Logger LOGGER = Loggers.get(ScriptAnalyzerSensor.class);
+	
+	
 	public ScriptAnalyzerSensor(final FileSystem fileSystem, final TempFolder folder) {
 		this.fileSystem = fileSystem;
 		this.folder = folder;
@@ -36,16 +40,21 @@ public class ScriptAnalyzerSensor implements org.sonar.api.batch.sensor.Sensor {
 		descriptor.onlyOnLanguage(PowershellLanguage.KEY).name(this.getClass().getSimpleName());
 	}
 
-	private final String psCommand = "(Invoke-ScriptAnalyzer -Path '%s' -Recurse | Select-Object RuleName, Message, Line, Column, Severity, @{Name='File';Expression={$_.Extent.File }} | ConvertTo-Xml).Save('%s')";
 
 	public void execute(final SensorContext context) {
-
+		
+		if (!SystemUtils.IS_OS_WINDOWS) {
+			LOGGER.debug("Skipping sensor as OS is not windows");
+			return;
+		}
+		
 		try {
-			final File results = folder.newFile();
-			final File baseDir = fileSystem.baseDir().toPath().toFile();
+			final File resultsFile = folder.newFile();
+			final File sourceDir = fileSystem.baseDir().toPath().toFile();
+			
 			final String command = String.format(this.psCommand,
-					fileSystem.baseDir().toPath().toFile().getAbsolutePath(),
-					results.toPath().toFile().getAbsolutePath());
+					sourceDir.getAbsolutePath(),
+					resultsFile.toPath().toFile().getAbsolutePath());
 
 			try {
 				LOGGER.info(String.format("Starting running powershell analysis: %s", command));
@@ -53,22 +62,21 @@ public class ScriptAnalyzerSensor implements org.sonar.api.batch.sensor.Sensor {
 				process.waitFor();
 				LOGGER.info("Finished running powershell analysis");
 
-			} catch (Throwable e) {
+			} catch (final Throwable e) {
 				LOGGER.warn("Error executing Powershell script analyzer", e);
 				return;
 			}
 
-			JAXBContext jaxbContext = JAXBContext.newInstance(Objects.class);
+			final JAXBContext jaxbContext = JAXBContext.newInstance(Objects.class);
 
-			Objects issues = (Objects) jaxbContext.createUnmarshaller().unmarshal(results);
+			final Objects issues = (Objects) jaxbContext.createUnmarshaller().unmarshal(resultsFile);
 
 			for (final Objects.Object o : issues.getObject()) {
 				try {
 					final List<Objects.Object.Property> props = o.getProperty();
 					final String ruleName = getProperty("RuleName", props);
 					final String initialFile = getProperty("File", props);
-					final String fsFile = new PathResolver().relativePath(baseDir, new File(initialFile));
-
+					final String fsFile = new PathResolver().relativePath(sourceDir, new File(initialFile));
 					final String message = getProperty("Message", props);
 					final int line = Integer.parseInt(getProperty("Line", props));
 					final RuleKey ruleKey = RuleKey.of(ScriptAnalyzerRulesDefinition.getRepositoryKeyForLanguage(),
@@ -79,7 +87,7 @@ public class ScriptAnalyzerSensor implements org.sonar.api.batch.sensor.Sensor {
 							.inputFile(fileSystem.predicates().and(fileSystem.predicates().hasRelativePath(fsFile)));
 
 					if (file == null) {
-
+						LOGGER.debug(String.format("File %s not found", fsFile));
 						continue;
 					}
 
@@ -87,7 +95,7 @@ public class ScriptAnalyzerSensor implements org.sonar.api.batch.sensor.Sensor {
 							.at(file.selectLine(line));
 					issue.at(loc);
 					issue.save();
-				} catch (Throwable e) {
+				} catch (final Throwable e) {
 					LOGGER.warn("Unexpected exception while adding issue", e);
 				}
 
