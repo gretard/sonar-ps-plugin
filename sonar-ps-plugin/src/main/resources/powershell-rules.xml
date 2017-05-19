@@ -4,57 +4,7 @@
         <key>PSAvoidUsingCmdletAliases</key>
         <internalKey>PSAvoidUsingCmdletAliases</internalKey>
         <name>Avoid Using Cmdlet Aliases</name>
-        <description># AvoidUsingCmdletAliases
-
-**Severity Level: Warning**
-
-## Description
-
-An alias is an alternate name or nickname for a CMDLet or for a command element, such as a function, script, file, or executable file.
-You can use the alias instead of the command name in any Windows PowerShell commands.
-
-Every PowerShell author learns the actual command names, but different authors learn and use different aliases. Aliases can make code difficult to read, understand and
-impact availability.
-
-When developing PowerShell content that will potentially need to be maintained over time, either by the original author or others, you should use full command names.
-
-The use of full command names also allows for syntax highlighting in sites and applications like GitHub and Visual Studio Code.
-
-## How to Fix
-
-Use the full cmdlet name and not an alias.
-
-## Alias Whitelist
-
-To prevent `PSScriptAnalyzer` from flagging your preferred aliases, create a whitelist of the aliases in your settings file and point `PSScriptAnalyzer` to use the settings file. For example, to disable `PSScriptAnalyzer` from flagging `cd`, which is an alias of `Set-Location`, set the settings file content to the following.
-
-```PowerShell
-# PSScriptAnalyzerSettings.psd1
-
-@{
-    'Rules' = @{
-        'PSAvoidUsingCmdletAliases' = @{
-            'Whitelist' = @('cd')
-        }
-    }
-}
-```
-
-## Example
-
-### Wrong?
-
-``` PowerShell
-gps | Where-Object {$_.WorkingSet -gt 20000000}
-```
-
-### Correct:
-
-``` PowerShell
-Get-Process | Where-Object {$_.WorkingSet -gt 20000000}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>An alias is an alternate name or nickname for a cmdlet or for a command element, such as a function, script, file, or executable file. But when writing scripts that will potentially need to be maintained over time, either by the original author or another Windows PowerShell scripter, please consider using full cmdlet name instead of alias. Aliases can introduce these problems, readability, understandability and availability.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -65,57 +15,7 @@ Get-Process | Where-Object {$_.WorkingSet -gt 20000000}
         <key>PSAvoidDefaultValueSwitchParameter</key>
         <internalKey>PSAvoidDefaultValueSwitchParameter</internalKey>
         <name>Switch Parameters Should Not Default To True</name>
-        <description># AvoidDefaultValueSwitchParameter
-
-**Severity Level: Warning**
-
-## Description
-
-Switch parameters for commands should default to false.
-
-## How
-
-Change the default value of the switch parameter to be false.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-function Test-Script
-{
-    [CmdletBinding()]
-    Param
-    (
-        [String]
-        $Param1,
-
-        [switch]
-        $Switch=$True
-    )
-    ...
-}
-```
-
-### Correct
-
-``` PowerShell
-function Test-Script
-{
-    [CmdletBinding()]
-    Param
-    (
-        [String]
-        $Param1,
-
-        [switch]
-        $Switch=$False
-    )
-    ...
-}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Switch parameter should not default to true.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -126,40 +26,7 @@ function Test-Script
         <key>PSAvoidDefaultValueForMandatoryParameter</key>
         <internalKey>PSAvoidDefaultValueForMandatoryParameter</internalKey>
         <name>Avoid Default Value For Mandatory Parameter</name>
-        <description># AvoidDefaultValueForMandatoryParameter
-
-**Severity Level: Warning**
-
-## Description
-
-Just like non-global scoped variables, parameters must have a default value if they are not mandatory, i.e `Mandatory=$false`.
-Having optional parameters without default values leads to uninitialized variables leading to potential bugs.
-
-## How
-
-Specify a default value for all parameters that are not mandatory.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-function Test($Param1)
-{
-	$Param1
-}
-```
-
-### Correct
-
-``` PowerShell
-function Test($Param1 = $null)
-{
-	$Param1
-}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Mandatory parameter should not be initialized with a default value in the param block because this value will be ignored.. To fix a violation of this rule, please avoid initializing a value for the mandatory parameter in the param block.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -170,57 +37,7 @@ function Test($Param1 = $null)
         <key>PSAvoidUsingEmptyCatchBlock</key>
         <internalKey>PSAvoidUsingEmptyCatchBlock</internalKey>
         <name>Avoid Using Empty Catch Block</name>
-        <description># AvoidUsingEmptyCatchBlock
-
-**Severity Level: Warning**
-
-## Description
-
-Empty catch blocks are considered a poor design choice as they result in the errors occurring in a `try` block not being acted upon.
-
-While this does not inherently lead to issues, they should be avoided wherever possible.
-
-## How
-
-Use ```Write-Error``` or ```throw``` statements within the catch block.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-try
-{
-	1/0
-}
-catch [DivideByZeroException]
-{
-}
-```
-
-### Correct
-
-``` PowerShell
-try
-{
-	1/0
-}
-catch [DivideByZeroException]
-{
-	Write-Error "DivideByZeroException"
-}
-
-try
-{
-	1/0
-}
-catch [DivideByZeroException]
-{
-	Throw "DivideByZeroException"
-}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Empty catch blocks are considered poor design decisions because if an error occurs in the try block, this error is simply swallowed and not acted upon. While this does not inherently lead to bad things. It can and this should be avoided if possible. To fix a violation of this rule, using Write-Error or throw statements in catch blocks.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -231,36 +48,7 @@ catch [DivideByZeroException]
         <key>PSAvoidGlobalAliases</key>
         <internalKey>PSAvoidGlobalAliases</internalKey>
         <name>Avoid global aliases.</name>
-        <description># AvoidGlobalAliases
-
-**Severity Level: Warning**
-
-## Description
-
-Globally scoped aliases override existing aliases within the sessions with matching names. This name collision can cause difficult to debug issues for consumers of modules and scripts.  
-
-
-To understand more about scoping, see ```Get-Help about_Scopes```.
-
-## How
-
-Use other scope modifiers for new aliases.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-New-Alias -Name Name -Value Value -Scope "Global"
-```
-
-### Correct
-
-``` PowerShell
-New-Alias -Name Name1 -Value Value
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Checks that global aliases are not used. Global aliases are strongly discouraged as they overwrite desired aliases with name conflicts.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -271,36 +59,7 @@ New-Alias -Name Name1 -Value Value
         <key>PSAvoidGlobalFunctions</key>
         <internalKey>PSAvoidGlobalFunctions</internalKey>
         <name>Avoid global functiosn and aliases</name>
-        <description># AvoidGlobalFunctions
-
-**Severity Level: Warning**
-
-## Description
-
-Globally scoped functions override existing functions within the sessions with matching names. This name collision can cause difficult to debug issues for consumers of modules.  
-
-
-To understand more about scoping, see ```Get-Help about_Scopes```.
-
-## How
-
-Use other scope modifiers for functions.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-function global:functionName {}
-```
-
-### Correct
-
-``` PowerShell
-function functionName {} 
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Checks that global functions and aliases are not used. Global functions are strongly discouraged as they can cause errors across different systems.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -311,49 +70,7 @@ function functionName {}
         <key>PSAvoidGlobalVars</key>
         <internalKey>PSAvoidGlobalVars</internalKey>
         <name>No Global Variables</name>
-        <description># AvoidGlobalVars
-
-**Severity Level: Warning**
-
-## Description
-
-A variable is a unit of memory in which values are stored. Windows PowerShell controls access to variables, functions, aliases, and drives through a mechanism known as scoping.
-Variables and functions that are present when Windows PowerShell starts have been created in the global scope.
-
-Globally scoped variables include:
-* Automatic variables
-* Preference variables
-* Variables, aliases, and functions that are in your Windows PowerShell profiles
-
-To understand more about scoping, see ```Get-Help about_Scopes```.
-
-## How
-
-Use other scope modifiers for variables.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-$Global:var1 = $null
-function Test-NotGlobal ($var)
-{
-	$a = $var + $var1
-}
-```
-
-### Correct
-
-``` PowerShell
-$var1 = $null
-function Test-NotGlobal ($var1, $var2)
-{
-		$a = $var1 + $var2
-}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Checks that global variables are not used. Global variables are strongly discouraged as they can cause errors across different systems.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -364,35 +81,7 @@ function Test-NotGlobal ($var1, $var2)
         <key>PSAvoidInvokingEmptyMembers</key>
         <internalKey>PSAvoidInvokingEmptyMembers</internalKey>
         <name>Avoid Invoking Empty Members</name>
-        <description># AvoidInvokingEmptyMembers
-
-**Severity Level: Warning**
-
-## Description
-
-Invoking non-constant members can cause potential bugs. Please double check the syntax to make sure that invoked members are constants.
-
-## How
-
-Provide the requested members for a given type or class.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-$MyString = "abc"
-$MyString.('len'+'gth')
-```
-
-### Correct
-
-``` PowerShell
-$MyString = "abc"
-$MyString.('length')
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Invoking non-constant members would cause potential bugs. Please double check the syntax to make sure members invoked are non-constant.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -403,74 +92,7 @@ $MyString.('length')
         <key>PSAvoidNullOrEmptyHelpMessageAttribute</key>
         <internalKey>PSAvoidNullOrEmptyHelpMessageAttribute</internalKey>
         <name>Avoid using null or empty HelpMessage parameter attribute.</name>
-        <description># AvoidNullOrEmtpyHelpMessageAttribute
-
-**Severity Level: Warning**
-
-## Description
-
-The value of the `HelpMessage` attribute should not be an empty string or a null value as this causes PowerShell's interpreter to throw an mirror when executing the
-function or cmdlet.
-
-## How
-
-Specify a value for the `HelpMessage` attribute.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-Function BadFuncEmptyHelpMessageEmpty
-{
-	Param(
-		[Parameter(HelpMessage='')]
-		[String]
-		$Param
-	)
-
-	$Param
-}
-
-Function BadFuncEmptyHelpMessageNull
-{
-	Param(
-		[Parameter(HelpMessage=$null)]
-		[String]
-		$Param
-	)
-
-	$Param
-}
-
-Function BadFuncEmptyHelpMessageNoAssignment
-{
-	Param(
-		[Parameter(HelpMessage)]
-		[String]
-		$Param
-	)
-
-	$Param
-}
-```
-
-### Correct
-
-``` PowerShell
-Function GoodFuncHelpMessage
-{
-	Param(
-		[Parameter(HelpMessage='This is helpful')]
-		[String]
-		$Param
-	)
-
-	$Param
-}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Setting the HelpMessage attribute to an empty string or null value causes PowerShell interpreter to throw an error while executing the corresponding function.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -481,35 +103,7 @@ Function GoodFuncHelpMessage
         <key>PSAvoidUsingPositionalParameters</key>
         <internalKey>PSAvoidUsingPositionalParameters</internalKey>
         <name>Avoid Using Positional Parameters</name>
-        <description># AvoidUsingPositionalParameters
-
-**Severity Level: Warning**
-
-## Description
-
-When developing PowerShell content that will potentially need to be maintained over time, either by the original author or others, you should use full command names and parameter names.
-
-The use of positional parameters can reduce the readability of code and potentially introduce errors.
-
-## How
-
-Use full parameter names when calling commands.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-Get-ChildItem *.txt
-```
-
-### Correct
-
-``` PowerShell
-Get-Content -Path *.txt
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Readability and clarity should be the goal of any script we expect to maintain over time. When calling a command that takes parameters, where possible consider using name parameters as opposed to positional parameters. To fix a violation of this rule, please use named parameters instead of positional parameters when calling a command.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -520,37 +114,7 @@ Get-Content -Path *.txt
         <key>PSReservedCmdletChar</key>
         <internalKey>PSReservedCmdletChar</internalKey>
         <name>Reserved Cmdlet Chars</name>
-        <description># ReservedCmdletChar
-
-**Severity Level: Error**
-
-## Description
-
-You cannot use following reserved characters in a function or cmdlet name as these can cause parsing or runtime errors.
-
-Reserved Characters include: `#,(){}[]&amp;/\\$^;:\"'&lt;&gt;|?@`*%+=~`
-
-## How
-
-Remove reserved characters from names.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-function MyFunction[1]
-{...}
-```
-
-### Correct
-
-``` PowerShell
-function MyFunction
-{...}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Checks for reserved characters in cmdlet names. These characters usually cause a parsing error. Otherwise they will generally cause runtime errors.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -561,49 +125,7 @@ function MyFunction
         <key>PSReservedParams</key>
         <internalKey>PSReservedParams</internalKey>
         <name>Reserved Parameters</name>
-        <description># ReservedParams
-
-**Severity Level: Error**
-
-## Description
-
-You cannot use reserved common parameters in an advanced function.
-
-## How
-
-Change the name of the parameter.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-function Test
-{
-    [CmdletBinding]
-    Param
-    (
-        $ErrorVariable,
-        $Parameter2
-    )
-}
-```
-
-### Correct
-
-``` PowerShell
-function Test
-{
-    [CmdletBinding]
-    Param
-    (
-        $Err,
-        $Parameter2
-    )
-}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Checks for reserved parameters in function definitions. If these parameters are defined by the user, an error generally occurs.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -614,60 +136,7 @@ function Test
         <key>PSAvoidShouldContinueWithoutForce</key>
         <internalKey>PSAvoidShouldContinueWithoutForce</internalKey>
         <name>Avoid Using ShouldContinue Without Boolean Force Parameter</name>
-        <description># AvoidShouldContinueWithoutForce
-
-**Severity Level: Warning**
-
-## Description
-
-Functions that use ShouldContinue should have a boolean force parameter to allow user to bypass it.
-
-You can get more details by running `Get-Help about_Functions_CmdletBindingAttribute` and `Get-Help about_Functions_Advanced_Methods` command in Windows PowerShell.
-
-## How
-
-Call the `ShouldContinue` method in advanced functions when `ShouldProcess` method returns `$true`.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-Function Test-ShouldContinue
-{
-    [CmdletBinding(SupportsShouldProcess=$true)]
-    Param
-    (
-        $MyString = 'blah'
-    )
-
-    if ($PsCmdlet.ShouldContinue("ShouldContinue Query", "ShouldContinue Caption"))
-	{
-        ...
-    }
-}
-```
-
-### Correct
-
-``` PowerShell
-Function Test-ShouldContinue
-{
-    [CmdletBinding(SupportsShouldProcess=$true)]
-    Param
-    (
-        $MyString = 'blah',
-        [Switch]$Force
-    )
-
-    if ($Force -or $PsCmdlet.ShouldContinue("ShouldContinue Query", "ShouldContinue Caption"))
-	{
-        ...
-    }
-}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Functions that use ShouldContinue should have a boolean force parameter to allow user to bypass it.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -679,7 +148,6 @@ Function Test-ShouldContinue
         <internalKey>PSAvoidUsingUserNameAndPassWordParams</internalKey>
         <name>Avoid Using Username and Password Parameters</name>
         <description>Functions should take in a Credential parameter of type PSCredential (with a Credential transformation attribute defined after it in PowerShell 4.0 or earlier) or set the Password parameter to type SecureString.</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -690,59 +158,7 @@ Function Test-ShouldContinue
         <key>PSAvoidUsingComputerNameHardcoded</key>
         <internalKey>PSAvoidUsingComputerNameHardcoded</internalKey>
         <name>Avoid Using ComputerName Hardcoded</name>
-        <description># AvoidUsingComputerNameHardcoded
-
-**Severity Level: Error**
-
-## Description
-
-The names of computers should never be hard coded as this will expose sensitive information. The `ComputerName` parameter should never have a hard coded value.
-
-## How
-
-Remove hard coded computer names.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-Function Invoke-MyRemoteCommand ()
-{
-	Invoke-Command -Port 343 -ComputerName "hardcoderemotehostname"
-}
-```
-
-### Correct
-
-``` PowerShell
-Function Invoke-MyCommand ($ComputerName)
-{
-	Invoke-Command -Port 343 -ComputerName $ComputerName
-}
-```
-
-## Example
-
-### Wrong
-
-``` PowerShell
-Function Invoke-MyLocalCommand ()
-{
-	Invoke-Command -Port 343 -ComputerName "hardcodelocalhostname"
-}
-```
-
-### Correct
-
-``` PowerShell
-Function Invoke-MyLocalCommand ()
-{
-	Invoke-Command -Port 343 -ComputerName $env:COMPUTERNAME
-}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>The ComputerName parameter of a cmdlet should not be hardcoded as this will expose sensitive information about the system.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -753,40 +169,7 @@ Function Invoke-MyLocalCommand ()
         <key>PSAvoidUsingConvertToSecureStringWithPlainText</key>
         <internalKey>PSAvoidUsingConvertToSecureStringWithPlainText</internalKey>
         <name>Avoid Using SecureString With Plain Text</name>
-        <description># AvoidUsingConvertToSecureStringWithPlainText
-
-**Severity Level: Error**
-
-## Description
-
-The use of the `AsPlainText` parameter with the `ConvertTo-SecureString` command can expose secure information.
-
-## How
-
-Use a standard encrypted variable to perform any SecureString conversions.
-
-## Recommendations
-
-If you do need an ability to retrieve the password from somewhere without prompting the user, consider using Windows Credential Store as used in the BetterCredentials module ( https://www.powershellgallery.com/packages/BetterCredentials/4.4/Content/BetterCredentials.psm1). If that does not work, consider using Azure KeyVault (https://azure.microsoft.com/en-us/services/key-vault/) or AWS KMS (https://aws.amazon.com/kms/).
-
-## Example
-
-### Wrong
-
-``` PowerShell
-$UserInput = Read-Host "Please enter your secure code"
-$EncryptedInput = ConvertTo-SecureString -String $UserInput -AsPlainText -Force
-```
-
-### Correct
-
-``` PowerShell
-$SecureUserInput = Read-Host "Please enter your secure code" -AsSecureString
-$EncryptedInput = ConvertFrom-SecureString -String $SecureUserInput
-$SecureString = Convertto-SecureString -String $EncryptedInput
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Using ConvertTo-SecureString with plain text will expose secure information.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -797,39 +180,7 @@ $SecureString = Convertto-SecureString -String $EncryptedInput
         <key>PSAvoidUsingDeprecatedManifestFields</key>
         <internalKey>PSAvoidUsingDeprecatedManifestFields</internalKey>
         <name>Avoid Using Deprecated Manifest Fields</name>
-        <description># AvoidUsingDeprecatedManifestFields
-
-**Severity Level: Warning**
-
-## Description
-
-In PowerShell 5.0, a number of fields in module manifest files (.psd1) have been changed.
-
-The field `ModuleToProcess` has been replaced with the `RootModule` field.
-
-## How
-
-Replace `ModuleToProcess` with `RootModule` in the module manifest.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-ModuleToProcess ='psscriptanalyzer'
-
-ModuleVersion = '1.0'
-```
-
-### Correct
-
-``` PowerShell
-RootModule ='psscriptanalyzer'
-
-ModuleVersion = '1.0'
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>"ModuleToProcess" is obsolete in the latest PowerShell version. Please update with the latest field "RootModule" in manifest files to avoid PowerShell version inconsistency.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -840,35 +191,7 @@ ModuleVersion = '1.0'
         <key>PSAvoidUsingInvokeExpression</key>
         <internalKey>PSAvoidUsingInvokeExpression</internalKey>
         <name>Avoid Using Invoke-Expression</name>
-        <description># AvoidUsingInvokeExpression
-
-**Severity Level: Warning**
-
-## Description
-
-Care must be taken when using the `Invoke-Expression` command. The `Invoke-Expression` executes the specified string and returns the results.
-
-Code injection into your application or script can occur if the expression passed as a string includes any data provided from the user.
-
-## How
-
-Remove the use of `Invoke-Expression`.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-Invoke-Expression "Get-Process"
-```
-
-### Correct
-
-``` PowerShell
-Get-Process
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>The Invoke-Expression cmdlet evaluates or runs a specified string as a command and returns the results of the expression or command. It can be extraordinarily powerful so it is not that you want to never use it but you need to be very careful about using it.  In particular, you are probably on safe ground if the data only comes from the program itself.  If you include any data provided from the user - you need to protect yourself from Code Injection. To fix a violation of this rule, please remove Invoke-Expression from script and find other options instead.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -879,62 +202,7 @@ Get-Process
         <key>PSAvoidUsingPlainTextForPassword</key>
         <internalKey>PSAvoidUsingPlainTextForPassword</internalKey>
         <name>Avoid Using Plain Text For Password Parameter</name>
-        <description># AvoidUsingPlainTextForPassword
-
-**Severity Level: Warning**
-
-## Description
-
-Password parameters that take in plaintext will expose passwords and compromise the security of your system. Passwords should be stored in the
-```SecureString``` type.
-
-The following parameters are considered password parameters (this is not case sensitive):
-* Password
-* Pass
-* Passwords
-* Passphrase
-* Passphrases
-* PasswordParam
-
-If a parameter is defined with a name in the above list, it should be declared with type ```SecureString```
-
-## How
-
-Change the type to ```SecureString```.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-function Test-Script
-{
-    [CmdletBinding()]
-    Param
-    (
-        [string]
-        $Password
-    )
-    ...
-}
-```
-
-### Correct
-
-``` PowerShell
-function Test-Script
-{
-    [CmdletBinding()]
-    Param
-    (
-        [SecureString]
-        $Password
-    )
-    ...
-}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Password parameters that take in plaintext will expose passwords and compromise the security of your system.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -945,56 +213,7 @@ function Test-Script
         <key>PSAvoidUsingWMICmdlet</key>
         <internalKey>PSAvoidUsingWMICmdlet</internalKey>
         <name>Avoid Using Get-WMIObject, Remove-WMIObject, Invoke-WmiMethod, Register-WmiEvent, Set-WmiInstance</name>
-        <description># AvoidUsingWMICmdlet
-
-**Severity Level: Warning**
-
-## Description
-
-As of PowerShell 3.0, the CIM cmdlets should be used over the WMI cmdlets.
-
-The following cmdlets should not be used:
-* `Get-WmiObject`
-* `Remove-WmiObject`
-* `Invoke-WmiObject`
-* `Register-WmiEvent`
-* `Set-WmiInstance`
-
-Use the following cmdlets instead:
-* `Get-CimInstance`
-* `Remove-CimInstance`
-* `Invoke-CimMethod`
-* `Register-CimIndicationEvent`
-* `Set-CimInstance`
-
-The CIM cmdlets comply with WS-Management (WSMan) standards and with the Common Information Model (CIM) standard, allowing for the management of Windows and non-Windows operating systems.
-
-## How
-
-Change to the equivalent CIM based cmdlet.
-* `Get-WmiObject` -&gt; `Get-CimInstance`
-* `Remove-WmiObject` -&gt; `Remove-CimInstance`
-* `Invoke-WmiObject` -&gt; `Invoke-CimMethod`
-* `Register-WmiEvent` -&gt; `Register-CimIndicationEvent`
-* `Set-WmiInstance` -&gt; `Set-CimInstance`
-
-## Example
-
-### Wrong
-
-``` PowerShell
-Get-WmiObject -Query 'Select * from Win32_Process where name LIKE "myprocess%"' | Remove-WmiObject
-Invoke-WmiMethod ?Class Win32_Process ?Name "Create" ?ArgumentList @{ CommandLine = "notepad.exe" }
-```
-
-### Correct
-
-``` PowerShell
-Get-CimInstance -Query 'Select * from Win32_Process where name LIKE "myprocess%"' | Remove-CIMInstance
-Invoke-CimMethod ?ClassName Win32_Process ?MethodName "Create" ?Arguments @{ CommandLine = "notepad.exe" }
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Deprecated. Starting in Windows PowerShell 3.0, these cmdlets have been superseded by CIM cmdlets.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1005,51 +224,7 @@ Invoke-CimMethod ?ClassName Win32_Process ?MethodName "Create" ?Arguments @{ Com
         <key>PSAvoidUsingWriteHost</key>
         <internalKey>PSAvoidUsingWriteHost</internalKey>
         <name>Avoid Using Write-Host</name>
-        <description># AvoidUsingWriteHost
-
-**Severity Level: Warning**
-
-## Description
-
-The use of `Write-Host` is greatly discouraged unless in the use of commands with the `Show` verb. The `Show` verb explicitly means "show on the screen, with no
-other possibilities".
-
-Commands with the `Show` verb do not have this check applied.
-
-## How
-
-Replace `Write-Host` with `Write-Output` or `Write-Verbose`.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-function Test
-{
-	...
-	Write-Host "Executing.."
-	...
-}
-```
-
-### Correct
-
-``` PowerShell
-function Test
-{
-	...
-	Write-Output "Executing.."
-	...
-}
-
-function Show-Something
-{
-    Write-Host "show something on screen";
-}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Avoid using the Write-Host cmdlet. Instead, use Write-Output, Write-Verbose, or Write-Information. Because Write-Host is host-specific, its implementation might vary unpredictably. Also, prior to PowerShell 5.0, Write-Host did not write to a stream, so users cannot suppress it, capture its value, or redirect it.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1060,14 +235,7 @@ function Show-Something
         <key>PSMisleadingBacktick</key>
         <internalKey>PSMisleadingBacktick</internalKey>
         <name>Misleading Backtick</name>
-        <description># MisleadingBacktick
-
-**Severity Level: Warning**
-
-## Description
-
-Checks that lines don't end with a backtick followed by whitespace.</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Ending a line with an escaped whitepsace character is misleading. A trailing backtick is usually used for line continuation. Users typically don't intend to end a line with escaped whitespace.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1078,52 +246,7 @@ Checks that lines don't end with a backtick followed by whitespace.</description
         <key>PSMissingModuleManifestField</key>
         <internalKey>PSMissingModuleManifestField</internalKey>
         <name>Module Manifest Fields</name>
-        <description># MissingModuleManifestField
-
-**Severity Level: Warning**
-
-## Description
-
-A module manifest is a `.psd1` file that contains a hash table. The keys and values in the hash table describe the contents and attributes of the module, define the
-prerequisites, and determine how the components are processed.
-
-Module manifests must contain the following keys (and a corresponding value) to be considered valid:
-* `ModuleVersion`
-
-All other keys are optional. The order of the entries is not important.
-
-## How
-
-Please consider adding the missing fields to the manifest.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-@{
-    Author              = 'PowerShell Author'
-    NestedModules       = @('.\mymodule.psm1')
-    FunctionsToExport   = '*'
-    CmdletsToExport     = '*'
-    VariablesToExport   = '*'
-}
-```
-
-### Correct
-
-``` PowerShell
-@{
-    ModuleVersion       = '1.0'
-    Author              = 'PowerShell Author'
-    NestedModules       = @('.\mymodule.psm1')
-    FunctionsToExport   = '*'
-    CmdletsToExport     = '*'
-    VariablesToExport   = '*'
-}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Some fields of the module manifest (such as ModuleVersion) are required.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1134,50 +257,7 @@ Please consider adding the missing fields to the manifest.
         <key>PSPlaceCloseBrace</key>
         <internalKey>PSPlaceCloseBrace</internalKey>
         <name>Place close braces</name>
-        <description># PlaceCloseBrace
-
-**Severity Level: Warning**
-
-## Description
-
-Close brace placement should follow a consistent style. It should be on a new line by itself and should not be followed by an empty line.
-
-**Note**: This rule is not enabled by default. The user needs to enable it through settings.
-
-## Configuration
-
-```powershell
-    Rules = @{
-        PSPlaceCloseBrace = @{
-            Enable = $true
-            NoEmptyLineBefore = $false
-            IgnoreOneLineBlock = $true
-            NewLineAfter = $true
-        }
-    }
-```
-
-### Parameters
-
-#### Enable: bool (Default value is `$false`)
-
-Enable or disable the rule during ScriptAnalyzer invocation.
-
-#### NoEmptyLineBefore: bool (Default value is `$false`)
-
-Create violation if there is an empty line before a close brace.
-
-#### IgnoreOneLineBlock: bool (Default value is `$true`)
-
-Indicates if close braces in a one line block should be ignored or not.
-E.g. $x = if ($true) { "blah" } else { "blah blah" }
-In the above example, if the property is set to true then the rule will not fire a violation.
-
-#### NewLineAfter: bool (Default value is `$true`)
-
-Indicates if a new line should follow a close brace. If set to true a close brace should be followed by a new line.
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Close brace should be on a new line by itself.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1188,50 +268,7 @@ Indicates if a new line should follow a close brace. If set to true a close brac
         <key>PSPlaceOpenBrace</key>
         <internalKey>PSPlaceOpenBrace</internalKey>
         <name>Place open braces consistently</name>
-        <description># PlaceOpenBrace
-
-**Severity Level: Warning**
-
-## Description
-
-Open brace placement should follow a consistent style. It can either follow KR style (on same line) or the Allman style (not on same line).
-
-**Note**: This rule is not enabled by default. The user needs to enable it through settings.
-
-## Configuration
-
-```powershell
-    Rules = @{
-        PSPlaceOpenBrace = @{
-            Enable = $true
-            OnSameLine = $true
-            NewLineAfter = $true
-            IgnoreOneLineBlock = $true
-        }
-    }
-```
-
-### Parameters
-
-#### Enable: bool (Default value is `$false`)
-
-Enable or disable the rule during ScriptAnalyzer invocation.
-
-#### OnSameLine: bool (Default value is `$true`)
-
-# true
-
-#### NewLineAfter: bool (Default value is `$true`)
-
-Enforce a new line character after an open brace. The default value is true.
-
-#### IgnoreOneLineBlock: bool (Default value is `$true`)
-
-Indicates if open braces in a one line block should be ignored or not.
-E.g. $x = if ($true) { "blah" } else { "blah blah" }
-In the above example, if the property is set to true then the rule will not fire a violation.
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Place open braces either on the same line as the preceding expression or on a new line.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1242,47 +279,7 @@ In the above example, if the property is set to true then the rule will not fire
         <key>PSPossibleIncorrectComparisonWithNull</key>
         <internalKey>PSPossibleIncorrectComparisonWithNull</internalKey>
         <name>Null Comparison</name>
-        <description># PossibleIncorrectComparisonWithNull
-
-**Severity Level: Warning**
-
-## Description
-
-To ensure that PowerShell performs comparisons correctly, the `$null` element should be on the left side of the operator.
-
-There are a number of reasons why this should occur:
-* When there is an array on the left side of a null equality comparison, PowerShell will check for a `$null` IN the array rather than if the array is null.
-* PowerShell will perform type casting left to right, resulting in incorrect comparisons when `$null` is cast to other types.
-
-## How
-
-Move `$null` to the left side of the comparison.
-
-## Example
-
-### Wrong?
-
-``` PowerShell
-function Test-CompareWithNull
-{
-	if ($DebugPreference -eq $null)
-	{
-	}
-}
-```
-
-### Correct
-
-``` PowerShell
-function Test-CompareWithNull
-{
-	if ($null -eq $DebugPreference)
-	{
-	}
-}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Checks that $null is on the left side of any equaltiy comparisons (eq, ne, ceq, cne, ieq, ine). When there is an array on the left side of a null equality comparison, PowerShell will check for a $null IN the array rather than if the array is null. If the two sides of the comaprision are switched this is fixed. Therefore, $null should always be on the left side of equality comparisons just in case.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1293,74 +290,7 @@ function Test-CompareWithNull
         <key>PSProvideCommentHelp</key>
         <internalKey>PSProvideCommentHelp</internalKey>
         <name>Basic Comment Help</name>
-        <description># ProvideCommentHelp
-
-**Severity Level: Info**
-
-## Description
-
-Comment based help should be provided for all PowerShell commands. This test only checks for the presence of comment based help and not on the validity or format.
-
-For assistance on comment based help, use the command ```Get-Help about_comment_based_help``` or the article, "How to Write Cmdlet Help" (http://go.microsoft.com/fwlink/?LinkID=123415).
-
-## How
-
-Include comment based help for each command identified.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-function Get-File
-{
-    [CmdletBinding()]
-    Param
-    (
-        ...
-    )
-
-}
-```
-
-### Correct
-
-``` PowerShell
-&lt;#
-.Synopsis
-    Short description
-.DESCRIPTION
-    Long description
-.EXAMPLE
-    Example of how to use this cmdlet
-.EXAMPLE
-    Another example of how to use this cmdlet
-.INPUTS
-    Inputs to this cmdlet (if any)
-.OUTPUTS
-    Output from this cmdlet (if any)
-.NOTES
-    General notes
-.COMPONENT
-    The component this cmdlet belongs to
-.ROLE
-    The role this cmdlet belongs to
-.FUNCTIONALITY
-    The functionality that best describes this cmdlet
-#&gt;
-
-function Get-File
-{
-    [CmdletBinding()]
-    Param
-    (
-        ...
-    )
-
-}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Checks that all cmdlets have a help comment. This rule only checks existence. It does not check the content of the comment.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1371,41 +301,7 @@ function Get-File
         <key>PSUseApprovedVerbs</key>
         <internalKey>PSUseApprovedVerbs</internalKey>
         <name>Cmdlet Verbs</name>
-        <description># UseApprovedVerbs
-
-**Severity Level: Warning**
-
-## Description
-
-All CMDLets must used approved verbs.
-
-Approved verbs can be found by running the command `Get-Verb`.
-
-## How
-
-Change the verb in the cmdlet's name to an approved verb.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-function Change-Item
-{
-    ...
-}
-````
-
-### Correct
-
-``` PowerShell
-function Update-Item
-{
-    ...
-}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Checks that all defined cmdlets use approved verbs. This is in line with PowerShell's best practices.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1416,19 +312,7 @@ function Update-Item
         <key>PSUseBOMForUnicodeEncodedFile</key>
         <internalKey>PSUseBOMForUnicodeEncodedFile</internalKey>
         <name>Use BOM encoding for non-ASCII files</name>
-        <description># UseBOMForUnicodeEncodedFile
-
-**Severity Level: Warning**
-
-## Description
-
-For a file encoded with a format other than ASCII, ensure Byte Order Mark (BOM) is present to ensure that any application consuming this file can interpret it correctly.
-
-## How
-
-Ensure that the file is encoded with BOM present.
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>For a file encoded with a format other than ASCII, ensure BOM is present to ensure that any application consuming this file can interpret it correctly.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1439,42 +323,7 @@ Ensure that the file is encoded with BOM present.
         <key>PSUseCmdletCorrectly</key>
         <internalKey>PSUseCmdletCorrectly</internalKey>
         <name>Use Cmdlet Correctly</name>
-        <description># UseCmdletCorrectly
-
-**Severity Level: Warning**
-
-## Description
-
-Whenever we call a command, care should be taken that it is invoked with the correct syntax and parameters.
-
-## How
-
-Specify all mandatory parameters when calling commands.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-Function Set-TodaysDate ()
-{
-	Set-Date
-	...
-}
-```
-
-### Correct
-
-``` PowerShell
-Function Set-TodaysDate ()
-{
-	$date = Get-Date
-	Set-Date -Date $t
-	...
-}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Cmdlet should be called with the mandatory parameters.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1485,26 +334,7 @@ Function Set-TodaysDate ()
         <key>PSUseCompatibleCmdlets</key>
         <internalKey>PSUseCompatibleCmdlets</internalKey>
         <name>Use compatible cmdlets</name>
-        <description># UseCompatibleCmdlets
-
-**Severity Level: Warning**
-
-## Description
-
-This rule flags cmdlets that are not available in a given Edition/Version of PowerShell on a given Operating System. It works by comparing a cmdlet against a set of whitelists which ship with PSScriptAnalyzer. They can be found at `/path/to/PSScriptAnalyzerModule/Settings`. These files are of the form, `PSEDITION-PSVERSION-OS.json` where `PSEDITION` can be either `core` or `desktop`, `OS` can be either `windows`, `linux` or `osx`, and `version` is the PowerShell version. To enable the rule to check if your script is compatible on PowerShell Core on windows, put the following your settings file:
-```PowerShell
-@{
-    'Rules' = @{
-        'PSUseCompatibleCmdlets' = @{
-            'compatibility' = @("core-6.0.0-alpha-windows")
-        }
-    }
-}
-```
-
-The parameter `compatibility` is a list that contain any of the following `{core-6.0.0-alpha-windows, core-6.0.0-alpha-linux, core-6.0.0-alpha-osx}`.
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Use cmdlets compatible with the given PowerShell version and edition and operating system</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1515,38 +345,7 @@ The parameter `compatibility` is a list that contain any of the following `{core
         <key>PSUseConsistentIndentation</key>
         <internalKey>PSUseConsistentIndentation</internalKey>
         <name>Use consistent indentation</name>
-        <description># UseConsistentIndentation
-
-**Severity Level: Warning**
-
-## Description
-
-Indentation should be consistent throughout the source file.
-
-**Note**: This rule is not enabled by default. The user needs to enable it through settings.
-
-## Configuration
-
-```powershell
-    Rules = @{
-        PSUseConsistentIndentation = @{
-            Enable = $true
-            IndentationSize = 4
-        }
-    }
-```
-
-### Parameters
-
-#### Enable: bool (Default value is `$false`)
-
-Enable or disable the rule during ScriptAnalyzer invocation.
-
-#### IndentationSize: bool (Default value is `4`)
-
-Indentation size in the number of space characters.
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Each statement block should have a consistent indenation.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1557,42 +356,7 @@ Indentation size in the number of space characters.
         <key>PSUseDeclaredVarsMoreThanAssignments</key>
         <internalKey>PSUseDeclaredVarsMoreThanAssignments</internalKey>
         <name>Extra Variables</name>
-        <description># UseDeclaredVarsMoreThanAssignments
-
-**Severity Level: Warning**
-
-## Description
-
-Generally variables that are not used more than their assignments are considered wasteful and not needed.
-
-## How
-
-Remove the variables that are declared but not used.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-function Test
-{
-    $declaredVar = "Declared just for fun"
-    $declaredVar2 = "Not used"
-    Write-Output $declaredVar
-}
-```
-
-### Correct
-
-``` PowerShell
-function Test
-{
-    $declaredVar = "Declared just for fun"
-    Write-Output $declaredVar
-}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Ensure declared variables are used elsewhere in the script and not just during assignment.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1603,39 +367,7 @@ function Test
         <key>PSUseLiteralInitializerForHashtable</key>
         <internalKey>PSUseLiteralInitializerForHashtable</internalKey>
         <name>Create hashtables with literal initializers</name>
-        <description># UseLiteralInitializerForHashtable
-
-**Severity Level: Warning**
-
-## Description
-
-Creating a hashtable by either `[hashtable]::new()` or `New-Object -TypeName hashtable` will create a hashtable wherein the keys are looked-up in a case-sensitive manner, unless an `IEqualityComparer` object is passed as an argument. However, PowerShell is case-insensitive in nature and it is best to create hashtables with case-insensitive key look-up. This rule is intended to warn the author of the case-sensitive nature of the hashtable if he/she creates a hashtable using the `new` member or the `New-Object` cmdlet.
-
-## How to Fix
-
-Use the full cmdlet name and not an alias.
-
-## Example
-
-### Wrong???
-
-``` PowerShell
-$hashtable = [hashtable]::new()
-```
-
-### Wrong???
-
-``` PowerShell
-$hashtable = New-Object -TypeName hashtable
-```
-
-### Correct:
-
-``` PowerShell
-$hashtable = @{}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Use literal initializer, @{}, for creating a hashtable as they are case-insensitive by default</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1646,50 +378,7 @@ $hashtable = @{}
         <key>PSUseOutputTypeCorrectly</key>
         <internalKey>PSUseOutputTypeCorrectly</internalKey>
         <name>Use OutputType Correctly</name>
-        <description># UseOutputTypeCorrectly
-
-**Severity Level: Information**
-
-## Description
-
-A command should return the same type as declared in `OutputType`.
-
-You can get more details by running `Get-Help about_Functions_OutputTypeAttribute` command in Windows PowerShell.
-
-## How
-
-Specify that the OutputType attribute lists and the types returned in the cmdlet match.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-function Get-Foo
-{
-        [CmdletBinding()]
-        [OutputType([String])]
-        Param(
-        )
-        return 4
-}
-```
-
-### Correct
-
-``` PowerShell
-function Get-Foo
-{
-        [CmdletBinding()]
-        [OutputType([String])]
-        Param(
-        )
-
-        return "four"
-}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>The return types of a cmdlet should be declared using the OutputType attribute.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1701,7 +390,6 @@ function Get-Foo
         <internalKey>PSUsePSCredentialType</internalKey>
         <name>Use PSCredential type.</name>
         <description>For PowerShell 4.0 and earlier, a parameter named Credential with type PSCredential must have a credential transformation attribute defined after the PSCredential type attribute. </description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1712,63 +400,7 @@ function Get-Foo
         <key>PSShouldProcess</key>
         <internalKey>PSShouldProcess</internalKey>
         <name>Should Process</name>
-        <description># ShouldProcess
-
-**Severity Level: Warning**
-
-## Description
-
-If a cmdlet declares the `SupportsShouldProcess` attribute, then it should also call `ShouldProcess`. A violation is any function which either declares `SupportsShouldProcess` attribute but makes no calls to `ShouldProcess` or it calls `ShouldProcess` but does not does not declare `SupportsShouldProcess`
-
-For more information, please refer to `about_Functions_Advanced_Methods` and `about_Functions_CmdletBindingAttribute`
-
-## How
-
-To fix a violation of this rule, please call `ShouldProcess` method when a cmdlet declares `SupportsShouldProcess` attribute. Or please add `SupportsShouldProcess` attribute argument when calling `ShouldProcess`
-
-## Example
-
-### Wrong
-
-``` PowerShell
-	function Set-File
-	{
-	    [CmdletBinding(SupportsShouldProcess=$true)]
-	    Param
-	    (
-	        # Path to file
-			[Parameter(Mandatory=$true)]
-	        $Path
-	    )
-		"String" | Out-File -FilePath $FilePath
-	}
-```
-
-### Correct
-
-``` PowerShell
-	function Set-File
-	{
-	    [CmdletBinding(SupportsShouldProcess=$true)]
-	    Param
-	    (
-	        # Path to file
-			[Parameter(Mandatory=$true)]
-	        $Path
-	    )
-
-		if ($PSCmdlet.ShouldProcess("Target", "Operation"))
-		{
-			"String" | Out-File -FilePath $FilePath
-		}
-		else
-		{
-			Write-Host ('Write "String" to file {0}' -f $FilePath)
-		}
-	}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Checks that if the SupportsShouldProcess is present, the function calls ShouldProcess/ShouldContinue and vice versa. Scripts with one or the other but not both will generally run into an error or unexpected behavior.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1779,61 +411,7 @@ To fix a violation of this rule, please call `ShouldProcess` method when a cmdle
         <key>PSUseShouldProcessForStateChangingFunctions</key>
         <internalKey>PSUseShouldProcessForStateChangingFunctions</internalKey>
         <name>Use ShouldProcess For State Changing Functions</name>
-        <description># UseShouldProcessForStateChangingFunctions
-
-**Severity Level: Warning**
-
-## Description
-
-Functions whose verbs change system state should support `ShouldProcess`.
-
-Verbs that should support `ShouldProcess`:
-* `New`
-* `Set`
-* `Remove`
-* `Start`
-* `Stop`
-* `Restart`
-* `Reset`
-* `Update`
-
-## How
-
-Include the attribute `SupportsShouldProcess`, in the `CmdletBindingBinding`.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-	function Set-ServiceObject
-	{
-	    [CmdletBinding()]
-		param
-		(
-			[string]
-			$Parameter1
-		)
-		...
-	}
-```
-
-### Correct
-
-``` PowerShell
-	function Set-ServiceObject
-	{
-	    [CmdletBinding(SupportsShouldProcess = $true)]
-	    param
-		(
-			[string]
-			$Parameter1
-		)
-		...
-	}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Functions that have verbs like New, Start, Stop, Set, Reset, Restart that change system state should support 'ShouldProcess'.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1844,39 +422,7 @@ Include the attribute `SupportsShouldProcess`, in the `CmdletBindingBinding`.
         <key>PSUseSingularNouns</key>
         <internalKey>PSUseSingularNouns</internalKey>
         <name>Cmdlet Singular Noun</name>
-        <description># UseSingularNouns
-
-**Severity Level: Warning**
-
-## Description
-
-PowerShell team best practices state cmdlets should use singular nouns and not plurals.
-
-## How
-
-Change plurals to singular.
-
-## Example
-
-### Wrong
-
-``` PowerShell
-function Get-Files
-{
-	...
-}
-```
-
-### Correct
-
-``` PowerShell
-function Get-File
-{
-	...
-}
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>Cmdlet should use singular instead of plural nouns.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1887,57 +433,7 @@ function Get-File
         <key>PSUseToExportFieldsInManifest</key>
         <internalKey>PSUseToExportFieldsInManifest</internalKey>
         <name>Use the *ToExport module manifest fields.</name>
-        <description># UseToExportFieldsInManifest
-
-**Severity Level: Warning**
-
-## Description
-
-To improve the performance of module auto-discovery, module manifests should not use wildcards (`'*'`) or null (`$null`) in the following entries:
-* `AliasesToExport`
-* `CmdletsToExport`
-* `FunctionsToExport`
-* `VariablesToExport`
-
-The use of wildcards or null has the potential to cause PowerShell to perform expensive work to analyse a module during module auto-discovery.
-
-## How
-
-Use an explicit list in the entries.
-
-## Example
-
-Suppose there are no functions in your module to export. Then,
-
-### Wrong
-
-``` PowerShell
-FunctionsToExport = $null
-```
-
-### Correct
-
-``` PowerShell
-FunctionToExport = @()
-```
-
-## Example
-
-Suppose there are only two functions in your module, ```Get-Foo``` and ```Set-Foo``` that you want to export. Then,
-
-### Wrong
-
-``` PowerShell
-FunctionsToExport = '*'
-```
-
-### Correct
-
-``` PowerShell
-FunctionToExport = @(Get-Foo, Set-Foo)
-```
-</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>In a module manifest, AliasesToExport, CmdletsToExport, FunctionsToExport and VariablesToExport fields should not use wildcards or $null in their entries. During module auto-discovery, if any of these entries are missing or $null or wildcard, PowerShell does some potentially expensive work to analyze the rest of the module.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1948,14 +444,7 @@ FunctionToExport = @(Get-Foo, Set-Foo)
         <key>PSUseUTF8EncodingForHelpFile</key>
         <internalKey>PSUseUTF8EncodingForHelpFile</internalKey>
         <name>Use UTF8 Encoding For Help File</name>
-        <description># UseUTF8EncodingForHelpFile
-
-**Severity Level: Warning**
-
-## Description
-
-Check if help file uses utf8 encoding</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <description>PowerShell help file needs to use UTF8 Encoding.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1967,7 +456,6 @@ Check if help file uses utf8 encoding</description>
         <internalKey>PSDSCDscExamplesPresent</internalKey>
         <name>DSC examples are present</name>
         <description>Every DSC resource module should contain folder "Examples" with sample configurations for every resource. Sample configurations should have resource name they are demonstrating in the title.</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1979,7 +467,6 @@ Check if help file uses utf8 encoding</description>
         <internalKey>PSDSCDscTestsPresent</internalKey>
         <name>Dsc tests are present</name>
         <description>Every DSC resource module should contain folder "Tests" with tests for every resource. Test scripts should have resource name they are testing in the file name.</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -1991,7 +478,6 @@ Check if help file uses utf8 encoding</description>
         <internalKey>PSDSCReturnCorrectTypesForDSCFunctions</internalKey>
         <name>Return Correct Types For DSC Functions</name>
         <description>Set function in DSC class and Set-TargetResource in DSC resource must not return anything. Get function in DSC class must return an instance of the DSC class and Get-TargetResource function in DSC resource must return a hashtable. Test function in DSC class and Get-TargetResource function in DSC resource must return a boolean.</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -2003,7 +489,6 @@ Check if help file uses utf8 encoding</description>
         <internalKey>PSDSCUseIdenticalMandatoryParametersForDSC</internalKey>
         <name>Use identical mandatory parameters for DSC Get/Test/Set TargetResource functions</name>
         <description>The Get/Test/Set TargetResource functions of DSC resource must have the same mandatory parameters.</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -2015,7 +500,6 @@ Check if help file uses utf8 encoding</description>
         <internalKey>PSDSCUseIdenticalParametersForDSC</internalKey>
         <name>Use Identical Parameters For DSC Test and Set Functions</name>
         <description>The Test and Set-TargetResource functions of DSC Resource must have the same parameters.</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -2027,7 +511,6 @@ Check if help file uses utf8 encoding</description>
         <internalKey>PSDSCStandardDSCFunctionsInResource</internalKey>
         <name>Use Standard Get/Set/Test TargetResource functions in DSC Resource </name>
         <description>DSC Resource must implement Get, Set and Test-TargetResource functions. DSC Class must implement Get, Set and Test functions.</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
@@ -2039,7 +522,6 @@ Check if help file uses utf8 encoding</description>
         <internalKey>PSDSCUseVerboseMessageInDSCResource</internalKey>
         <name>Use verbose message in DSC resource</name>
         <description>It is a best practice to emit informative, verbose messages in DSC resource functions. This helps in debugging issues when a DSC configuration is executed.</description>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <remediationFunctionBaseEffort />
