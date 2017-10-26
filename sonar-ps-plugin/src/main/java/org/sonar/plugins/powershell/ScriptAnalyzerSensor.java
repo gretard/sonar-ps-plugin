@@ -63,7 +63,7 @@ public class ScriptAnalyzerSensor implements org.sonar.api.batch.sensor.Sensor {
 				LOGGER.info("Finished running powershell analysis");
 
 			} catch (final Throwable e) {
-				LOGGER.warn("Error executing Powershell script analyzer", e);
+				LOGGER.warn("Error executing Powershell script analyzer. Maybe Script-Analyzer is not installed?", e);
 				return;
 			}
 

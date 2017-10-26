@@ -41,6 +41,7 @@ public class TokenizerSensorTest {
 		TokenizerSensor s = new TokenizerSensor(new Settings(), temp);
 		s.execute(ctxTester);
 		Assert.assertEquals(16, ctxTester.cpdTokens("test:test.ps1").size());
+		Assert.assertEquals(1, ctxTester.highlightingTypeAt("test:test.ps1", 1, 5).size());
 
 	}
 

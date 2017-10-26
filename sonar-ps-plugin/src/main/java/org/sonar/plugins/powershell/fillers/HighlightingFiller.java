@@ -21,29 +21,39 @@ public class HighlightingFiller implements IFiller {
 			final NewHighlighting highlithing = context.newHighlighting().onFile(f);
 
 			for (final Token token : tokens.getToken()) {
+				final List<String> kinds = Arrays.asList(token.getTokenFlags().toLowerCase().split(","));
 
-				if ("StringExpandableToken".equals(token.getCType())
-
-				) {
-					highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.STRING);
-				}
-				if ("VariableToken".equals(token.getCType())) {
-					highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.KEYWORD_LIGHT);
-
-				}
-				if ("StringLiteralToken".equals(token.getCType())) {
-					highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.KEYWORD);
-
-				}
-				if ("Comment".equals(token.getCType())) {
+				if (check("comment", token, kinds)) {
 					highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.COMMENT);
-
+					continue;
 				}
+		/*		if (check("CommandName", token, kinds)) {
+					highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.KEYWORD_LIGHT);
+					continue;
+				}*/
+			
+				if (check("keyword", token, kinds)) {
+					highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.KEYWORD);
+					continue;
+				}
+				if (check("StringLiteral", token, kinds) || check("StringExpandable", token, kinds)) {
+					highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.STRING);
+					continue;
+				}
+				if (check("Variable", token, kinds)) {
+					highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.KEYWORD_LIGHT);
+					continue;
+				}
+				
 
 			}
 			highlithing.save();
 		} catch (Throwable e) {
 			LOGGER.warn("Exception while running highliting", e);
 		}
+	}
+
+	private static boolean check(final String txt, final Token token, final List<String> kinds) {
+		return txt.toLowerCase().equals(token.getKind().toLowerCase()) || kinds.contains(txt.toLowerCase());
 	}
 }
