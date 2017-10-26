@@ -21,6 +21,9 @@ import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.powershell.ast.Token;
 import org.sonar.plugins.powershell.ast.Tokens;
+import org.sonar.plugins.powershell.fillers.CpdFiller;
+import org.sonar.plugins.powershell.fillers.HighlightingFiller;
+import org.sonar.plugins.powershell.fillers.IFiller;
 
 public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
 
@@ -31,6 +34,7 @@ public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
 	private final Settings settings;
 	private static final Logger LOGGER = Loggers.get(TokenizerSensor.class);
 	private static final boolean isDebugEnabled = LOGGER.isDebugEnabled();
+	private final IFiller[] fillers = new IFiller[] { new CpdFiller(), new HighlightingFiller() };
 
 	public TokenizerSensor(final Settings settings, final TempFolder folder) {
 		this.settings = settings;
@@ -85,8 +89,9 @@ public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
 				final Process process = new ProcessBuilder("powershell.exe", command).start();
 				process.waitFor();
 				final Tokens tokens = readTokens(new File(resultsFile));
-				createHighlighting(context, inputFile, tokens);
-				createCpdTokens(context, inputFile, tokens);
+				for (final IFiller filler : this.fillers) {
+					filler.fill(context, inputFile, tokens);
+				}
 				if (isDebugEnabled) {
 					LOGGER.debug(String.format("Running analysis for %s to %s finished", analysisFile, resultsFile));
 				}
@@ -95,60 +100,5 @@ public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
 			}
 		}
 
-	}
-
-	private void createHighlighting(final SensorContext context, final InputFile f, final Tokens tokens) {
-
-		try {
-			final NewHighlighting highlithing = context.newHighlighting().onFile(f);
-
-			for (final Token token : tokens.getToken()) {
-
-				if ("StringExpandableToken".equals(token.getCType())
-
-				) {
-					highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.STRING);
-				}
-				if ("VariableToken".equals(token.getCType())) {
-					highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.KEYWORD_LIGHT);
-
-				}
-				if ("StringLiteralToken".equals(token.getCType())) {
-					highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.KEYWORD);
-
-				}
-				if ("Comment".equals(token.getCType())) {
-					highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.COMMENT);
-
-				}
-
-			}
-			highlithing.save();
-		} catch (Throwable e) {
-			LOGGER.warn("Exception while running highliting", e);
-		}
-	}
-
-	private void createCpdTokens(final SensorContext context, final InputFile f, final Tokens tokens) {
-		try {
-			final NewCpdTokens highlithing = context.newCpdTokens().onFile(f);
-
-			for (final Token token : tokens.getToken()) {
-				if (!StringUtils.isNotBlank(token.getText())) {
-					continue;
-				}
-				try {
-					highlithing.addToken(token.getStartLineNumber(), token.getStartColumnNumber(),
-							token.getEndLineNumber(), token.getEndColumnNumber(), token.getText());
-				} catch (final Throwable e) {
-					if (isDebugEnabled) {
-						LOGGER.debug("Exception while adding token", e);
-					}
-				}
-			}
-			highlithing.save();
-		} catch (final Throwable e) {
-			LOGGER.warn("Exception while saving tokens", e);
-		}
 	}
 }
