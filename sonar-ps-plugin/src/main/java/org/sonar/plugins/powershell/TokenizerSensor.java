@@ -8,18 +8,13 @@ import javax.xml.bind.JAXBContext;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.SystemUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
-import org.sonar.api.batch.sensor.cpd.NewCpdTokens;
-import org.sonar.api.batch.sensor.highlighting.NewHighlighting;
-import org.sonar.api.batch.sensor.highlighting.TypeOfText;
 import org.sonar.api.config.Settings;
 import org.sonar.api.utils.TempFolder;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
-import org.sonar.plugins.powershell.ast.Token;
 import org.sonar.plugins.powershell.ast.Tokens;
 import org.sonar.plugins.powershell.fillers.CpdFiller;
 import org.sonar.plugins.powershell.fillers.HighlightingFiller;

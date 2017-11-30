@@ -13,6 +13,10 @@ public class PowershellPlugin implements Plugin {
 				.description("Flag whether to skip tokenizer").defaultValue("false").type(PropertyType.BOOLEAN)
 				.build());
 
+		context.addExtension(PropertyDefinition.builder(Constants.FILE_SUFFIXES).name("Suffixes to analyze")
+				.description("Suffixes supported by the plugin").defaultValue(".ps1,.psm1,.psd1")
+				.type(PropertyType.STRING).build());
+
 		context.addExtensions(PowershellLanguage.class, PowershellQualityProfile.class);
 		context.addExtensions(ScriptAnalyzerRulesDefinition.class, ScriptAnalyzerSensor.class);
 		context.addExtension(TokenizerSensor.class);
