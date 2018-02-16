@@ -83,7 +83,12 @@ public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
 				}
 				final Process process = new ProcessBuilder("powershell.exe", command).start();
 				process.waitFor();
-				final Tokens tokens = readTokens(new File(resultsFile));
+				final File tokensFile = new File(resultsFile);
+				if (!tokensFile.exists()) {
+					LOGGER.info(String.format("Tokennizer did not run successfully on %s file", analysisFile));
+					continue;
+				}
+				final Tokens tokens = readTokens(tokensFile);
 				for (final IFiller filler : this.fillers) {
 					filler.fill(context, inputFile, tokens);
 				}
