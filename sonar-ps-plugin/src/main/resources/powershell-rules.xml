@@ -481,18 +481,6 @@
         <severity>MAJOR</severity>
     </rule>
     <rule>
-        <key>PSUseSingularNouns</key>
-        <internalKey>PSUseSingularNouns</internalKey>
-        <name>Cmdlet Singular Noun</name>
-        <description>Cmdlet should use singular instead of plural nouns.</description>
-        <cardinality>SINGLE</cardinality>
-        <remediationFunction>LINEAR</remediationFunction>
-        <descriptionFormat>MARKDOWN</descriptionFormat>
-        <remediationFunctionBaseEffort />
-        <debtRemediationFunctionCoefficient>5min</debtRemediationFunctionCoefficient>
-        <severity>MAJOR</severity>
-    </rule>
-    <rule>
         <key>PSUseSupportsShouldProcess</key>
         <internalKey>PSUseSupportsShouldProcess</internalKey>
         <name>Use SupportsShouldProcess</name>
