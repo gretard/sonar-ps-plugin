@@ -15,8 +15,20 @@
     <rule>
         <key>PSAvoidUsingCmdletAliases</key>
         <internalKey>PSAvoidUsingCmdletAliases</internalKey>
-        <name>Avoid Using Cmdlet Aliases</name>
-        <description>An alias is an alternate name or nickname for a cmdlet or for a command element, such as a function, script, file, or executable file. But when writing scripts that will potentially need to be maintained over time, either by the original author or another Windows PowerShell scripter, please consider using full cmdlet name instead of alias. Aliases can introduce these problems, readability, understandability and availability.</description>
+        <name>Avoid Using Cmdlet Aliases or omitting the 'Get-' prefix.</name>
+        <description>An alias is an alternate name or nickname for a cmdlet or for a command element, such as a function, script, file, or executable file. An implicit alias is also the omission of the 'Get-' prefix for commands with this prefix. But when writing scripts that will potentially need to be maintained over time, either by the original author or another Windows PowerShell scripter, please consider using full cmdlet name instead of alias. Aliases can introduce these problems, readability, understandability and availability.</description>
+        <cardinality>SINGLE</cardinality>
+        <remediationFunction>LINEAR</remediationFunction>
+        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <remediationFunctionBaseEffort />
+        <debtRemediationFunctionCoefficient>5min</debtRemediationFunctionCoefficient>
+        <severity>MAJOR</severity>
+    </rule>
+    <rule>
+        <key>PSAvoidAssignmentToAutomaticVariable</key>
+        <internalKey>PSAvoidAssignmentToAutomaticVariable</internalKey>
+        <name>Changing automtic variables might have undesired side effects</name>
+        <description>This automatic variables is built into PowerShell and readonly.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <descriptionFormat>MARKDOWN</descriptionFormat>
@@ -167,6 +179,18 @@
         <remediationFunctionBaseEffort />
         <debtRemediationFunctionCoefficient>5min</debtRemediationFunctionCoefficient>
         <severity>MAJOR</severity>
+    </rule>
+    <rule>
+        <key>PSAvoidTrailingWhitespace</key>
+        <internalKey>PSAvoidTrailingWhitespace</internalKey>
+        <name>Avoid trailing whitespace</name>
+        <description>Each line should have no trailing whitespace.</description>
+        <cardinality>SINGLE</cardinality>
+        <remediationFunction>LINEAR</remediationFunction>
+        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <remediationFunctionBaseEffort />
+        <debtRemediationFunctionCoefficient>2min</debtRemediationFunctionCoefficient>
+        <severity>INFO</severity>
     </rule>
     <rule>
         <key>PSAvoidUsingUserNameAndPassWordParams</key>
@@ -325,6 +349,30 @@
         <severity>MAJOR</severity>
     </rule>
     <rule>
+        <key>PSPossibleIncorrectUsageOfAssignmentOperator</key>
+        <internalKey>PSPossibleIncorrectUsageOfAssignmentOperator</internalKey>
+        <name>'=' is not an assignment operator. Did you mean the equality operator '-eq'?</name>
+        <description>'=' or '==' are not comparison operators in the PowerShell language and rarely needed inside conditional statements.</description>
+        <cardinality>SINGLE</cardinality>
+        <remediationFunction>LINEAR</remediationFunction>
+        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <remediationFunctionBaseEffort />
+        <debtRemediationFunctionCoefficient>2min</debtRemediationFunctionCoefficient>
+        <severity>INFO</severity>
+    </rule>
+    <rule>
+        <key>PSPossibleIncorrectUsageOfRedirectionOperator</key>
+        <internalKey>PSPossibleIncorrectUsageOfRedirectionOperator</internalKey>
+        <name>'&gt;' is not a comparison operator. Use  '-gt' (greater than) or '-ge' (greater or equal).</name>
+        <description>When switching between different languages it is easy to forget that '&gt;' does not mean 'great than' in PowerShell.</description>
+        <cardinality>SINGLE</cardinality>
+        <remediationFunction>LINEAR</remediationFunction>
+        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <remediationFunctionBaseEffort />
+        <debtRemediationFunctionCoefficient>5min</debtRemediationFunctionCoefficient>
+        <severity>MAJOR</severity>
+    </rule>
+    <rule>
         <key>PSProvideCommentHelp</key>
         <internalKey>PSProvideCommentHelp</internalKey>
         <name>Basic Comment Help</name>
@@ -473,6 +521,18 @@
         <internalKey>PSUseShouldProcessForStateChangingFunctions</internalKey>
         <name>Use ShouldProcess For State Changing Functions</name>
         <description>Functions that have verbs like New, Start, Stop, Set, Reset, Restart that change system state should support 'ShouldProcess'.</description>
+        <cardinality>SINGLE</cardinality>
+        <remediationFunction>LINEAR</remediationFunction>
+        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <remediationFunctionBaseEffort />
+        <debtRemediationFunctionCoefficient>5min</debtRemediationFunctionCoefficient>
+        <severity>MAJOR</severity>
+    </rule>
+    <rule>
+        <key>PSUseSingularNouns</key>
+        <internalKey>PSUseSingularNouns</internalKey>
+        <name>Cmdlet Singular Noun</name>
+        <description>Cmdlet should use singular instead of plural nouns.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <descriptionFormat>MARKDOWN</descriptionFormat>
