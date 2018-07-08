@@ -51,14 +51,14 @@ public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
 	@Override
 	public void execute(final SensorContext context) {
 		if (!SystemUtils.IS_OS_WINDOWS) {
-			LOGGER.debug("Skipping sensor as OS is not windows");
+			LOGGER.info("Skipping sensor as OS is not Wwindows.");
 			return;
 		}
 
 		final boolean skipAnalysis = this.settings.getBoolean(Constants.SKIP_TOKENIZER);
 
 		if (skipAnalysis) {
-			LOGGER.debug(format("Skipping tokennizer as skip flag is set"));
+			LOGGER.debug(format("Skipping tokenizer as skip flag is set"));
 			return;
 		}
 		final File parserFile = folder.newFile("ps", "parser.ps1");
@@ -84,19 +84,21 @@ public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
 				final Process process = new ProcessBuilder("powershell.exe", command).start();
 				process.waitFor();
 				final File tokensFile = new File(resultsFile);
-				if (!tokensFile.exists()) {
-					LOGGER.info(String.format("Tokennizer did not run successfully on %s file", analysisFile));
+
+				if (!tokensFile.exists() || tokensFile.length() <= 0) {
+					LOGGER.info(String.format("Tokenizer did not run successfully on %s file. Please check %s file.", analysisFile, resultsFile));
 					continue;
 				}
+
 				final Tokens tokens = readTokens(tokensFile);
 				for (final IFiller filler : this.fillers) {
 					filler.fill(context, inputFile, tokens);
 				}
 				if (isDebugEnabled) {
-					LOGGER.debug(String.format("Running analysis for %s to %s finished", analysisFile, resultsFile));
+					LOGGER.debug(String.format("Running analysis for %s to %s finished.", analysisFile, resultsFile));
 				}
 			} catch (final Throwable e) {
-				LOGGER.warn("Exception while running tokenizer", e);
+				LOGGER.warn("Unexpected exception while running tokenizer", e);
 			}
 		}
 
