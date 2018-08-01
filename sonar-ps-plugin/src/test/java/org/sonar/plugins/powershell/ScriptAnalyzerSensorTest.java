@@ -42,6 +42,7 @@ public class ScriptAnalyzerSensorTest {
 		fs.add(ti);
 
 		SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot());
+		ctxTester.setFileSystem(fs);
 		ScriptAnalyzerSensor s = new ScriptAnalyzerSensor(fs, temp);
 		s.execute(ctxTester);
 		Assert.assertEquals(4, ctxTester.allIssues().size());
