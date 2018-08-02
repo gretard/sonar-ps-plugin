@@ -19,7 +19,7 @@ public class CpdFiller implements IFiller {
 			final NewCpdTokens highlithing = context.newCpdTokens().onFile(f);
 
 			for (final Token token : tokens.getToken()) {
-				if (!StringUtils.isNotBlank(token.getText())) {
+				if (StringUtils.isBlank(token.getText())) {
 					continue;
 				}
 				try {
