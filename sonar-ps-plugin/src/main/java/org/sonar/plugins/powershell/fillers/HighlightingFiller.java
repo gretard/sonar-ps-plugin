@@ -19,33 +19,8 @@ public class HighlightingFiller implements IFiller {
 
 		try {
 			final NewHighlighting highlithing = context.newHighlighting().onFile(f);
-
 			for (final Token token : tokens.getToken()) {
-				final List<String> kinds = Arrays.asList(token.getTokenFlags().toLowerCase().split(","));
-
-				if (check("comment", token, kinds)) {
-					highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.COMMENT);
-					continue;
-				}
-		/*		if (check("CommandName", token, kinds)) {
-					highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.KEYWORD_LIGHT);
-					continue;
-				}*/
-			
-				if (check("keyword", token, kinds)) {
-					highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.KEYWORD);
-					continue;
-				}
-				if (check("StringLiteral", token, kinds) || check("StringExpandable", token, kinds)) {
-					highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.STRING);
-					continue;
-				}
-				if (check("Variable", token, kinds)) {
-					highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.KEYWORD_LIGHT);
-					continue;
-				}
-				
-
+				highlightToken(highlithing, token);
 			}
 			highlithing.save();
 		} catch (Throwable e) {
@@ -53,7 +28,41 @@ public class HighlightingFiller implements IFiller {
 		}
 	}
 
+	private static void highlightToken(final NewHighlighting highlithing, final Token token) {
+		try {
+		final List<String> kinds = Arrays.asList(token.getTokenFlags().toLowerCase().split(","));
+
+		if (check("comment", token, kinds)) {
+			highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.COMMENT);
+			return;
+		}
+/*		if (check("CommandName", token, kinds)) {
+			highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.KEYWORD_LIGHT);
+			continue;
+		}*/
+
+		if (check("keyword", token, kinds)) {
+			highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.KEYWORD);
+			return;
+		}
+		if (check("StringLiteral", token, kinds) || check("StringExpandable", token, kinds)) {
+			highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.STRING);
+			return;
+		}
+		if (check("Variable", token, kinds)) {
+			highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.KEYWORD_LIGHT);
+			return;
+		}
+		
+		}
+		catch (Throwable e) {
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.warn("Exception while adding highliting for: "+token, e);
+			}
+		}
+	}
+
 	private static boolean check(final String txt, final Token token, final List<String> kinds) {
-		return txt.toLowerCase().equals(token.getKind().toLowerCase()) || kinds.contains(txt.toLowerCase());
+		return txt.equalsIgnoreCase(token.getKind()) || kinds.contains(txt.toLowerCase());
 	}
 }
