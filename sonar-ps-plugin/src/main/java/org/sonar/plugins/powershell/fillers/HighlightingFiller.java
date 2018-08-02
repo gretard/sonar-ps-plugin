@@ -13,27 +13,28 @@ import org.sonar.plugins.powershell.ast.Token;
 import org.sonar.plugins.powershell.ast.Tokens;
 
 public class HighlightingFiller implements IFiller {
+	
 	private static final Logger LOGGER = Loggers.get(HighlightingFiller.class);
 
 	public void fill(final SensorContext context, final InputFile f, final Tokens tokens) {
 
 		try {
-			final NewHighlighting highlithing = context.newHighlighting().onFile(f);
+			final NewHighlighting highlighting = context.newHighlighting().onFile(f);
 			for (final Token token : tokens.getToken()) {
-				highlightToken(highlithing, token);
+				highlightToken(highlighting, token);
 			}
-			highlithing.save();
+			highlighting.save();
 		} catch (Throwable e) {
-			LOGGER.warn("Exception while running highliting", e);
+			LOGGER.warn("Exception while running highlighting", e);
 		}
 	}
 
-	private static void highlightToken(final NewHighlighting highlithing, final Token token) {
+	private static void highlightToken(final NewHighlighting highlighting, final Token token) {
 		try {
 		final List<String> kinds = Arrays.asList(token.getTokenFlags().toLowerCase().split(","));
 
 		if (check("comment", token, kinds)) {
-			highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.COMMENT);
+			highlighting.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.COMMENT);
 			return;
 		}
 /*		if (check("CommandName", token, kinds)) {
@@ -42,15 +43,15 @@ public class HighlightingFiller implements IFiller {
 		}*/
 
 		if (check("keyword", token, kinds)) {
-			highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.KEYWORD);
+			highlighting.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.KEYWORD);
 			return;
 		}
 		if (check("StringLiteral", token, kinds) || check("StringExpandable", token, kinds)) {
-			highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.STRING);
+			highlighting.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.STRING);
 			return;
 		}
 		if (check("Variable", token, kinds)) {
-			highlithing.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.KEYWORD_LIGHT);
+			highlighting.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.KEYWORD_LIGHT);
 			return;
 		}
 		
