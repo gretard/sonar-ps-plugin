@@ -9,11 +9,10 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.sonar.api.batch.fs.internal.DefaultFileSystem;
 import org.sonar.api.batch.fs.internal.DefaultInputFile;
+import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
-import org.sonar.api.server.rule.RulesDefinition;
-import org.sonar.api.server.rule.RulesDefinition.Context;
+import org.sonar.api.batch.sensor.issue.Issue;
 import org.sonar.api.utils.internal.JUnitTempFolder;
 
 public class ScriptAnalyzerSensorTest {
@@ -27,24 +26,17 @@ public class ScriptAnalyzerSensorTest {
 	@Test
 	public void testExecute() throws IOException {
 
-		Context t = new RulesDefinition.Context();
-		ScriptAnalyzerRulesDefinition def = new ScriptAnalyzerRulesDefinition();
-		def.define(t);
-
-		File baseFile = folder.newFile("test.ps1");
-
-		FileUtils.copyURLToFile(getClass().getResource("/testFiles/test.ps1"), baseFile);
-
-		DefaultFileSystem fs = new DefaultFileSystem(folder.getRoot());
-		DefaultInputFile ti = new DefaultInputFile("test", "test.ps1");
-		ti.initMetadata(new String(Files.readAllBytes(baseFile.toPath())));
-
-		fs.add(ti);
-
+	
 		SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot());
-		ctxTester.setFileSystem(fs);
-		ScriptAnalyzerSensor s = new ScriptAnalyzerSensor(fs, temp);
+		File baseFile = folder.newFile("test.ps1");
+		FileUtils.copyURLToFile(getClass().getResource("/testFiles/test.ps1"), baseFile);
+		DefaultInputFile ti = new TestInputFileBuilder("test", "test.ps1")
+				.initMetadata(new String(Files.readAllBytes(baseFile.toPath()))).build();
+		ctxTester.fileSystem().add(ti);
+
+		ScriptAnalyzerSensor s = new ScriptAnalyzerSensor(temp);
 		s.execute(ctxTester);
+		
 		Assert.assertEquals(4, ctxTester.allIssues().size());
 
 	}

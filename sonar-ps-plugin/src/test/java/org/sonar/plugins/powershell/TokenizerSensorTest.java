@@ -9,10 +9,9 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.sonar.api.batch.fs.internal.DefaultFileSystem;
 import org.sonar.api.batch.fs.internal.DefaultInputFile;
+import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
-import org.sonar.api.config.Settings;
 import org.sonar.api.utils.internal.JUnitTempFolder;
 
 public class TokenizerSensorTest {
@@ -24,24 +23,23 @@ public class TokenizerSensorTest {
 	public JUnitTempFolder temp = new JUnitTempFolder();
 
 	@Test
-	public void testExecute() throws IOException, InterruptedException {
-
+	public void testExecute() throws IOException {
+		SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot().getAbsoluteFile().toPath());
 		File baseFile = folder.newFile("test.ps1");
 
 		FileUtils.copyURLToFile(getClass().getResource("/testFiles/test.ps1"), baseFile);
+		DefaultInputFile ti = new TestInputFileBuilder(folder.getRoot().getAbsolutePath(), "test.ps1")
+				.initMetadata(new String(Files.readAllBytes(baseFile.toPath()))).setLanguage(PowershellLanguage.KEY)
+				.build();
 
-		DefaultFileSystem fs = new DefaultFileSystem(folder.getRoot());
-		DefaultInputFile ti = new DefaultInputFile("test", "test.ps1");
-		ti.initMetadata(new String(Files.readAllBytes(baseFile.toPath())));
-		ti.setLanguage(PowershellLanguage.KEY);
-		fs.add(ti);
+		ctxTester.fileSystem().add(ti);
 
-		SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot());
-		ctxTester.setFileSystem(fs);
-		TokenizerSensor s = new TokenizerSensor(new Settings(), temp);
-		s.execute(ctxTester);
-		Assert.assertEquals(16, ctxTester.cpdTokens("test:test.ps1").size());
-		Assert.assertEquals(1, ctxTester.highlightingTypeAt("test:test.ps1", 1, 5).size());
+		final TokenizerSensor sut = new TokenizerSensor(temp);
+		sut.execute(ctxTester);
+
+		Assert.assertEquals(16, ctxTester.cpdTokens(ti.key()).size());
+		Assert.assertEquals(1, ctxTester.measures(ti.key()).size());
+		Assert.assertEquals(1, ctxTester.highlightingTypeAt(ti.key(), 1, 30).size());
 
 	}
 

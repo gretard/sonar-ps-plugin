@@ -16,7 +16,6 @@ import org.sonar.plugins.powershell.issues.Objects;
 
 public class ScriptAnalyzerSensor implements org.sonar.api.batch.sensor.Sensor {
 
-	private FileSystem fileSystem;
 
 	private final TempFolder folder;
 
@@ -26,10 +25,9 @@ public class ScriptAnalyzerSensor implements org.sonar.api.batch.sensor.Sensor {
 
 	private final IssuesFiller issuesFiller;
 
-	public ScriptAnalyzerSensor(final FileSystem fileSystem, final TempFolder folder) {
-		this.fileSystem = fileSystem;
+	public ScriptAnalyzerSensor(final TempFolder folder) {
 		this.folder = folder;
-		this.issuesFiller = new IssuesFiller(fileSystem);
+		this.issuesFiller = new IssuesFiller();
 
 	}
 
@@ -46,6 +44,7 @@ public class ScriptAnalyzerSensor implements org.sonar.api.batch.sensor.Sensor {
 
 		try {
 			final File resultsFile = folder.newFile();
+			final FileSystem fileSystem = context.fileSystem();
 			final File sourceDir = fileSystem.baseDir().toPath().toFile();
 
 			final String command = String.format(psCommand, sourceDir.getAbsolutePath(),
@@ -61,7 +60,7 @@ public class ScriptAnalyzerSensor implements org.sonar.api.batch.sensor.Sensor {
 				LOGGER.warn("Error executing Powershell script analyzer. Maybe Script-Analyzer is not installed?", e);
 				return;
 			}
-
+			
 			final JAXBContext jaxbContext = JAXBContext.newInstance(Objects.class);
 			final Objects issues = (Objects) jaxbContext.createUnmarshaller().unmarshal(resultsFile);
 			this.issuesFiller.fill(context, sourceDir, issues);

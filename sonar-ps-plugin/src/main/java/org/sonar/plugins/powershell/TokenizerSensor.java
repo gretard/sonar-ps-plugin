@@ -17,22 +17,23 @@ import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.powershell.ast.Tokens;
 import org.sonar.plugins.powershell.fillers.CpdFiller;
+import org.sonar.plugins.powershell.fillers.HalsteadComplexityFiller;
 import org.sonar.plugins.powershell.fillers.HighlightingFiller;
 import org.sonar.plugins.powershell.fillers.IFiller;
 
 public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
 
-	private final String psCommand = "%s -inputName %s -output %s";
+	private final String psCommand = "%s -inputFile %s -output %s";
 
 	private final TempFolder folder;
 
-	private final Settings settings;
+	// private final Settings settings;
 	private static final Logger LOGGER = Loggers.get(TokenizerSensor.class);
 	private static final boolean isDebugEnabled = LOGGER.isDebugEnabled();
-	private final IFiller[] fillers = new IFiller[] { new CpdFiller(), new HighlightingFiller() };
+	private final IFiller[] fillers = new IFiller[] { new CpdFiller(), new HighlightingFiller(),
+			new HalsteadComplexityFiller() };
 
-	public TokenizerSensor(final Settings settings, final TempFolder folder) {
-		this.settings = settings;
+	public TokenizerSensor(final TempFolder folder) {
 		this.folder = folder;
 	}
 
@@ -54,8 +55,8 @@ public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
 			LOGGER.info("Skipping sensor as OS is not Wwindows.");
 			return;
 		}
-
-		final boolean skipAnalysis = this.settings.getBoolean(Constants.SKIP_TOKENIZER);
+		Settings settings = context.settings();
+		final boolean skipAnalysis = settings.getBoolean(Constants.SKIP_TOKENIZER);
 
 		if (skipAnalysis) {
 			LOGGER.debug(format("Skipping tokenizer as skip flag is set"));
@@ -84,13 +85,14 @@ public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
 				final Process process = new ProcessBuilder("powershell.exe", command).start();
 				process.waitFor();
 				final File tokensFile = new File(resultsFile);
-
 				if (!tokensFile.exists() || tokensFile.length() <= 0) {
-					LOGGER.info(String.format("Tokenizer did not run successfully on %s file. Please check %s file.", analysisFile, resultsFile));
+					LOGGER.info(String.format("Tokenizer did not run successfully on %s file. Please check %s file.",
+							analysisFile, resultsFile));
 					continue;
 				}
 
 				final Tokens tokens = readTokens(tokensFile);
+
 				for (final IFiller filler : this.fillers) {
 					filler.fill(context, inputFile, tokens);
 				}

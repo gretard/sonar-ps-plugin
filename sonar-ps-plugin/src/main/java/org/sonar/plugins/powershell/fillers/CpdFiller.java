@@ -11,6 +11,7 @@ import org.sonar.plugins.powershell.ast.Tokens;
 
 public class CpdFiller implements IFiller {
 	private static final Logger LOGGER = Loggers.get(CpdFiller.class);
+	
 	private static final boolean isDebugEnabled = LOGGER.isDebugEnabled();
 
 	@Override
@@ -31,6 +32,7 @@ public class CpdFiller implements IFiller {
 					}
 				}
 			}
+			
 			cpdTokens.save();
 		} catch (final Throwable e) {
 			LOGGER.warn("Exception while saving tokens", e);

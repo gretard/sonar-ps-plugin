@@ -20,13 +20,8 @@ public class IssuesFiller {
 
 	private static final Logger LOGGER = Loggers.get(IssuesFiller.class);
 
-	private final FileSystem fileSystem;
-
-	public IssuesFiller(final FileSystem fileSystem) {
-		this.fileSystem = fileSystem;
-	}
-
 	public void fill(final SensorContext context, final File sourceDir, final Objects issues) {
+		final FileSystem fileSystem = context.fileSystem();
 		for (final Objects.Object o : issues.getObject()) {
 			try {
 				final List<Objects.Object.Property> props = o.getProperty();
@@ -78,6 +73,6 @@ public class IssuesFiller {
 				return p.getValue();
 			}
 		}
-		return null;
+		return "";
 	}
 }
