@@ -6,12 +6,12 @@ import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.cpd.NewCpdTokens;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
-import org.sonar.plugins.powershell.ast.Token;
 import org.sonar.plugins.powershell.ast.Tokens;
+import org.sonar.plugins.powershell.ast.Tokens.Token;
 
 public class CpdFiller implements IFiller {
 	private static final Logger LOGGER = Loggers.get(CpdFiller.class);
-	
+
 	private static final boolean isDebugEnabled = LOGGER.isDebugEnabled();
 
 	@Override
@@ -32,7 +32,7 @@ public class CpdFiller implements IFiller {
 					}
 				}
 			}
-			
+
 			cpdTokens.save();
 		} catch (final Throwable e) {
 			LOGGER.warn("Exception while saving tokens", e);

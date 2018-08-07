@@ -1,39 +1,28 @@
 
 
 <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:element name="Text" type="xs:string"/>
-  <xs:element name="Value" type="xs:string"/>
-  <xs:element name="TokenFlags" type="xs:string"/>
-  <xs:element name="Kind" type="xs:string"/>
-  <xs:element name="StartLineNumber" type="xs:byte"/>
-  <xs:element name="CType" type="xs:string"/>
-  <xs:element name="EndLineNumber" type="xs:byte"/>
-  <xs:element name="StartOffset" type="xs:short"/>
-  <xs:element name="EndOffset" type="xs:short"/>
-  <xs:element name="StartColumnNumber" type="xs:byte"/>
-  <xs:element name="EndColumnNumber" type="xs:byte"/>
-  <xs:element name="Token">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element ref="Text"/>
-        <xs:element ref="Value"/>
-        <xs:element ref="TokenFlags"/>
-        <xs:element ref="Kind"/>
-        <xs:element ref="StartLineNumber"/>
-        <xs:element ref="CType"/>
-        <xs:element ref="EndLineNumber"/>
-        <xs:element ref="StartOffset"/>
-        <xs:element ref="EndOffset"/>
-        <xs:element ref="StartColumnNumber"/>
-        <xs:element ref="EndColumnNumber"/>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
   <xs:element name="Tokens">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="Token" maxOccurs="unbounded" minOccurs="0"/>
+        <xs:element name="Token" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:string" name="Text"/>
+              <xs:element type="xs:string" name="Value"/>
+              <xs:element type="xs:string" name="TokenFlags"/>
+              <xs:element type="xs:string" name="Kind"/>
+              <xs:element type="xs:int" name="StartLineNumber"/>
+              <xs:element type="xs:string" name="CType"/>
+              <xs:element type="xs:byte" name="EndLineNumber"/>
+              <xs:element type="xs:int" name="StartOffset"/>
+              <xs:element type="xs:int" name="EndOffset"/>
+              <xs:element type="xs:int" name="StartColumnNumber"/>
+              <xs:element type="xs:int" name="EndColumnNumber"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
       </xs:sequence>
+      <xs:attribute type="xs:int" name="complexity"/>
     </xs:complexType>
   </xs:element>
 </xs:schema>

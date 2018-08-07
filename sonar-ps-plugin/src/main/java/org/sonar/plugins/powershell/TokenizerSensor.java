@@ -16,6 +16,7 @@ import org.sonar.api.utils.TempFolder;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.powershell.ast.Tokens;
+import org.sonar.plugins.powershell.fillers.CComplexityFiller;
 import org.sonar.plugins.powershell.fillers.CpdFiller;
 import org.sonar.plugins.powershell.fillers.HalsteadComplexityFiller;
 import org.sonar.plugins.powershell.fillers.HighlightingFiller;
@@ -23,15 +24,16 @@ import org.sonar.plugins.powershell.fillers.IFiller;
 
 public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
 
-	private final String psCommand = "%s -inputFile %s -output %s";
-
-	private final TempFolder folder;
-
-	// private final Settings settings;
 	private static final Logger LOGGER = Loggers.get(TokenizerSensor.class);
+	
 	private static final boolean isDebugEnabled = LOGGER.isDebugEnabled();
+
+	private static final String psCommand = "%s -inputFile %s -output %s";
+
 	private final IFiller[] fillers = new IFiller[] { new CpdFiller(), new HighlightingFiller(),
-			new HalsteadComplexityFiller() };
+			new HalsteadComplexityFiller() , new CComplexityFiller()};
+	
+	private final TempFolder folder;
 
 	public TokenizerSensor(final TempFolder folder) {
 		this.folder = folder;
@@ -92,7 +94,7 @@ public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
 				}
 
 				final Tokens tokens = readTokens(tokensFile);
-
+				System.out.println(tokens.getComplexity());
 				for (final IFiller filler : this.fillers) {
 					filler.fill(context, inputFile, tokens);
 				}
