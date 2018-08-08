@@ -12,6 +12,12 @@ public class PowershellPlugin implements Plugin {
 		context.addExtension(PropertyDefinition.builder(Constants.SKIP_TOKENIZER).name("Skip tokenizer")
 				.description("Flag whether to skip tokenizer").defaultValue("false").type(PropertyType.BOOLEAN)
 				.build());
+		context.addExtension(PropertyDefinition.builder(Constants.SKIP_PLUGIN).name("Skip plugin")
+				.description("Flag whether to skip plugin").defaultValue("false").type(PropertyType.BOOLEAN)
+				.build());
+		context.addExtension(PropertyDefinition.builder(Constants.PS_EXECUTABLE).name("Path to powershell executable")
+				.description("Path to powershell executable").defaultValue("powershell.exe").type(PropertyType.STRING)
+				.build());
 
 		context.addExtension(PropertyDefinition.builder(Constants.FILE_SUFFIXES).name("Suffixes to analyze")
 				.description("Suffixes supported by the plugin").defaultValue(".ps1,.psm1,.psd1")

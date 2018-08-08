@@ -28,6 +28,7 @@ public class ScriptAnalyzerSensorTest {
 
 	
 		SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot());
+		ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "powershell.exe");
 		File baseFile = folder.newFile("test.ps1");
 		FileUtils.copyURLToFile(getClass().getResource("/testFiles/test.ps1"), baseFile);
 		DefaultInputFile ti = new TestInputFileBuilder("test", "test.ps1")

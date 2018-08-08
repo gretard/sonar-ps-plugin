@@ -23,8 +23,8 @@ public class HalsteadComplexityFiller implements IFiller {
 	@Override
 	public void fill(final SensorContext context, final InputFile f, final Tokens tokens) {
 		try {
-			final List<String> uniqueOperands = new LinkedList<String>();
-			final List<String> uniqueOperators = new LinkedList<String>();
+			final List<String> uniqueOperands = new LinkedList<>();
+			final List<String> uniqueOperators = new LinkedList<>();
 			int totalOperands = 0;
 			int totalOperators = 0;
 
@@ -36,7 +36,6 @@ public class HalsteadComplexityFiller implements IFiller {
 				final String text = token.getText().toLowerCase();
 				if (operandTypes.contains(token.getKind())) {
 					totalOperands++;
-
 					if (!uniqueOperands.contains(text)) {
 						uniqueOperands.add(text);
 					}
@@ -45,7 +44,6 @@ public class HalsteadComplexityFiller implements IFiller {
 				totalOperators++;
 				if (!uniqueOperators.contains(text)) {
 					uniqueOperators.add(text);
-
 				}
 
 			}

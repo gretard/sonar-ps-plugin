@@ -23,14 +23,7 @@ public class CpdFiller implements IFiller {
 				if (StringUtils.isBlank(token.getText())) {
 					continue;
 				}
-				try {
-					cpdTokens.addToken(token.getStartLineNumber(), token.getStartColumnNumber(),
-							token.getEndLineNumber(), token.getEndColumnNumber(), token.getText());
-				} catch (final Throwable e) {
-					if (isDebugEnabled) {
-						LOGGER.debug("Exception while adding token", e);
-					}
-				}
+				tryAddToken(cpdTokens, token);
 			}
 
 			cpdTokens.save();
@@ -38,6 +31,17 @@ public class CpdFiller implements IFiller {
 			LOGGER.warn("Exception while saving tokens", e);
 		}
 
+	}
+
+	private static void tryAddToken(final NewCpdTokens cpdTokens, final Token token) {
+		try {
+			cpdTokens.addToken(token.getStartLineNumber(), token.getStartColumnNumber(),
+					token.getEndLineNumber(), token.getEndColumnNumber(), token.getText());
+		} catch (final Throwable e) {
+			if (isDebugEnabled) {
+				LOGGER.debug("Exception while adding token", e);
+			}
+		}
 	}
 
 }

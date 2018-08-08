@@ -29,6 +29,7 @@ public class HighlightingFiller implements IFiller {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private static void highlightToken(final NewHighlighting highlighting, final Token token) {
 		try {
 			final List<String> kinds = Arrays.asList(token.getTokenFlags().toLowerCase().split(","));
@@ -48,7 +49,6 @@ public class HighlightingFiller implements IFiller {
 			}
 			if (check("Variable", token, kinds)) {
 				highlighting.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.KEYWORD_LIGHT);
-				return;
 			}
 
 		} catch (Throwable e) {

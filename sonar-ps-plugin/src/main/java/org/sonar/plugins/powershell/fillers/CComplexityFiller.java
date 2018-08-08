@@ -15,7 +15,6 @@ public class CComplexityFiller implements IFiller {
 		try {
 			context.<Integer>newMeasure().on(f).forMetric(CoreMetrics.COMPLEXITY).withValue(tokens.getComplexity())
 					.save();
-
 		} catch (final Throwable e) {
 			LOGGER.warn("Exception while saving tokens", e);
 		}

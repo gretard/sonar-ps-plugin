@@ -1,13 +1,10 @@
 package org.sonar.plugins.powershell;
 
-import static java.lang.String.format;
-
 import java.io.File;
 
 import javax.xml.bind.JAXBContext;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
@@ -25,14 +22,14 @@ import org.sonar.plugins.powershell.fillers.IFiller;
 public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
 
 	private static final Logger LOGGER = Loggers.get(TokenizerSensor.class);
-	
+
 	private static final boolean isDebugEnabled = LOGGER.isDebugEnabled();
 
 	private static final String psCommand = "%s -inputFile %s -output %s";
 
 	private final IFiller[] fillers = new IFiller[] { new CpdFiller(), new HighlightingFiller(),
-			new HalsteadComplexityFiller() , new CComplexityFiller()};
-	
+			new HalsteadComplexityFiller(), new CComplexityFiller() };
+
 	private final TempFolder folder;
 
 	public TokenizerSensor(final TempFolder folder) {
@@ -53,17 +50,23 @@ public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
 
 	@Override
 	public void execute(final SensorContext context) {
-		if (!SystemUtils.IS_OS_WINDOWS) {
-			LOGGER.info("Skipping sensor as OS is not Wwindows.");
+
+		final Settings settings = context.settings();
+		final boolean skipAnalysis = settings.getBoolean(Constants.SKIP_TOKENIZER);
+		final boolean skipPlugin = settings.getBoolean(Constants.SKIP_PLUGIN);
+		
+		if (skipPlugin) {
+			LOGGER.debug("Skipping sensor as skip plugin flag is set");
 			return;
 		}
-		Settings settings = context.settings();
-		final boolean skipAnalysis = settings.getBoolean(Constants.SKIP_TOKENIZER);
+		
+		final String powershellExecutable = settings.getString(Constants.PS_EXECUTABLE);
 
 		if (skipAnalysis) {
-			LOGGER.debug(format("Skipping tokenizer as skip flag is set"));
+			LOGGER.debug("Skipping tokenizer as skip flag is set");
 			return;
 		}
+
 		final File parserFile = folder.newFile("ps", "parser.ps1");
 
 		try {
@@ -80,11 +83,11 @@ public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
 
 				final String analysisFile = inputFile.file().getAbsolutePath();
 				final String resultsFile = folder.newFile().toPath().toFile().getAbsolutePath();
-				final String command = String.format(this.psCommand, scriptFile, analysisFile, resultsFile);
+				final String command = String.format(psCommand, scriptFile, analysisFile, resultsFile);
 				if (isDebugEnabled) {
 					LOGGER.debug(String.format("Running %s command", command));
 				}
-				final Process process = new ProcessBuilder("powershell.exe", command).start();
+				final Process process = new ProcessBuilder(powershellExecutable, command).start();
 				process.waitFor();
 				final File tokensFile = new File(resultsFile);
 				if (!tokensFile.exists() || tokensFile.length() <= 0) {
@@ -94,7 +97,6 @@ public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
 				}
 
 				final Tokens tokens = readTokens(tokensFile);
-				System.out.println(tokens.getComplexity());
 				for (final IFiller filler : this.fillers) {
 					filler.fill(context, inputFile, tokens);
 				}

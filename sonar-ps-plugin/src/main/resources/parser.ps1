@@ -11,9 +11,9 @@ $ast = [Management.Automation.Language.Parser]::ParseInput($text , [ref]$tokens,
 $complexity = 1;
 $switches = $ast.FindAll({$args[0] -is [System.Management.Automation.Language.SwitchStatementAst]}, $true)
 
- Foreach ( $item in $switches ) { 
+Foreach ( $item in $switches ) { 
     $complexity += $item.Clauses.Count
- }
+}
 
 $tryCatches = $ast.FindAll({$args[0] -is [System.Management.Automation.Language.TryStatementAst]}, $true)
 
@@ -38,12 +38,13 @@ $whileStatements = $ast.FindAll({$args[0] -is [System.Management.Automation.Lang
 Foreach ( $item in $whileStatements ) {
     $complexity += 1
 }
+
 $xmlWriter = New-Object System.XMl.XmlTextWriter($output , $Null);
 $xmlWriter.WriteStartDocument();
 $xmlWriter.WriteStartElement("Tokens");
 $xmlWriter.WriteAttributeString("complexity", $complexity);
 
-foreach ($item in $tokens) {	
+Foreach ($item in $tokens) {	
 	$xmlWriter.WriteStartElement("Token");
 	$xmlWriter.WriteElementString("Text", $item.Text);
 	$xmlWriter.WriteElementString("Value", $item.Value);
