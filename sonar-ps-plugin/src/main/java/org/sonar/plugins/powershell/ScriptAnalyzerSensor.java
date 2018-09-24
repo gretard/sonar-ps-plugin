@@ -1,11 +1,11 @@
 package org.sonar.plugins.powershell;
 
 import java.io.File;
+import java.util.Arrays;
 
 import javax.xml.bind.JAXBContext;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
@@ -16,11 +16,9 @@ import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.powershell.fillers.IssuesFiller;
 import org.sonar.plugins.powershell.issues.Objects;
 
-public class ScriptAnalyzerSensor implements org.sonar.api.batch.sensor.Sensor {
+public class ScriptAnalyzerSensor extends BaseSensor implements org.sonar.api.batch.sensor.Sensor {
 
 	private final TempFolder folder;
-
-	private static final String psCommand = "%s -inputDir %s -output %s";
 
 	private static final Logger LOGGER = Loggers.get(ScriptAnalyzerSensor.class);
 
@@ -62,17 +60,16 @@ public class ScriptAnalyzerSensor implements org.sonar.api.batch.sensor.Sensor {
 			final FileSystem fileSystem = context.fileSystem();
 			final File sourceDir = fileSystem.baseDir().toPath().toFile();
 
-			final String command = String.format(psCommand, scriptFile, sourceDir.getAbsolutePath(),
-					resultsFile.toPath().toFile().getAbsolutePath());
+			final String[] args = new String[] { powershellExecutable, scriptFile, "-inputDir",
+					sourceDir.getAbsolutePath(), "-output", resultsFile.toPath().toFile().getAbsolutePath() };
+			LOGGER.info(String.format("Starting running powershell analysis: %s", Arrays.toString(args)));
+			final Process process = new ProcessBuilder(args).start();
+			final int pReturnValue = process.waitFor();
 
-			try {
-				LOGGER.info(String.format("Starting running powershell analysis: %s", command));
-				final Process process = new ProcessBuilder(powershellExecutable, command).start();
-				process.waitFor();
-				LOGGER.info("Finished running powershell analysis");
-
-			} catch (final Throwable e) {
-				LOGGER.warn("Error executing Powershell script analyzer. Maybe Script-Analyzer is not installed?", e);
+			if (pReturnValue != 0) {
+				LOGGER.info(String.format(
+						"Error executing Powershell script analyzer. Maybe Script-Analyzer is not installed? Error was: %s",
+						read(process)));
 				return;
 			}
 

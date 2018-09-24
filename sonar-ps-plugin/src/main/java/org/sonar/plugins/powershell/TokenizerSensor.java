@@ -23,7 +23,7 @@ import org.sonar.plugins.powershell.fillers.HalsteadComplexityFiller;
 import org.sonar.plugins.powershell.fillers.HighlightingFiller;
 import org.sonar.plugins.powershell.fillers.IFiller;
 
-public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
+public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.sensor.Sensor {
 
 	private static final Logger LOGGER = Loggers.get(TokenizerSensor.class);
 
@@ -94,9 +94,9 @@ public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
 				}
 				final Process process = new ProcessBuilder(args).start();
 
-				final int r = process.waitFor();
+				final int pReturnValue = process.waitFor();
 
-				if (r != 0) {
+				if (pReturnValue != 0) {
 					LOGGER.info(String.format("Tokenizer did not run successfully on %s file. Error was: %s",
 							analysisFile, read(process)));
 					continue;
@@ -123,15 +123,5 @@ public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
 
 	}
 
-	private static String read(Process process) throws IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-		StringBuilder builder = new StringBuilder();
-		String line = null;
-		while ((line = reader.readLine()) != null) {
-			builder.append(line);
-			builder.append(System.getProperty("line.separator"));
-		}
-		String result = builder.toString();
-		return result;
-	}
+
 }
