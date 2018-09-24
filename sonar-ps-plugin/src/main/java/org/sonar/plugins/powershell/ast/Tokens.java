@@ -182,7 +182,7 @@ public class Tokens {
         @XmlElement(name = "CType", required = true)
         protected String cType;
         @XmlElement(name = "EndLineNumber")
-        protected byte endLineNumber;
+        protected int endLineNumber;
         @XmlElement(name = "StartOffset")
         protected int startOffset;
         @XmlElement(name = "EndOffset")
@@ -332,7 +332,7 @@ public class Tokens {
          * Gets the value of the endLineNumber property.
          * 
          */
-        public byte getEndLineNumber() {
+        public int getEndLineNumber() {
             return endLineNumber;
         }
 
@@ -340,7 +340,7 @@ public class Tokens {
          * Sets the value of the endLineNumber property.
          * 
          */
-        public void setEndLineNumber(byte value) {
+        public void setEndLineNumber(int value) {
             this.endLineNumber = value;
         }
 
