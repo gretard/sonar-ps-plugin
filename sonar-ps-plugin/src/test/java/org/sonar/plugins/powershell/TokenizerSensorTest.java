@@ -38,9 +38,9 @@ public class TokenizerSensorTest {
 		final TokenizerSensor sut = new TokenizerSensor(temp);
 		sut.execute(ctxTester);
 
-		Assert.assertEquals(16, ctxTester.cpdTokens(ti.key()).size());
+		Assert.assertEquals(12, ctxTester.cpdTokens(ti.key()).size());
 		Assert.assertEquals(2, ctxTester.measures(ti.key()).size());
-		Assert.assertEquals(1, ctxTester.highlightingTypeAt(ti.key(), 1, 30).size());
+		Assert.assertEquals(0, ctxTester.highlightingTypeAt(ti.key(), 1, 30).size());
 
 	}
 

@@ -1,6 +1,10 @@
 package org.sonar.plugins.powershell;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
 
 import javax.xml.bind.JAXBContext;
 
@@ -24,8 +28,6 @@ public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
 	private static final Logger LOGGER = Loggers.get(TokenizerSensor.class);
 
 	private static final boolean isDebugEnabled = LOGGER.isDebugEnabled();
-
-	private static final String psCommand = "%s -inputFile %s -output %s";
 
 	private final IFiller[] fillers = new IFiller[] { new CpdFiller(), new HighlightingFiller(),
 			new HalsteadComplexityFiller(), new CComplexityFiller() };
@@ -54,12 +56,12 @@ public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
 		final Settings settings = context.settings();
 		final boolean skipAnalysis = settings.getBoolean(Constants.SKIP_TOKENIZER);
 		final boolean skipPlugin = settings.getBoolean(Constants.SKIP_PLUGIN);
-		
+
 		if (skipPlugin) {
 			LOGGER.debug("Skipping sensor as skip plugin flag is set");
 			return;
 		}
-		
+
 		final String powershellExecutable = settings.getString(Constants.PS_EXECUTABLE);
 
 		if (skipAnalysis) {
@@ -83,16 +85,27 @@ public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
 
 				final String analysisFile = inputFile.file().getAbsolutePath();
 				final String resultsFile = folder.newFile().toPath().toFile().getAbsolutePath();
-				final String command = String.format(psCommand, scriptFile, analysisFile, resultsFile);
+				final String[] args = new String[] { powershellExecutable, scriptFile, "-inputFile", scriptFile,
+						"-output", resultsFile
+
+				};
 				if (isDebugEnabled) {
-					LOGGER.debug(String.format("Running %s command", command));
+					LOGGER.debug(String.format("Running %s command", Arrays.toString(args)));
 				}
-				final Process process = new ProcessBuilder(powershellExecutable, command).start();
-				process.waitFor();
+				final Process process = new ProcessBuilder(args).start();
+
+				final int r = process.waitFor();
+
+				if (r != 0) {
+					LOGGER.info(String.format("Tokenizer did not run successfully on %s file. Error was: %s",
+							analysisFile, read(process)));
+					continue;
+				}
 				final File tokensFile = new File(resultsFile);
 				if (!tokensFile.exists() || tokensFile.length() <= 0) {
-					LOGGER.info(String.format("Tokenizer did not run successfully on %s file. Please check %s file.",
-							analysisFile, resultsFile));
+					LOGGER.info(
+							String.format("Tokenizer did not run successfully on %s file. Please check file contents.",
+									analysisFile));
 					continue;
 				}
 
@@ -104,9 +117,21 @@ public class TokenizerSensor implements org.sonar.api.batch.sensor.Sensor {
 					LOGGER.debug(String.format("Running analysis for %s to %s finished.", analysisFile, resultsFile));
 				}
 			} catch (final Throwable e) {
-				LOGGER.warn("Unexpected exception while running tokenizer", e);
+				LOGGER.warn(String.format("Unexpected exception while running tokenizer on %s", inputFile), e);
 			}
 		}
 
+	}
+
+	private static String read(Process process) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+		StringBuilder builder = new StringBuilder();
+		String line = null;
+		while ((line = reader.readLine()) != null) {
+			builder.append(line);
+			builder.append(System.getProperty("line.separator"));
+		}
+		String result = builder.toString();
+		return result;
 	}
 }
