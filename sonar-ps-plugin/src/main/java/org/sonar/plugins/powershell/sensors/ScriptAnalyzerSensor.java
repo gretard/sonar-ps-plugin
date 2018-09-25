@@ -1,4 +1,4 @@
-package org.sonar.plugins.powershell;
+package org.sonar.plugins.powershell.sensors;
 
 import java.io.File;
 import java.util.Arrays;
@@ -13,6 +13,8 @@ import org.sonar.api.config.Settings;
 import org.sonar.api.utils.TempFolder;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
+import org.sonar.plugins.powershell.Constants;
+import org.sonar.plugins.powershell.PowershellLanguage;
 import org.sonar.plugins.powershell.fillers.IssuesFiller;
 import org.sonar.plugins.powershell.issues.Objects;
 
@@ -55,27 +57,36 @@ public class ScriptAnalyzerSensor extends BaseSensor implements org.sonar.api.ba
 				LOGGER.warn("Exception while copying tokenizer script", e1);
 				return;
 			}
-			final String scriptFile = parserFile.getAbsolutePath();
-			final File resultsFile = folder.newFile();
-			final FileSystem fileSystem = context.fileSystem();
-			final File sourceDir = fileSystem.baseDir().toPath().toFile();
 
-			final String[] args = new String[] { powershellExecutable, scriptFile, "-inputDir",
-					sourceDir.getAbsolutePath(), "-output", resultsFile.toPath().toFile().getAbsolutePath() };
-			LOGGER.info(String.format("Starting running powershell analysis: %s", Arrays.toString(args)));
+			final String scriptFile = parserFile.getAbsolutePath();
+
+			final FileSystem fileSystem = context.fileSystem();
+			final File baseDir = fileSystem.baseDir();
+			final String sourceDir = baseDir.toPath().toFile().getAbsolutePath();
+
+			final String outFile = folder.newFile().toPath().toFile().getAbsolutePath();
+
+			final String[] args = new String[] { powershellExecutable, scriptFile, "-inputDir", sourceDir, "-output",
+					outFile };
+
+			LOGGER.info(String.format("Starting Script-Analyzer using powershell: %s", Arrays.toString(args)));
 			final Process process = new ProcessBuilder(args).start();
 			final int pReturnValue = process.waitFor();
 
 			if (pReturnValue != 0) {
 				LOGGER.info(String.format(
-						"Error executing Powershell script analyzer. Maybe Script-Analyzer is not installed? Error was: %s",
+						"Error executing Powershell Script-Analyzer analyzer. Maybe Script-Analyzer is not installed? Error was: %s",
 						read(process)));
 				return;
 			}
 
 			final JAXBContext jaxbContext = JAXBContext.newInstance(Objects.class);
-			final Objects issues = (Objects) jaxbContext.createUnmarshaller().unmarshal(resultsFile);
-			this.issuesFiller.fill(context, sourceDir, issues);
+			final Objects issues = (Objects) jaxbContext.createUnmarshaller().unmarshal(new File(outFile));
+			this.issuesFiller.fill(context, baseDir, issues);
+
+			LOGGER.info(String.format("Script-Analyzer finished, found %s issues at %s", issues.getObject().size(),
+					sourceDir));
+
 		} catch (Throwable e) {
 			LOGGER.warn("Unexpected exception while running analysis", e);
 		}

@@ -1,9 +1,6 @@
-package org.sonar.plugins.powershell;
+package org.sonar.plugins.powershell.sensors;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 
 import javax.xml.bind.JAXBContext;
@@ -16,6 +13,8 @@ import org.sonar.api.config.Settings;
 import org.sonar.api.utils.TempFolder;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
+import org.sonar.plugins.powershell.Constants;
+import org.sonar.plugins.powershell.PowershellLanguage;
 import org.sonar.plugins.powershell.ast.Tokens;
 import org.sonar.plugins.powershell.fillers.CComplexityFiller;
 import org.sonar.plugins.powershell.fillers.CpdFiller;
@@ -83,9 +82,9 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 		for (final InputFile inputFile : inputFiles) {
 			try {
 
-				final String analysisFile = inputFile.file().getAbsolutePath();
+				final String analysisFile = String.format("'%s'", inputFile.file().getAbsolutePath());
 				final String resultsFile = folder.newFile().toPath().toFile().getAbsolutePath();
-				final String[] args = new String[] { powershellExecutable, scriptFile, "-inputFile", scriptFile,
+				final String[] args = new String[] { powershellExecutable, scriptFile, "-inputFile", analysisFile,
 						"-output", resultsFile
 
 				};
@@ -122,6 +121,5 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 		}
 
 	}
-
 
 }

@@ -169,7 +169,15 @@ public class Tokens {
     })
     public static class Token {
 
-        @XmlElement(name = "Text", required = true)
+        @Override
+		public String toString() {
+			return "Token [text=" + text + ", value=" + value + ", tokenFlags=" + tokenFlags + ", kind=" + kind
+					+ ", startLineNumber=" + startLineNumber + ", cType=" + cType + ", endLineNumber=" + endLineNumber
+					+ ", startOffset=" + startOffset + ", endOffset=" + endOffset + ", startColumnNumber="
+					+ startColumnNumber + ", endColumnNumber=" + endColumnNumber + "]";
+		}
+
+		@XmlElement(name = "Text", required = true)
         protected String text;
         @XmlElement(name = "Value", required = true)
         protected String value;

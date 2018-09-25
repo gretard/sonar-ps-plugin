@@ -12,8 +12,8 @@ import org.junit.rules.TemporaryFolder;
 import org.sonar.api.batch.fs.internal.DefaultInputFile;
 import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
-import org.sonar.api.batch.sensor.issue.Issue;
 import org.sonar.api.utils.internal.JUnitTempFolder;
+import org.sonar.plugins.powershell.sensors.ScriptAnalyzerSensor;
 
 public class ScriptAnalyzerSensorTest {
 
@@ -26,7 +26,6 @@ public class ScriptAnalyzerSensorTest {
 	@Test
 	public void testExecute() throws IOException {
 
-	
 		SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot());
 		ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "powershell.exe");
 		File baseFile = folder.newFile("test.ps1");
@@ -37,7 +36,7 @@ public class ScriptAnalyzerSensorTest {
 
 		ScriptAnalyzerSensor s = new ScriptAnalyzerSensor(temp);
 		s.execute(ctxTester);
-		
+
 		Assert.assertEquals(4, ctxTester.allIssues().size());
 
 	}

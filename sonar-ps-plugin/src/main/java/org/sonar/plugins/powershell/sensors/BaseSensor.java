@@ -1,4 +1,4 @@
-package org.sonar.plugins.powershell;
+package org.sonar.plugins.powershell.sensors;
 
 import java.io.BufferedReader;
 import java.io.IOException;
