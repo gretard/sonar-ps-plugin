@@ -13,7 +13,7 @@
               <xs:element type="xs:string" name="Kind"/>
               <xs:element type="xs:int" name="StartLineNumber"/>
               <xs:element type="xs:string" name="CType"/>
-              <xs:element type="xs:byte" name="EndLineNumber"/>
+              <xs:element type="xs:int" name="EndLineNumber"/>
               <xs:element type="xs:int" name="StartOffset"/>
               <xs:element type="xs:int" name="EndOffset"/>
               <xs:element type="xs:int" name="StartColumnNumber"/>

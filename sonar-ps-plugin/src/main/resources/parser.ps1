@@ -1,9 +1,10 @@
 param( 
-[string]$inputFile,
-[string]$output,
-[int] $depth = 9999999 )
+	[string]$inputFile,
+	[string]$output,
+	[int] $depth = 9999999
+)
 
-$text = Get-Content -Path "$inputFile" -Raw
+$text = (Get-Content $inputFile -Raw) -replace "\xEF\xBB\xBF", "";
 $tokens = $null
 $errors = $null
 $ast = [Management.Automation.Language.Parser]::ParseInput($text , [ref]$tokens, [ref]$errors);

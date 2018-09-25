@@ -38,7 +38,7 @@ public class IssuesFiller {
 						.inputFile(fileSystem.predicates().and(fileSystem.predicates().hasRelativePath(fsFile)));
 
 				if (file == null) {
-					LOGGER.warn(String.format("File %s not found", fsFile));
+					LOGGER.debug(String.format("File '%s' not found in system to add issue %s", initialFile, ruleKey));
 					continue;
 				}
 				final NewIssue issue = context.newIssue().forRule(ruleKey);

@@ -29,31 +29,33 @@ public class HighlightingFiller implements IFiller {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private static void highlightToken(final NewHighlighting highlighting, final Token token) {
 		try {
 			final List<String> kinds = Arrays.asList(token.getTokenFlags().toLowerCase().split(","));
-
+			int startLine = token.getStartLineNumber();
+			int startLineOffset = token.getStartColumnNumber() - 1;
+			int endLine = token.getEndLineNumber();
+			int endLineOffset = token.getEndColumnNumber() - 1;
 			if (check("comment", token, kinds)) {
-				highlighting.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.COMMENT);
+				highlighting.highlight(startLine, startLineOffset, endLine, endLineOffset, TypeOfText.COMMENT);
 				return;
 			}
-
 			if (check("keyword", token, kinds)) {
-				highlighting.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.KEYWORD);
+
+				highlighting.highlight(startLine, startLineOffset, endLine, endLineOffset, TypeOfText.KEYWORD);
 				return;
 			}
 			if (check("StringLiteral", token, kinds) || check("StringExpandable", token, kinds)) {
-				highlighting.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.STRING);
+				highlighting.highlight(startLine, startLineOffset, endLine, endLineOffset, TypeOfText.STRING);
 				return;
 			}
 			if (check("Variable", token, kinds)) {
-				highlighting.highlight(token.getStartOffset(), token.getEndOffset(), TypeOfText.KEYWORD_LIGHT);
+				highlighting.highlight(startLine, startLineOffset, endLine, endLineOffset, TypeOfText.KEYWORD_LIGHT);
 			}
 
 		} catch (Throwable e) {
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.warn("Exception while adding highliting for: " + token, e);
+				LOGGER.warn("Exception while adding highlighting for: " + token, e);
 			}
 		}
 	}

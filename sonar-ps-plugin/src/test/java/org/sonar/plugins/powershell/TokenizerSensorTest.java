@@ -13,6 +13,7 @@ import org.sonar.api.batch.fs.internal.DefaultInputFile;
 import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.utils.internal.JUnitTempFolder;
+import org.sonar.plugins.powershell.sensors.TokenizerSensor;
 
 public class TokenizerSensorTest {
 
@@ -34,7 +35,6 @@ public class TokenizerSensorTest {
 				.build();
 
 		ctxTester.fileSystem().add(ti);
-
 		final TokenizerSensor sut = new TokenizerSensor(temp);
 		sut.execute(ctxTester);
 

@@ -169,7 +169,15 @@ public class Tokens {
     })
     public static class Token {
 
-        @XmlElement(name = "Text", required = true)
+        @Override
+		public String toString() {
+			return "Token [text=" + text + ", value=" + value + ", tokenFlags=" + tokenFlags + ", kind=" + kind
+					+ ", startLineNumber=" + startLineNumber + ", cType=" + cType + ", endLineNumber=" + endLineNumber
+					+ ", startOffset=" + startOffset + ", endOffset=" + endOffset + ", startColumnNumber="
+					+ startColumnNumber + ", endColumnNumber=" + endColumnNumber + "]";
+		}
+
+		@XmlElement(name = "Text", required = true)
         protected String text;
         @XmlElement(name = "Value", required = true)
         protected String value;
@@ -182,7 +190,7 @@ public class Tokens {
         @XmlElement(name = "CType", required = true)
         protected String cType;
         @XmlElement(name = "EndLineNumber")
-        protected byte endLineNumber;
+        protected int endLineNumber;
         @XmlElement(name = "StartOffset")
         protected int startOffset;
         @XmlElement(name = "EndOffset")
@@ -332,7 +340,7 @@ public class Tokens {
          * Gets the value of the endLineNumber property.
          * 
          */
-        public byte getEndLineNumber() {
+        public int getEndLineNumber() {
             return endLineNumber;
         }
 
@@ -340,7 +348,7 @@ public class Tokens {
          * Sets the value of the endLineNumber property.
          * 
          */
-        public void setEndLineNumber(byte value) {
+        public void setEndLineNumber(int value) {
             this.endLineNumber = value;
         }
 

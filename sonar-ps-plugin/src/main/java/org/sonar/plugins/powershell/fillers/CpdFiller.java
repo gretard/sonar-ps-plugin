@@ -35,11 +35,11 @@ public class CpdFiller implements IFiller {
 
 	private static void tryAddToken(final NewCpdTokens cpdTokens, final Token token) {
 		try {
-			cpdTokens.addToken(token.getStartLineNumber(), token.getStartColumnNumber(),
-					token.getEndLineNumber(), token.getEndColumnNumber(), token.getText());
+			cpdTokens.addToken(token.getStartLineNumber(), token.getStartColumnNumber()-1,
+					token.getEndLineNumber(), token.getEndColumnNumber()-1, token.getText());
 		} catch (final Throwable e) {
 			if (isDebugEnabled) {
-				LOGGER.debug("Exception while adding token", e);
+				LOGGER.debug(String.format("Exception while adding token: %s", token), e);
 			}
 		}
 	}

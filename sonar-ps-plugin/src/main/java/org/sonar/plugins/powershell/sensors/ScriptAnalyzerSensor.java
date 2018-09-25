@@ -1,11 +1,11 @@
-package org.sonar.plugins.powershell;
+package org.sonar.plugins.powershell.sensors;
 
 import java.io.File;
+import java.util.Arrays;
 
 import javax.xml.bind.JAXBContext;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
@@ -13,14 +13,14 @@ import org.sonar.api.config.Settings;
 import org.sonar.api.utils.TempFolder;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
+import org.sonar.plugins.powershell.Constants;
+import org.sonar.plugins.powershell.PowershellLanguage;
 import org.sonar.plugins.powershell.fillers.IssuesFiller;
 import org.sonar.plugins.powershell.issues.Objects;
 
-public class ScriptAnalyzerSensor implements org.sonar.api.batch.sensor.Sensor {
+public class ScriptAnalyzerSensor extends BaseSensor implements org.sonar.api.batch.sensor.Sensor {
 
 	private final TempFolder folder;
-
-	private static final String psCommand = "%s -inputDir %s -output %s";
 
 	private static final Logger LOGGER = Loggers.get(ScriptAnalyzerSensor.class);
 
@@ -57,28 +57,36 @@ public class ScriptAnalyzerSensor implements org.sonar.api.batch.sensor.Sensor {
 				LOGGER.warn("Exception while copying tokenizer script", e1);
 				return;
 			}
+
 			final String scriptFile = parserFile.getAbsolutePath();
-			final File resultsFile = folder.newFile();
+
 			final FileSystem fileSystem = context.fileSystem();
-			final File sourceDir = fileSystem.baseDir().toPath().toFile();
+			final File baseDir = fileSystem.baseDir();
+			final String sourceDir = baseDir.toPath().toFile().getAbsolutePath();
 
-			final String command = String.format(psCommand, scriptFile, sourceDir.getAbsolutePath(),
-					resultsFile.toPath().toFile().getAbsolutePath());
+			final String outFile = folder.newFile().toPath().toFile().getAbsolutePath();
 
-			try {
-				LOGGER.info(String.format("Starting running powershell analysis: %s", command));
-				final Process process = new ProcessBuilder(powershellExecutable, command).start();
-				process.waitFor();
-				LOGGER.info("Finished running powershell analysis");
+			final String[] args = new String[] { powershellExecutable, scriptFile, "-inputDir", sourceDir, "-output",
+					outFile };
 
-			} catch (final Throwable e) {
-				LOGGER.warn("Error executing Powershell script analyzer. Maybe Script-Analyzer is not installed?", e);
+			LOGGER.info(String.format("Starting Script-Analyzer using powershell: %s", Arrays.toString(args)));
+			final Process process = new ProcessBuilder(args).start();
+			final int pReturnValue = process.waitFor();
+
+			if (pReturnValue != 0) {
+				LOGGER.info(String.format(
+						"Error executing Powershell Script-Analyzer analyzer. Maybe Script-Analyzer is not installed? Error was: %s",
+						read(process)));
 				return;
 			}
 
 			final JAXBContext jaxbContext = JAXBContext.newInstance(Objects.class);
-			final Objects issues = (Objects) jaxbContext.createUnmarshaller().unmarshal(resultsFile);
-			this.issuesFiller.fill(context, sourceDir, issues);
+			final Objects issues = (Objects) jaxbContext.createUnmarshaller().unmarshal(new File(outFile));
+			this.issuesFiller.fill(context, baseDir, issues);
+
+			LOGGER.info(String.format("Script-Analyzer finished, found %s issues at %s", issues.getObject().size(),
+					sourceDir));
+
 		} catch (Throwable e) {
 			LOGGER.warn("Unexpected exception while running analysis", e);
 		}
