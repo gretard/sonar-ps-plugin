@@ -66,22 +66,22 @@ public class ScriptAnalyzerSensor extends BaseSensor implements org.sonar.api.ba
 
 			final String outFile = folder.newFile().toPath().toFile().getAbsolutePath();
 
-			final String[] args = new String[] { powershellExecutable, scriptFile, "-inputDir", sourceDir, "-output",
-					outFile };
+			final String[] args = new String[] { powershellExecutable, "-File", String.format("\"%s\"", scriptFile),
+					"-inputDir", String.format("\"%s\"", sourceDir), "-output", String.format("\"%s\"", outFile) };
 
 			LOGGER.info(String.format("Starting Script-Analyzer using powershell: %s", Arrays.toString(args)));
 			final Process process = new ProcessBuilder(args).start();
 			final int pReturnValue = process.waitFor();
 
-			if (pReturnValue != 0) {
+			File resultsFile = new File(outFile);
+			if (pReturnValue != 0 || !resultsFile.exists() || resultsFile.length() == 0) {
 				LOGGER.info(String.format(
-						"Error executing Powershell Script-Analyzer analyzer. Maybe Script-Analyzer is not installed? Error was: %s",
-						read(process)));
+						"Something went wrong while running  Script-Analyzer. Return code was: %s. SourceDir: %s. Error output was: %s. Actual output was: %s",
+						pReturnValue, sourceDir, read(process.getErrorStream()), read(process.getInputStream())));
 				return;
 			}
-
 			final JAXBContext jaxbContext = JAXBContext.newInstance(Objects.class);
-			final Objects issues = (Objects) jaxbContext.createUnmarshaller().unmarshal(new File(outFile));
+			final Objects issues = (Objects) jaxbContext.createUnmarshaller().unmarshal(resultsFile);
 			this.issuesFiller.fill(context, baseDir, issues);
 
 			LOGGER.info(String.format("Script-Analyzer finished, found %s issues at %s", issues.getObject().size(),

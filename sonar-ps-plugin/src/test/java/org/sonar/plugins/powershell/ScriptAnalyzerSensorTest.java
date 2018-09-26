@@ -39,8 +39,8 @@ public class ScriptAnalyzerSensorTest {
 	public static Collection<Object[]> data() {
 		return Arrays.asList(new Object[][] {
 
-				{ "/testFiles/test.ps1", 4 }, { "/testFiles/test2.ps1", 1 }, { "/testFiles/test3.ps1", 1 },
-				{ "/testFiles/test4.ps1", 1 }
+				{ "/testFiles/test.ps1", 4 }, { "/testFiles/test2.ps1", 2 }, { "/testFiles/test3.ps1", 2 },
+				{ "/testFiles/test4.ps1", 2 }
 
 		});
 	}
@@ -65,7 +65,9 @@ public class ScriptAnalyzerSensorTest {
 
 		ScriptAnalyzerSensor s = new ScriptAnalyzerSensor(temp);
 		s.execute(ctxTester);
-
+		for (org.sonar.api.batch.sensor.issue.Issue is : ctxTester.allIssues()) {
+			System.out.println(is);
+		}
 		Assert.assertEquals(this.count, ctxTester.allIssues().size());
 
 	}

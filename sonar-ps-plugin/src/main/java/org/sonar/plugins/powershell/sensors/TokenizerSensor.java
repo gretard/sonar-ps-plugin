@@ -76,16 +76,18 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 			LOGGER.warn("Exception while copying tokenizer script", e1);
 			return;
 		}
+		LOGGER.info("Tokenizer sensor started");
 		final String scriptFile = parserFile.getAbsolutePath();
 		final Iterable<InputFile> inputFiles = context.fileSystem()
 				.inputFiles(context.fileSystem().predicates().hasLanguage(PowershellLanguage.KEY));
 		for (final InputFile inputFile : inputFiles) {
 			try {
 
-				final String analysisFile = String.format("'%s'", inputFile.file().getAbsolutePath());
+				final String fileUnderAnalysis = inputFile.file().getAbsolutePath();
 				final String resultsFile = folder.newFile().toPath().toFile().getAbsolutePath();
-				final String[] args = new String[] { powershellExecutable, scriptFile, "-inputFile", analysisFile,
-						"-output", resultsFile
+				final String[] args = new String[] { powershellExecutable, "-File", String.format("\"%s\"", scriptFile),
+						"-inputFile", String.format("\"%s\"", fileUnderAnalysis), "-output",
+						String.format("\"%s\"", resultsFile)
 
 				};
 				if (isDebugEnabled) {
@@ -95,16 +97,11 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 
 				final int pReturnValue = process.waitFor();
 
-				if (pReturnValue != 0) {
-					LOGGER.info(String.format("Tokenizer did not run successfully on %s file. Error was: %s",
-							analysisFile, read(process)));
-					continue;
-				}
 				final File tokensFile = new File(resultsFile);
-				if (!tokensFile.exists() || tokensFile.length() <= 0) {
-					LOGGER.info(
-							String.format("Tokenizer did not run successfully on %s file. Please check file contents.",
-									analysisFile));
+				if (pReturnValue != 0 || !tokensFile.exists() || tokensFile.length() == 0) {
+					LOGGER.info(String.format(
+							"Something went wrong while running  tokenizer. Return code was: %s. File was: %s. Error output was: %s. Actual output was: %s",
+							pReturnValue, resultsFile, read(process.getErrorStream()), read(process.getInputStream())));
 					continue;
 				}
 
@@ -113,12 +110,15 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 					filler.fill(context, inputFile, tokens);
 				}
 				if (isDebugEnabled) {
-					LOGGER.debug(String.format("Running analysis for %s to %s finished.", analysisFile, resultsFile));
+					LOGGER.debug(
+							String.format("Running analysis for %s to %s finished.", fileUnderAnalysis, resultsFile));
 				}
 			} catch (final Throwable e) {
 				LOGGER.warn(String.format("Unexpected exception while running tokenizer on %s", inputFile), e);
 			}
+
 		}
+		LOGGER.info("Tokenizer sensor finished");
 
 	}
 
