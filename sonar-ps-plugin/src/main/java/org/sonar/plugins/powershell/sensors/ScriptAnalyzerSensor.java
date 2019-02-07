@@ -70,7 +70,8 @@ public class ScriptAnalyzerSensor extends BaseSensor implements org.sonar.api.ba
 					outFile };
 
 			LOGGER.info(String.format("Starting Script-Analyzer using powershell: %s", Arrays.toString(args)));
-			final Process process = new ProcessBuilder(args).start();
+			final Process process = new ProcessBuilder(args).inheritIO().start();
+			super.read(process);
 			final int pReturnValue = process.waitFor();
 
 			if (pReturnValue != 0) {
