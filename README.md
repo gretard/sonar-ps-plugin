@@ -6,6 +6,7 @@ Currently plug-in supports:
 
 - Reporting of issues found by [PSScriptAnalyser](https://github.com/PowerShell/PSScriptAnalyzer)
 - Cyclomatic and cognitive complexity metrics (since version 0.3.0)
+- Reporting number of lines of code and comment lines metrics  (since version 0.3.2)
 
 ## Usage ##
 1. Download and install SonarQube
@@ -21,8 +22,14 @@ Currently there is a possibility to override the following options either on ser
 - **sonar.ps.executable** - allows to specify powershell executable, defaults to *powershell.exe* (since version 0.3.0)
 - **sonar.ps.plugin.skip** - if set to true - skips plugin in general, meaning that no sensors are run, defaults to *false* (since version 0.3.0)
 
+## Donating ##
+You can support this [project and others](https://github.com/gretard) via [Paypal](https://www.paypal.me/greta514284/)
+
+[![Support via PayPal](https://cdn.rawgit.com/twolfson/paypal-github-button/1.0.0/dist/button.svg)](https://www.paypal.me/greta514284/)
+
 ## Requirements ##
 Different plugin versions supports the following:
 
 - 0.3.0 - Sonarqube version 6.3+ and PSScriptAnalyser version 1.17.1 rules
 - 0.2.2 - Sonarqube 5.6+ version and PSScriptAnalyser version 1.17.1 rules
+
