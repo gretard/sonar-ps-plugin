@@ -1,7 +1,6 @@
 package org.sonar.plugins.powershell.fillers;
 
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.sonar.api.batch.fs.InputFile;
@@ -17,9 +16,6 @@ public class CommentLinesFiller implements IFiller {
 	private static final Logger LOGGER = Loggers.get(CommentLinesFiller.class);
 
 	private static final List<String> skipTypes = Arrays.asList("EndOfInput", "NewLine");
-
-	private static final List<String> operandTypes = Arrays.asList("StringExpandable", "Variable", "SplattedVariable",
-			"StringLiteral", "HereStringExpandable", "HereStringLiteral");
 
 	private static final int COMMENT = 1;
 	private static final int CODE = 2;
