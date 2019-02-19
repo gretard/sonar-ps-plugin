@@ -91,7 +91,7 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 				if (isDebugEnabled) {
 					LOGGER.debug(String.format("Running %s command", Arrays.toString(args)));
 				}
-				final Process process = new ProcessBuilder(args).start();
+				final Process process = new ProcessBuilder(args).inheritIO().start();
 
 				final int pReturnValue = process.waitFor();
 
