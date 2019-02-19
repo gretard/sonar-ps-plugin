@@ -1,4 +1,5 @@
 #Import-Module PSScriptAnalyzer
+Copy-Item demo.msi C:\install\demo.msi #copy the installer
 foreach ($rule in Get-ScriptAnalyzerRule) {
 	write-output "<rule>"
 		write-output "<key>"$rule.RuleName"</key>"
@@ -16,3 +17,6 @@ foreach ($rule in Get-ScriptAnalyzerRule) {
 
 }
 
+<#
+comment test
+#>

@@ -4,7 +4,7 @@ param(
 	[int] $depth = 9999999
 )
 
-$text = (Get-Content $inputFile -Raw) -replace "\xEF\xBB\xBF", "";
+$text = ([IO.File]::ReadAllText($inputFile)) -replace "\xEF\xBB\xBF", "";
 $tokens = $null
 $errors = $null
 $ast = [Management.Automation.Language.Parser]::ParseInput($text , [ref]$tokens, [ref]$errors);

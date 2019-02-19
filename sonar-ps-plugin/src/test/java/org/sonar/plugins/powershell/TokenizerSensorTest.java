@@ -26,7 +26,7 @@ public class TokenizerSensorTest {
 	@Test
 	public void testExecute() throws IOException {
 		SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot().getAbsoluteFile().toPath());
-		ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "powershell.exe");
+		ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "C:/Program Files/PowerShell/6/pwsh.exe");
 		File baseFile = folder.newFile("test.ps1");
 
 		FileUtils.copyURLToFile(getClass().getResource("/testFiles/test.ps1"), baseFile);
@@ -38,10 +38,11 @@ public class TokenizerSensorTest {
 		final TokenizerSensor sut = new TokenizerSensor(temp);
 		sut.execute(ctxTester);
 
-		Assert.assertEquals(16, ctxTester.cpdTokens(ti.key()).size());
-		Assert.assertEquals(2, ctxTester.measures(ti.key()).size());
+		Assert.assertEquals(18, ctxTester.cpdTokens(ti.key()).size());
+		Assert.assertEquals(4, ctxTester.measures(ti.key()).size());
 		Assert.assertEquals(1, ctxTester.highlightingTypeAt(ti.key(), 1, 30).size());
-
+		
+	
 	}
 
 }

@@ -63,7 +63,7 @@ public class ScriptAnalyzerSensor extends BaseSensor implements org.sonar.api.ba
 			final FileSystem fileSystem = context.fileSystem();
 			final File baseDir = fileSystem.baseDir();
 			final String sourceDir = baseDir.toPath().toFile().getAbsolutePath();
-
+			
 			final String outFile = folder.newFile().toPath().toFile().getAbsolutePath();
 
 			final String[] args = new String[] { powershellExecutable, scriptFile, "-inputDir", sourceDir, "-output",
@@ -71,7 +71,7 @@ public class ScriptAnalyzerSensor extends BaseSensor implements org.sonar.api.ba
 
 			LOGGER.info(String.format("Starting Script-Analyzer using powershell: %s", Arrays.toString(args)));
 			final Process process = new ProcessBuilder(args).inheritIO().start();
-			super.read(process);
+
 			final int pReturnValue = process.waitFor();
 
 			if (pReturnValue != 0) {

@@ -6,7 +6,9 @@ import java.util.Arrays;
 import javax.xml.bind.JAXBContext;
 
 import org.apache.commons.io.FileUtils;
+import org.sonar.api.batch.fs.FilePredicates;
 import org.sonar.api.batch.fs.InputFile;
+import org.sonar.api.batch.fs.InputFile.Type;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.api.config.Settings;
@@ -17,6 +19,7 @@ import org.sonar.plugins.powershell.Constants;
 import org.sonar.plugins.powershell.PowershellLanguage;
 import org.sonar.plugins.powershell.ast.Tokens;
 import org.sonar.plugins.powershell.fillers.CComplexityFiller;
+import org.sonar.plugins.powershell.fillers.CommentLinesFiller;
 import org.sonar.plugins.powershell.fillers.CpdFiller;
 import org.sonar.plugins.powershell.fillers.HalsteadComplexityFiller;
 import org.sonar.plugins.powershell.fillers.HighlightingFiller;
@@ -28,8 +31,8 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 
 	private static final boolean isDebugEnabled = LOGGER.isDebugEnabled();
 
-	private final IFiller[] fillers = new IFiller[] { new CpdFiller(), new HighlightingFiller(),
-			new HalsteadComplexityFiller(), new CComplexityFiller() };
+	private final IFiller[] fillers = new IFiller[] { new CommentLinesFiller(), new CpdFiller(),
+			new HighlightingFiller(), new HalsteadComplexityFiller(), new CComplexityFiller() };
 
 	private final TempFolder folder;
 
@@ -77,17 +80,20 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 			return;
 		}
 		final String scriptFile = parserFile.getAbsolutePath();
-		final Iterable<InputFile> inputFiles = context.fileSystem()
-				.inputFiles(context.fileSystem().predicates().hasLanguage(PowershellLanguage.KEY));
+		final org.sonar.api.batch.fs.FileSystem fs = context.fileSystem();
+		final FilePredicates p = fs.predicates();
+		final Iterable<InputFile> inputFiles = fs.inputFiles(p.and(p.hasLanguage(PowershellLanguage.KEY),
+				p.hasType(Type.MAIN)));
 		for (final InputFile inputFile : inputFiles) {
 			try {
 
-				final String analysisFile = String.format("'%s'", inputFile.file().getAbsolutePath());
+				final String analysisFile = inputFile.file().getAbsolutePath();
+				if (analysisFile.contains(".scannerwork")) {
+					continue;
+				}
 				final String resultsFile = folder.newFile().toPath().toFile().getAbsolutePath();
 				final String[] args = new String[] { powershellExecutable, scriptFile, "-inputFile", analysisFile,
-						"-output", resultsFile
-
-				};
+						"-output", resultsFile };
 				if (isDebugEnabled) {
 					LOGGER.debug(String.format("Running %s command", Arrays.toString(args)));
 				}
@@ -96,13 +102,13 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 				final int pReturnValue = process.waitFor();
 
 				if (pReturnValue != 0) {
-					LOGGER.info(String.format("Tokenizer did not run successfully on %s file. Error was: %s",
+					LOGGER.warn(String.format("Tokenizer did not run successfully on %s file. Error was: %s",
 							analysisFile, read(process)));
 					continue;
 				}
 				final File tokensFile = new File(resultsFile);
 				if (!tokensFile.exists() || tokensFile.length() <= 0) {
-					LOGGER.info(
+					LOGGER.warn(
 							String.format("Tokenizer did not run successfully on %s file. Please check file contents.",
 									analysisFile));
 					continue;
