@@ -82,15 +82,17 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 		final String scriptFile = parserFile.getAbsolutePath();
 		final org.sonar.api.batch.fs.FileSystem fs = context.fileSystem();
 		final FilePredicates p = fs.predicates();
-		final Iterable<InputFile> inputFiles = fs.inputFiles(p.and(p.hasLanguage(PowershellLanguage.KEY),
-				p.hasType(Type.MAIN)));
+		final Iterable<InputFile> inputFiles = fs.inputFiles(p.and(p.hasLanguage(PowershellLanguage.KEY)));
 		for (final InputFile inputFile : inputFiles) {
 			try {
 
 				final String analysisFile = inputFile.file().getAbsolutePath();
+
+				// skip reporting temp files
 				if (analysisFile.contains(".scannerwork")) {
 					continue;
 				}
+
 				final String resultsFile = folder.newFile().toPath().toFile().getAbsolutePath();
 				final String[] args = new String[] { powershellExecutable, scriptFile, "-inputFile", analysisFile,
 						"-output", resultsFile };

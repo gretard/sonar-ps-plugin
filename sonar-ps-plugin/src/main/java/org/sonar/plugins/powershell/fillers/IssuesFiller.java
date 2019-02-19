@@ -27,7 +27,13 @@ public class IssuesFiller {
 				final List<Objects.Object.Property> props = o.getProperty();
 				final String ruleName = getProperty("RuleName", props);
 				final String initialFile = getProperty("File", props);
+
+				// skip reporting temp files
+				if (initialFile.contains(".scannerwork")) {
+					continue;
+				}
 				final String fsFile = new PathResolver().relativePath(sourceDir, new File(initialFile));
+				
 				final String message = getProperty("Message", props);
 				final String line = getProperty("Line", props);
 				int issueLine = getLine(line);

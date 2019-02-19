@@ -24,12 +24,10 @@ public class ScriptAnalyzerSensor extends BaseSensor implements org.sonar.api.ba
 
 	private static final Logger LOGGER = Loggers.get(ScriptAnalyzerSensor.class);
 
-	private final IssuesFiller issuesFiller;
+	private final IssuesFiller issuesFiller = new IssuesFiller();
 
 	public ScriptAnalyzerSensor(final TempFolder folder) {
 		this.folder = folder;
-		this.issuesFiller = new IssuesFiller();
-
 	}
 
 	public void describe(final SensorDescriptor descriptor) {
@@ -63,7 +61,7 @@ public class ScriptAnalyzerSensor extends BaseSensor implements org.sonar.api.ba
 			final FileSystem fileSystem = context.fileSystem();
 			final File baseDir = fileSystem.baseDir();
 			final String sourceDir = baseDir.toPath().toFile().getAbsolutePath();
-			
+
 			final String outFile = folder.newFile().toPath().toFile().getAbsolutePath();
 
 			final String[] args = new String[] { powershellExecutable, scriptFile, "-inputDir", sourceDir, "-output",
