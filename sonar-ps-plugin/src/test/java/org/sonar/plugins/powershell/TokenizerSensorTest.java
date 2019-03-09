@@ -23,10 +23,15 @@ public class TokenizerSensorTest {
 	@org.junit.Rule
 	public JUnitTempFolder temp = new JUnitTempFolder();
 
+	public String getPowerShellExecutable() {
+		return System.getProperty("os.name").startsWith("win") ? "powershell.exe" : "pwsh.exe";
+	}
+
 	@Test
 	public void testExecute() throws IOException {
-		SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot().getAbsoluteFile().toPath());
-		ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "powershell.exe");
+		SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot().getAbsoluteFile().toPath());	
+		ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, getPowerShellExecutable());
+		
 		File baseFile = folder.newFile("test.ps1");
 
 		FileUtils.copyURLToFile(getClass().getResource("/testFiles/test.ps1"), baseFile);
