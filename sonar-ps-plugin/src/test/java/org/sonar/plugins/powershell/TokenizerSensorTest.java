@@ -24,7 +24,7 @@ public class TokenizerSensorTest {
 	public JUnitTempFolder temp = new JUnitTempFolder();
 
 	public String getPowerShellExecutable() {
-		return System.getProperty("os.name").startsWith("Win") ? "powershell.exe" : "pwsh.exe";
+		return System.getProperty("os.name").startsWith("Win") ? "powershell.exe" : "pwsh";
 	}
 
 	@Test
