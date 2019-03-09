@@ -4,7 +4,7 @@ Repository for Powershell language plugin for Sonar
 ## Description ##
 Currently plug-in supports:
 
-- Reporting of issues found by [PSScriptAnalyser](https://github.com/PowerShell/PSScriptAnalyzer)
+- Reporting of issues found by [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer)
 - Cyclomatic and cognitive complexity metrics (since version 0.3.0)
 - Reporting number of lines of code and comment lines metrics  (since version 0.3.2)
 
@@ -12,7 +12,7 @@ Currently plug-in supports:
 1. Download and install SonarQube
 2. Download plugin from the [releases](https://github.com/gretard/sonar-ps-plugin/releases) and copy it to sonarqube's extensions\plugins directory
 3. Start SonarQube and enable rules
-4. Install [PSScriptAnalyser](https://github.com/PowerShell/PSScriptAnalyzer) into your build machine where you plan to run sonar scanner
+4. Install [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer) into your build machine where you plan to run sonar scanner
 
 ## Configuration ##
 Currently there is a possibility to override the following options either on server in the Administration tab or on the project configuration files:
@@ -30,6 +30,6 @@ You can support this [project and others](https://github.com/gretard) via [Paypa
 ## Requirements ##
 Different plugin versions supports the following:
 
-- 0.3.0 - Sonarqube version 6.3+ and PSScriptAnalyser version 1.17.1 rules
-- 0.2.2 - Sonarqube 5.6+ version and PSScriptAnalyser version 1.17.1 rules
+- 0.3.0 - Sonarqube version 6.3+ and PSScriptAnalyzer version 1.17.1 rules
+- 0.2.2 - Sonarqube 5.6+ version and PSScriptAnalyzer version 1.17.1 rules
 
