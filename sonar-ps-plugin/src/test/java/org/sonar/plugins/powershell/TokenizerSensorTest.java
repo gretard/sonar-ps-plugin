@@ -23,11 +23,15 @@ public class TokenizerSensorTest {
 	@org.junit.Rule
 	public JUnitTempFolder temp = new JUnitTempFolder();
 
+	public String getPowerShellExecutable() {
+		return System.getProperty("os.name").startsWith("win") ? "powershell.exe" : "pwsh.exe";
+	}
+
 	@Test
 	public void testIfFileIsSkipped() throws IOException {
 		final String key = ".scannerwork.ps1";
 		SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot().getAbsoluteFile().toPath());
-		ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "powershell.exe");
+		ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, getPowerShellExecutable());
 		File baseFile = folder.newFile(key);
 
 		FileUtils.copyURLToFile(getClass().getResource("/testFiles/test.ps1"), baseFile);
