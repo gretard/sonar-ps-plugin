@@ -26,7 +26,7 @@ public class TokenizerSensorTest {
 	@Test
 	public void testExecute() throws IOException {
 		SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot().getAbsoluteFile().toPath());
-		ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "C:/Program Files/PowerShell/6/pwsh.exe");
+		ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "powershell.exe");
 		File baseFile = folder.newFile("test.ps1");
 
 		FileUtils.copyURLToFile(getClass().getResource("/testFiles/test.ps1"), baseFile);
