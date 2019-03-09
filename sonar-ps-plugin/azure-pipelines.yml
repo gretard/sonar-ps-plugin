@@ -1,0 +1,33 @@
+strategy:
+  matrix:
+    linux:
+      imageName: 'ubuntu-16.04'
+    mac:
+      imageName: 'macos-10.13'
+    windows:
+      imageName: 'vs2017-win2016'
+
+pool:
+  vmImage: $(imageName)
+  demands: maven
+
+steps:
+- powershell: |
+   if($PSVersionTable.PSVersion.Major -lt 6)
+   {
+     Install-PackageProvider nuget -Force
+   }
+   Install-Module -Name PSScriptAnalyzer -RequiredVersion 1.17.1 -Scope "CurrentUser" -Force
+  displayName: 'Install PSScriptAnalyzer'
+
+- task: Maven@3
+  displayName: 'Maven sonar-ps-plugin/pom.xml'
+  inputs:
+    mavenPomFile: 'sonar-ps-plugin/pom.xml'
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+  inputs:
+    SourceFolder: '$(system.defaultworkingdirectory)'
+    Contents: '**/*.jar'
+    TargetFolder: '$(build.artifactstagingdirectory)'
