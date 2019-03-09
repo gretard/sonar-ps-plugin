@@ -1,6 +1,8 @@
 # sonar-ps-plugin
 Repository for Powershell language plugin for Sonar
 
+[![Build Status](https://dev.azure.com/thomasmoerkerken/sonar-ps-scanner/_apis/build/status/sonar-ps-scanner?branchName=create-azure-devops-yaml-build)](https://dev.azure.com/thomasmoerkerken/sonar-ps-scanner/_build/latest?definitionId=3&branchName=create-azure-devops-yaml-build)
+
 ## Description ##
 Currently plug-in supports:
 
