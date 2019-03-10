@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import javax.xml.bind.JAXBContext;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.sonar.api.batch.fs.FilePredicates;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.sensor.SensorContext;
@@ -69,8 +70,11 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 		ExecutorService service = Executors.newWorkStealingPool();
 		final Iterable<InputFile> inputFiles = fs.inputFiles(p.and(p.hasLanguage(PowershellLanguage.KEY)));
 		for (final InputFile inputFile : inputFiles) {
-			final String analysisFile = String.format("'%s'", inputFile.file().getAbsolutePath());
 
+			final String analysisFile = SystemUtils.IS_OS_WINDOWS
+					? String.format("'%s'", inputFile.file().getAbsolutePath())
+					: inputFile.file().getAbsolutePath();
+			
 			// skip reporting temp files
 			if (analysisFile.contains(".scannerwork")) {
 				continue;
