@@ -30,19 +30,12 @@ public class ScriptAnalyzerSensor extends BaseSensor implements org.sonar.api.ba
 		this.folder = folder;
 	}
 
-	public void describe(final SensorDescriptor descriptor) {
-		descriptor.onlyOnLanguage(PowershellLanguage.KEY).name(this.getClass().getSimpleName());
-	}
 
-	public void execute(final SensorContext context) {
 
+	protected void innerExecute(final SensorContext context) {
+
+	
 		final Settings settings = context.settings();
-		final boolean skipPlugin = settings.getBoolean(Constants.SKIP_PLUGIN);
-
-		if (skipPlugin) {
-			LOGGER.debug("Skipping sensor as skip plugin flag is set");
-			return;
-		}
 
 		final String powershellExecutable = settings.getString(Constants.PS_EXECUTABLE);
 
@@ -60,7 +53,7 @@ public class ScriptAnalyzerSensor extends BaseSensor implements org.sonar.api.ba
 
 			final FileSystem fileSystem = context.fileSystem();
 			final File baseDir = fileSystem.baseDir();
-			final String sourceDir = baseDir.toPath().toFile().getAbsolutePath();
+			final String sourceDir = String.format("'%s'", baseDir.toPath().toFile().getAbsolutePath());
 
 			final String outFile = folder.newFile().toPath().toFile().getAbsolutePath();
 
@@ -78,9 +71,14 @@ public class ScriptAnalyzerSensor extends BaseSensor implements org.sonar.api.ba
 						read(process)));
 				return;
 			}
+			final File outputFile = new File(outFile);
+			if (!outputFile.exists() || outputFile.length() <= 0) {
+				LOGGER.warn("Analysis was not run ok, and output file was empty at: " + outFile);
+				return;
+			}
 
 			final JAXBContext jaxbContext = JAXBContext.newInstance(Objects.class);
-			final Objects issues = (Objects) jaxbContext.createUnmarshaller().unmarshal(new File(outFile));
+			final Objects issues = (Objects) jaxbContext.createUnmarshaller().unmarshal(outputFile);
 			this.issuesFiller.fill(context, baseDir, issues);
 
 			LOGGER.info(String.format("Script-Analyzer finished, found %s issues at %s", issues.getObject().size(),

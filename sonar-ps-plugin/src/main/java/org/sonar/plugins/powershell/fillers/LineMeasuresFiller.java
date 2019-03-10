@@ -11,9 +11,9 @@ import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.powershell.ast.Tokens;
 import org.sonar.plugins.powershell.ast.Tokens.Token;
 
-public class CommentLinesFiller implements IFiller {
+public class LineMeasuresFiller implements IFiller {
 
-	private static final Logger LOGGER = Loggers.get(CommentLinesFiller.class);
+	private static final Logger LOGGER = Loggers.get(LineMeasuresFiller.class);
 
 	private static final List<String> skipTypes = Arrays.asList("EndOfInput", "NewLine");
 

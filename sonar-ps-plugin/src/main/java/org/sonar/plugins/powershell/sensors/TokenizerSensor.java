@@ -19,7 +19,7 @@ import org.sonar.plugins.powershell.Constants;
 import org.sonar.plugins.powershell.PowershellLanguage;
 import org.sonar.plugins.powershell.ast.Tokens;
 import org.sonar.plugins.powershell.fillers.CComplexityFiller;
-import org.sonar.plugins.powershell.fillers.CommentLinesFiller;
+import org.sonar.plugins.powershell.fillers.LineMeasuresFiller;
 import org.sonar.plugins.powershell.fillers.CpdFiller;
 import org.sonar.plugins.powershell.fillers.HalsteadComplexityFiller;
 import org.sonar.plugins.powershell.fillers.HighlightingFiller;
@@ -31,7 +31,7 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 
 	private static final boolean isDebugEnabled = LOGGER.isDebugEnabled();
 
-	private final IFiller[] fillers = new IFiller[] { new CommentLinesFiller(), new CpdFiller(),
+	private final IFiller[] fillers = new IFiller[] { new LineMeasuresFiller(), new CpdFiller(),
 			new HighlightingFiller(), new HalsteadComplexityFiller(), new CComplexityFiller() };
 
 	private final TempFolder folder;
@@ -39,38 +39,23 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 	public TokenizerSensor(final TempFolder folder) {
 		this.folder = folder;
 	}
+	
 
 	@Override
-	public void describe(final SensorDescriptor descriptor) {
-		descriptor.onlyOnLanguage(PowershellLanguage.KEY).name(this.getClass().getSimpleName());
-	}
-
-	private Tokens readTokens(final File file) throws Exception {
-		final JAXBContext jaxbContext = JAXBContext.newInstance(Tokens.class);
-		final Tokens issues = (Tokens) jaxbContext.createUnmarshaller().unmarshal(file);
-		return issues;
-
-	}
-
-	@Override
-	public void execute(final SensorContext context) {
+	protected void innerExecute(final SensorContext context) {
 
 		final Settings settings = context.settings();
 		final boolean skipAnalysis = settings.getBoolean(Constants.SKIP_TOKENIZER);
-		final boolean skipPlugin = settings.getBoolean(Constants.SKIP_PLUGIN);
-
-		if (skipPlugin) {
-			LOGGER.debug("Skipping sensor as skip plugin flag is set");
-			return;
-		}
-
-		final String powershellExecutable = settings.getString(Constants.PS_EXECUTABLE);
-
+		
 		if (skipAnalysis) {
 			LOGGER.debug("Skipping tokenizer as skip flag is set");
 			return;
 		}
 
+
+		final String powershellExecutable = settings.getString(Constants.PS_EXECUTABLE);
+		
+	
 		final File parserFile = folder.newFile("ps", "parser.ps1");
 
 		try {
@@ -87,7 +72,7 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 			try {
 
 				final String analysisFile = String.format("'%s'", inputFile.file().getAbsolutePath());
-
+				
 				// skip reporting temp files
 				if (analysisFile.contains(".scannerwork")) {
 					continue;
@@ -129,5 +114,14 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 		}
 
 	}
+	
+
+	private static Tokens readTokens(final File file) throws Exception {
+		final JAXBContext jaxbContext = JAXBContext.newInstance(Tokens.class);
+		final Tokens issues = (Tokens) jaxbContext.createUnmarshaller().unmarshal(file);
+		return issues;
+
+	}
+
 
 }
