@@ -26,7 +26,7 @@ Currently there is a possibility to override the following options either on ser
 - **sonar.ps.file.suffixes** - allows to specify which files should be detected as Powershell files, defaults to *.ps1,.psm1,.psd1*
 - **sonar.ps.executable** - allows to specify powershell executable, defaults to *powershell.exe* (since version 0.3.0)
 - **sonar.ps.plugin.skip** - if set to true - skips plugin in general, meaning that no sensors are run, defaults to *false* (since version 0.3.0)
-
+- **sonar.ps.tokenizer.timeout** - maximum number of seconds to wait for tokenizer results,  defaults to *3600* (since version 0.4.0)
 
 
 ## Requirements ##
