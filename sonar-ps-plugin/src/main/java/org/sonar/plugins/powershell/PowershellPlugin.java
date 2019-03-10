@@ -19,7 +19,9 @@ public class PowershellPlugin implements Plugin {
 		context.addExtension(PropertyDefinition.builder(Constants.PS_EXECUTABLE).name("Path to powershell executable")
 				.description("Path to powershell executable").defaultValue("powershell.exe").type(PropertyType.STRING)
 				.build());
-
+		context.addExtension(PropertyDefinition.builder(Constants.TIMEOUT_TOKENIZER).name("Tokenizer timeout")
+				.description("Max time in seconds to wait until tokenizer finishes").defaultValue("3600")
+				.type(PropertyType.INTEGER).build());
 		context.addExtension(PropertyDefinition.builder(Constants.FILE_SUFFIXES).name("Suffixes to analyze")
 				.description("Suffixes supported by the plugin").defaultValue(".ps1,.psm1,.psd1")
 				.type(PropertyType.STRING).build());

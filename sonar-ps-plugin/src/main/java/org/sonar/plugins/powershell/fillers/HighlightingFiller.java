@@ -23,7 +23,10 @@ public class HighlightingFiller implements IFiller {
 			for (final Token token : tokens.getToken()) {
 				highlightToken(highlighting, token);
 			}
-			highlighting.save();
+			synchronized (context) {
+				highlighting.save();
+			}
+
 		} catch (Throwable e) {
 			LOGGER.warn("Exception while running highlighting", e);
 		}
