@@ -180,6 +180,10 @@
             <repositoryKey>ps-psanalyzer</repositoryKey>
         </rule>
         <rule>
+            <key>PSUseSingularNouns</key>
+            <repositoryKey>ps-psanalyzer</repositoryKey>
+        </rule>
+        <rule>
             <key>PSUseSupportsShouldProcess</key>
             <repositoryKey>ps-psanalyzer</repositoryKey>
         </rule>
