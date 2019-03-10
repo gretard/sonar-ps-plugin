@@ -75,20 +75,21 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 			if (analysisFile.contains(".scannerwork")) {
 				continue;
 			}
-			final String resultsFile = folder.newFile().toPath().toFile().getAbsolutePath();
-			
+
 			service.submit(new Runnable() {
 
 				@Override
 				public void run() {
 					try {
-						
+						final String resultsFile = folder.newFile().toPath().toFile().getAbsolutePath();
+
 						final String[] args = new String[] { powershellExecutable, scriptFile, "-inputFile",
 								analysisFile, "-output", resultsFile };
 						if (isDebugEnabled) {
 							LOGGER.debug(String.format("Running %s command", Arrays.toString(args)));
 						}
-						final Process process = new ProcessBuilder(args).inheritIO().redirectOutput(Redirect.PIPE).start();
+						final Process process = new ProcessBuilder(args).inheritIO().redirectOutput(Redirect.PIPE)
+								.redirectErrorStream(true).start();
 
 						final int pReturnValue = process.waitFor();
 
@@ -121,9 +122,12 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 
 		}
 		try {
-			long timeout = settings.getLong(Constants.TIMEOUT_TOKENIZER);
+
+			long timeout = settings.getLong(Constants.TIMEOUT_TOKENIZER) == 0 ? 3600
+					: settings.getLong(Constants.TIMEOUT_TOKENIZER);
+			LOGGER.info("Waiting for file analysis to finish for " + timeout + " seconds");
 			service.shutdown();
-			service.awaitTermination(timeout == 0 ? 3600 : timeout, TimeUnit.SECONDS);
+			service.awaitTermination(timeout, TimeUnit.SECONDS);
 			service.shutdownNow();
 		} catch (final InterruptedException e) {
 			LOGGER.warn("Unexpected error while running waiting for executor service to finish", e);

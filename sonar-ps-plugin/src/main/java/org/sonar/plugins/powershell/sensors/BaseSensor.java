@@ -2,9 +2,8 @@ package org.sonar.plugins.powershell.sensors;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
@@ -19,7 +18,12 @@ public abstract class BaseSensor implements org.sonar.api.batch.sensor.Sensor {
 	private static final Logger LOGGER = Loggers.get(BaseSensor.class);
 
 	protected static String read(Process process) throws IOException {
-		final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+		return "input: " + read(process, process.getInputStream()) + " error: "
+				+ read(process, process.getErrorStream());
+	}
+
+	protected static String read(Process process, InputStream stream) throws IOException {
+		final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 		final StringBuilder builder = new StringBuilder();
 		String line = null;
 		while ((line = reader.readLine()) != null) {
@@ -45,7 +49,7 @@ public abstract class BaseSensor implements org.sonar.api.batch.sensor.Sensor {
 			LOGGER.debug("Skipping sensor as skip plugin flag is set: " + Constants.SKIP_PLUGIN);
 			return;
 		}
-		
+
 		innerExecute(context);
 
 	}
