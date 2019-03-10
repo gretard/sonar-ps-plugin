@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -42,7 +43,12 @@ public class TokenizerSensorFileAnalysisTest {
 	@Test
 	public void testExecute() throws IOException {
 		SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot().getAbsoluteFile().toPath());
-		ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "powershell.exe");
+		if (SystemUtils.IS_OS_WINDOWS) {
+			ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "powershell.exe");
+		}else {
+			ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "pwsh");
+		}
+
 
 		File baseFile = folder.newFile(key);
 		FileUtils.copyURLToFile(getClass().getResource("/testFiles/test.ps1"), baseFile);
