@@ -51,9 +51,8 @@ public class HalsteadComplexityFiller implements IFiller {
 					* ((totalOperands * 1.0) / uniqueOperands.size()));
 			synchronized (context) {
 				context.<Integer>newMeasure().on(f).forMetric(CoreMetrics.COGNITIVE_COMPLEXITY).withValue(difficulty)
-				.save();
+						.save();
 			}
-			
 
 		} catch (final Throwable e) {
 			LOGGER.warn("Exception while saving cognitive complexity metric", e);

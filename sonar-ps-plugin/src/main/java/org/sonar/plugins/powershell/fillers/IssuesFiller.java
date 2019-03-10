@@ -33,7 +33,7 @@ public class IssuesFiller {
 					continue;
 				}
 				final String fsFile = new PathResolver().relativePath(sourceDir, new File(initialFile));
-				
+
 				final String message = getProperty("Message", props);
 				final String line = getProperty("Line", props);
 				int issueLine = getLine(line);
@@ -61,7 +61,7 @@ public class IssuesFiller {
 		}
 	}
 
-	private int getLine(final String line) {
+	private static int getLine(final String line) {
 		int issueLine = -1;
 		if (StringUtils.isNotEmpty(line)) {
 			try {

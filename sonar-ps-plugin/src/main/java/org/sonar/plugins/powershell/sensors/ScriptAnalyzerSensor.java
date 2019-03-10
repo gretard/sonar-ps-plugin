@@ -8,13 +8,11 @@ import javax.xml.bind.JAXBContext;
 import org.apache.commons.io.FileUtils;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.sensor.SensorContext;
-import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.api.config.Settings;
 import org.sonar.api.utils.TempFolder;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.powershell.Constants;
-import org.sonar.plugins.powershell.PowershellLanguage;
 import org.sonar.plugins.powershell.fillers.IssuesFiller;
 import org.sonar.plugins.powershell.issues.Objects;
 
@@ -30,11 +28,9 @@ public class ScriptAnalyzerSensor extends BaseSensor implements org.sonar.api.ba
 		this.folder = folder;
 	}
 
-
-
+	@Override
 	protected void innerExecute(final SensorContext context) {
 
-	
 		final Settings settings = context.settings();
 
 		final String powershellExecutable = settings.getString(Constants.PS_EXECUTABLE);
