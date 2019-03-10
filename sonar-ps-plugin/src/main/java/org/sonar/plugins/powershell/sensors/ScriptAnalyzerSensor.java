@@ -6,6 +6,7 @@ import java.util.Arrays;
 import javax.xml.bind.JAXBContext;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.config.Settings;
@@ -49,7 +50,10 @@ public class ScriptAnalyzerSensor extends BaseSensor implements org.sonar.api.ba
 
 			final FileSystem fileSystem = context.fileSystem();
 			final File baseDir = fileSystem.baseDir();
-			final String sourceDir = String.format("'%s'", baseDir.toPath().toFile().getAbsolutePath());
+
+			final String sourceDir = SystemUtils.IS_OS_WINDOWS
+					? String.format("'%s'", baseDir.toPath().toFile().getAbsolutePath())
+					: baseDir.toPath().toFile().getAbsolutePath();
 
 			final String outFile = folder.newFile().toPath().toFile().getAbsolutePath();
 
