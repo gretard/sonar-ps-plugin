@@ -1,6 +1,13 @@
 language: java
-sudo: false
+sudo: true
 install: true
+os:
+  - linux
+  - windows
+
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then apt-get update                        ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then apt-get install -y powershell         ; fi
 
 jdk:
 - oraclejdk8
