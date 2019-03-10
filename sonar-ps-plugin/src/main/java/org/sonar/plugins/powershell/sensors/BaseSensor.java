@@ -35,6 +35,15 @@ public abstract class BaseSensor implements org.sonar.api.batch.sensor.Sensor {
 
 	}
 
+	public static String formatAsFilePathArgument(String absolutePath) {
+		String filePath = absolutePath;
+		if(System.getProperty("os.name").startsWith("Win"))
+		{
+			filePath = String.format("'%s'", absolutePath);
+		}
+		return filePath;
+	}
+
 	@Override
 	public void describe(final SensorDescriptor descriptor) {
 		descriptor.onlyOnLanguage(PowershellLanguage.KEY).name(this.getClass().getSimpleName());
