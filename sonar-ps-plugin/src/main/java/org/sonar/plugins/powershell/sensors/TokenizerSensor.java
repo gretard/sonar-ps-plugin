@@ -86,7 +86,7 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 		for (final InputFile inputFile : inputFiles) {
 			try {
 
-				final String analysisFile = inputFile.file().getAbsolutePath();
+				final String analysisFile = String.format("'%s'", inputFile.file().getAbsolutePath());
 
 				// skip reporting temp files
 				if (analysisFile.contains(".scannerwork")) {
