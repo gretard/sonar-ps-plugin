@@ -25,8 +25,10 @@ public class CpdFiller implements IFiller {
 				}
 				tryAddToken(cpdTokens, token);
 			}
-
-			cpdTokens.save();
+			synchronized (context) {
+				cpdTokens.save();	
+			}
+			
 		} catch (final Throwable e) {
 			LOGGER.warn("Exception while saving tokens", e);
 		}

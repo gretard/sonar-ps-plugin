@@ -13,8 +13,10 @@ public class CComplexityFiller implements IFiller {
 	@Override
 	public void fill(SensorContext context, InputFile f, Tokens tokens) {
 		try {
-			context.<Integer>newMeasure().on(f).forMetric(CoreMetrics.COMPLEXITY).withValue(tokens.getComplexity())
-					.save();
+			synchronized (context) {
+				context.<Integer>newMeasure().on(f).forMetric(CoreMetrics.COMPLEXITY).withValue(tokens.getComplexity())
+						.save();
+			}
 		} catch (final Throwable e) {
 			LOGGER.warn("Exception while saving tokens", e);
 		}

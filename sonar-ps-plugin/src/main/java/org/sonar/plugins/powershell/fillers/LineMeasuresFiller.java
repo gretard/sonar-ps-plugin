@@ -55,9 +55,12 @@ public class LineMeasuresFiller implements IFiller {
 					nonCommentLineCount++;
 				}
 			}
+			synchronized (context) {
+				context.<Integer>newMeasure().on(f).forMetric(CoreMetrics.COMMENT_LINES).withValue(commentLineCount)
+						.save();
+				context.<Integer>newMeasure().on(f).forMetric(CoreMetrics.NCLOC).withValue(nonCommentLineCount).save();
+			}
 
-			context.<Integer>newMeasure().on(f).forMetric(CoreMetrics.COMMENT_LINES).withValue(commentLineCount).save();
-			context.<Integer>newMeasure().on(f).forMetric(CoreMetrics.NCLOC).withValue(nonCommentLineCount).save();
 		} catch (final Throwable e) {
 			LOGGER.warn("Exception while calculating comment lines ", e);
 		}

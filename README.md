@@ -8,6 +8,11 @@ Currently plug-in supports:
 - Cyclomatic and cognitive complexity metrics (since version 0.3.0)
 - Reporting number of lines of code and comment lines metrics  (since version 0.3.2)
 
+## Donating ##
+You can support this [project and others](https://github.com/gretard) via [Paypal](https://www.paypal.me/greta514284/)
+
+[![Support via PayPal](https://cdn.rawgit.com/twolfson/paypal-github-button/1.0.0/dist/button.svg)](https://www.paypal.me/greta514284/)
+
 ## Usage ##
 1. Download and install SonarQube
 2. Download plugin from the [releases](https://github.com/gretard/sonar-ps-plugin/releases) and copy it to sonarqube's extensions\plugins directory
@@ -22,10 +27,7 @@ Currently there is a possibility to override the following options either on ser
 - **sonar.ps.executable** - allows to specify powershell executable, defaults to *powershell.exe* (since version 0.3.0)
 - **sonar.ps.plugin.skip** - if set to true - skips plugin in general, meaning that no sensors are run, defaults to *false* (since version 0.3.0)
 
-## Donating ##
-You can support this [project and others](https://github.com/gretard) via [Paypal](https://www.paypal.me/greta514284/)
 
-[![Support via PayPal](https://cdn.rawgit.com/twolfson/paypal-github-button/1.0.0/dist/button.svg)](https://www.paypal.me/greta514284/)
 
 ## Requirements ##
 Different plugin versions supports the following:
