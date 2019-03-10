@@ -7,7 +7,7 @@ jdk:
 
 script:
 - cd sonar-ps-plugin
-- ./mvnw clean install
+- mvn clean test
 
 cache:
   directories:
