@@ -11,7 +11,7 @@ public abstract class BaseTest {
 	@org.junit.Rule
 	public JUnitTempFolder temp = new JUnitTempFolder();
 
-	public String getPowerShellExecutable() {
+	public String getDefaultPowerShellExecutable() {
 		return System.getProperty("os.name").startsWith("Win") ? "powershell.exe" : "pwsh";
 	}
 }

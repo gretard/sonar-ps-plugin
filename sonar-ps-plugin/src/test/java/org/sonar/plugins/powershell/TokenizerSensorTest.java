@@ -18,7 +18,7 @@ public class TokenizerSensorTest extends BaseTest {
 	public void testIfFileIsSkipped() throws IOException {
 		final String key = ".scannerwork.ps1";
 		SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot().getAbsoluteFile().toPath());
-		ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, getPowerShellExecutable());
+		ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, getDefaultPowerShellExecutable());
 		File baseFile = folder.newFile(key);
 
 		FileUtils.copyURLToFile(getClass().getResource("/testFiles/test.ps1"), baseFile);

@@ -33,7 +33,7 @@ public class TokenizerSensorFileAnalysisTest extends BaseTest {
 	@Test
 	public void testExecute() throws IOException {
 		SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot().getAbsoluteFile().toPath());
-		ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, getPowerShellExecutable());
+		ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, getDefaultPowerShellExecutable());
 
 		File baseFile = folder.newFile(key);
 		FileUtils.copyURLToFile(getClass().getResource("/testFiles/test.ps1"), baseFile);

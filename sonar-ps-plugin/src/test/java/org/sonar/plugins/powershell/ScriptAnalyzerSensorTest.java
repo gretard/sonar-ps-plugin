@@ -18,7 +18,7 @@ public class ScriptAnalyzerSensorTest extends BaseTest {
 	public void testExecute() throws IOException {
 
 		SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot());
-		ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, getPowerShellExecutable());
+		ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, getDefaultPowerShellExecutable());
 		File baseFile = folder.newFile("test.ps1");
 		FileUtils.copyURLToFile(getClass().getResource("/testFiles/test.ps1"), baseFile);
 		DefaultInputFile ti = new TestInputFileBuilder("test", "test.ps1")
