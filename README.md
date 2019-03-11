@@ -1,5 +1,6 @@
 # sonar-ps-plugin
-Repository for Powershell language plugin for Sonar
+
+Repository for Powershell language plugin for Sonar.
 
 ## Description ##
 Currently plug-in supports:
@@ -7,6 +8,11 @@ Currently plug-in supports:
 - Reporting of issues found by [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer)
 - Cyclomatic and cognitive complexity metrics (since version 0.3.0)
 - Reporting number of lines of code and comment lines metrics  (since version 0.3.2)
+
+[![Build Status - develop](https://dev.azure.com/kgreta/sonar-ps-plugin/_apis/build/status/gretard.sonar-ps-plugin?branchName=develop)](https://dev.azure.com/kgreta/sonar-ps-plugin/_build/latest?definitionId=1&branchName=develop)
+
+[![Build Status - master](https://dev.azure.com/kgreta/sonar-ps-plugin/_apis/build/status/gretard.sonar-ps-plugin?branchName=master)](https://dev.azure.com/kgreta/sonar-ps-plugin/_build/latest?definitionId=1&branchName=master)
+
 
 ## Donating ##
 You can support this [project and others](https://github.com/gretard) via [Paypal](https://www.paypal.me/greta514284/)
