@@ -9,9 +9,9 @@ Currently plug-in supports:
 - Cyclomatic and cognitive complexity metrics (since version 0.3.0)
 - Reporting number of lines of code and comment lines metrics  (since version 0.3.2)
 
-[![Build Status - develop](https://dev.azure.com/kgreta/sonar-ps-plugin/_apis/build/status/gretard.sonar-ps-plugin?branchName=develop)](https://dev.azure.com/kgreta/sonar-ps-plugin/_build/latest?definitionId=1&branchName=develop)
+Dev-Branch: [![Build Status - develop](https://dev.azure.com/kgreta/sonar-ps-plugin/_apis/build/status/gretard.sonar-ps-plugin?branchName=develop)](https://dev.azure.com/kgreta/sonar-ps-plugin/_build/latest?definitionId=1&branchName=develop)
 
-[![Build Status - master](https://dev.azure.com/kgreta/sonar-ps-plugin/_apis/build/status/gretard.sonar-ps-plugin?branchName=master)](https://dev.azure.com/kgreta/sonar-ps-plugin/_build/latest?definitionId=1&branchName=master)
+Master-Branch: [![Build Status - master](https://dev.azure.com/kgreta/sonar-ps-plugin/_apis/build/status/gretard.sonar-ps-plugin?branchName=master)](https://dev.azure.com/kgreta/sonar-ps-plugin/_build/latest?definitionId=1&branchName=master)
 
 
 ## Donating ##
