@@ -2,8 +2,7 @@ package org.sonar.plugins.powershell.sensors;
 
 import java.io.File;
 import java.util.Arrays;
-
-import javax.xml.bind.JAXBContext;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -15,7 +14,8 @@ import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.powershell.Constants;
 import org.sonar.plugins.powershell.fillers.IssuesFiller;
-import org.sonar.plugins.powershell.issues.Objects;
+import org.sonar.plugins.powershell.issues.PsIssue;
+import org.sonar.plugins.powershell.readers.IssuesReader;
 
 public class ScriptAnalyzerSensor extends BaseSensor implements org.sonar.api.batch.sensor.Sensor {
 
@@ -24,6 +24,7 @@ public class ScriptAnalyzerSensor extends BaseSensor implements org.sonar.api.ba
 	private static final Logger LOGGER = Loggers.get(ScriptAnalyzerSensor.class);
 
 	private final IssuesFiller issuesFiller = new IssuesFiller();
+	private final IssuesReader reader = new IssuesReader();
 
 	public ScriptAnalyzerSensor(final TempFolder folder) {
 		this.folder = folder;
@@ -77,12 +78,10 @@ public class ScriptAnalyzerSensor extends BaseSensor implements org.sonar.api.ba
 				return;
 			}
 
-			final JAXBContext jaxbContext = JAXBContext.newInstance(Objects.class);
-			final Objects issues = (Objects) jaxbContext.createUnmarshaller().unmarshal(outputFile);
+			final List<PsIssue> issues = reader.read(outputFile);
 			this.issuesFiller.fill(context, baseDir, issues);
 
-			LOGGER.info(String.format("Script-Analyzer finished, found %s issues at %s", issues.getObject().size(),
-					sourceDir));
+			LOGGER.info(String.format("Script-Analyzer finished, found %s issues at %s", issues.size(), sourceDir));
 
 		} catch (Throwable e) {
 			LOGGER.warn("Unexpected exception while running analysis", e);
