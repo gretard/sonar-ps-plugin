@@ -19,16 +19,16 @@ import org.w3c.dom.NodeList;
 public class IssuesReader {
 	private static final Logger LOGGER = Loggers.get(IssuesReader.class);
 
-	public List<PsIssue> read(File file) throws Throwable {
-		List<PsIssue> issues = new LinkedList<>();
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document doc = builder.parse(new BOMInputStream(new FileInputStream(file)));
-		NodeList list = doc.getElementsByTagName("Object");
+	public List<PsIssue> read(final File file) throws Throwable {
+		final List<PsIssue> issues = new LinkedList<>();
+		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		final DocumentBuilder builder = factory.newDocumentBuilder();
+		final Document doc = builder.parse(new BOMInputStream(new FileInputStream(file)));
+		final NodeList list = doc.getElementsByTagName("Object");
 		for (int i = 0; i < list.getLength(); i++) {
 			try {
-				Node node = list.item(i);
-				PsIssue issue = new PsIssue();
+				final Node node = list.item(i);
+				final PsIssue issue = new PsIssue();
 				issue.ruleId = getNodeByAttributeName(node, "RuleName").getTextContent();
 				issue.message = getNodeByAttributeName(node, "Message").getTextContent();
 				issue.line = Integer.parseInt(getNodeByAttributeName(node, "Line").getTextContent());
@@ -42,14 +42,14 @@ public class IssuesReader {
 		return issues;
 	}
 
-	public Node getNodeByAttributeName(Node root, String name) throws Exception {
-		NodeList children = root.getChildNodes();
+	protected static final Node getNodeByAttributeName(final Node root, final String name) throws Exception {
+		final NodeList children = root.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
-			Node child = children.item(i);
+			final Node child = children.item(i);
 			if (child.getAttributes() == null) {
 				continue;
 			}
-			Node attribute = child.getAttributes().getNamedItem("Name");
+			final Node attribute = child.getAttributes().getNamedItem("Name");
 			if (attribute != null && attribute.getTextContent().equalsIgnoreCase(name)) {
 				return child;
 			}

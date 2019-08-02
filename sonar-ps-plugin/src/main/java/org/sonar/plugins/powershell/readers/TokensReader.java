@@ -17,17 +17,17 @@ import org.w3c.dom.NodeList;
 public class TokensReader {
 	private static final Logger LOGGER = Loggers.get(TokensReader.class);
 
-	public Tokens read(File file) throws Throwable {
-		Tokens tokens = new Tokens();
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document doc = builder.parse(new BOMInputStream(new FileInputStream(file)));
+	public Tokens read(final File file) throws Throwable {
+		final Tokens tokens = new Tokens();
+		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		final DocumentBuilder builder = factory.newDocumentBuilder();
+		final Document doc = builder.parse(new BOMInputStream(new FileInputStream(file)));
 		tokens.setComplexity(Integer.parseInt(doc.getDocumentElement().getAttribute("complexity")));
-		NodeList list = doc.getElementsByTagName("Token");
+		final NodeList list = doc.getElementsByTagName("Token");
 		for (int i = 0; i < list.getLength(); i++) {
 			try {
-				Node node = list.item(i);
-				Tokens.Token token = new Tokens.Token();
+				final Node node = list.item(i);
+				final Tokens.Token token = new Tokens.Token();
 				token.setText(getChildByName(node, "Text").getTextContent());
 				token.setValue(getChildByName(node, "Value").getTextContent());
 				token.setTokenFlags(getChildByName(node, "TokenFlags").getTextContent());
@@ -49,10 +49,10 @@ public class TokensReader {
 		return tokens;
 	}
 
-	public Node getChildByName(Node root, String name) throws Exception {
-		NodeList children = root.getChildNodes();
+	protected static final Node getChildByName(final Node root, final String name) throws Exception {
+		final NodeList children = root.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
-			Node child = children.item(i);
+			final Node child = children.item(i);
 			if (name.equalsIgnoreCase(child.getNodeName())) {
 				return child;
 			}

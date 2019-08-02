@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<Tokens complexity="10">
+	<Token>
+		<Text>#Import-Module PSScriptAnalyzer</Text>
+		<Value />
+		<TokenFlags>ParseModeInvariant</TokenFlags>
+		<Kind>Comment</Kind>
+		<StartLineNumber>1</StartLineNumber>
+		<CType>Token</CType>
+		<EndLineNumber>1</EndLineNumber>
+		<StartOffset>1</StartOffset>
+		<EndOffset>31</EndOffset>
+		<StartColumnNumber>1</StartColumnNumber>
+		<EndColumnNumber>32</EndColumnNumber>
+	</Token>
+</Tokens>
