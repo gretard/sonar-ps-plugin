@@ -1,6 +1,8 @@
 package org.sonar.plugins.powershell.fillers;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.sonar.api.batch.fs.FileSystem;
@@ -20,9 +22,18 @@ public class IssuesFiller {
 
 	public void fill(final SensorContext context, final File sourceDir, final List<PsIssue> issues) {
 		final FileSystem fileSystem = context.fileSystem();
+		final List<String> skipRulesTemp = Arrays.asList(
+				context.config().getStringArray(org.sonar.plugins.powershell.Constants.EXTERNAL_RULES_SKIP_LIST));
+		final List<String> skipRules = new LinkedList<>();
+		skipRulesTemp.forEach(s -> skipRules.add(s.toLowerCase()));
 		for (final PsIssue issue : issues) {
 			try {
 				final String ruleName = issue.ruleId;
+				final String repoKey = ScriptAnalyzerRulesDefinition.getRepositoryKeyForLanguage();
+				final String uniqueId = repoKey + ":" + ruleName;
+				if (skipRules.contains(uniqueId.toLowerCase())) {
+					continue;
+				}
 				final String initialFile = issue.file;
 
 				// skip reporting temp files
@@ -34,8 +45,8 @@ public class IssuesFiller {
 				final String message = issue.message;
 				int issueLine = issue.line;
 
-				final RuleKey ruleKey = RuleKey.of(ScriptAnalyzerRulesDefinition.getRepositoryKeyForLanguage(),
-						ruleName);
+				final RuleKey ruleKey = RuleKey.of(repoKey, ruleName);
+
 				final org.sonar.api.batch.fs.InputFile file = fileSystem
 						.inputFile(fileSystem.predicates().and(fileSystem.predicates().hasRelativePath(fsFile)));
 

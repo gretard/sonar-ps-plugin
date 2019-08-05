@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.sonar.plugins</groupId>
 	<artifactId>sonar-ps-plugin</artifactId>
 	<packaging>sonar-plugin</packaging>
-	<version>0.4.1</version>
+	<version>0.5.0</version>
 
 	<name>Powershell Plugin for SonarQube</name>
 	<description>Powershell plugin for SonarQube</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<sonar.apiVersion>6.3</sonar.apiVersion>
+		<sonar.apiVersion>6.7.7</sonar.apiVersion>
 		<jdk.min.version>1.8</jdk.min.version>
 	</properties>
 	<issueManagement>
@@ -31,14 +33,16 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.8.1</version>
+			<version>3.9</version>
 		</dependency>
 
-		<dependency> 
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-io</artifactId> 
-			<version>1.3.2</version> 
-		</dependency> 
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.6</version>
+		</dependency>
+
 
 		<!-- unit tests -->
 		<dependency>
@@ -57,39 +61,7 @@
 
 	<build>
 		<plugins>
-			<!--  <plugin>
-				<groupId>org.apache.cxf</groupId>
-				<artifactId>cxf-xjc-plugin</artifactId>
-				<version>3.0.5</version>
-				<configuration>
-					<extensions>
-						<extension>org.apache.cxf.xjcplugins:cxf-xjc-dv:3.0.5</extension>
-					</extensions>
-				</configuration>
-				<executions>
-					<execution>
-						<id>generate-sources-trans</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>xsdtojava</goal>
-						</goals>
-						<configuration>
-							<sourceRoot>${basedir}/src/main/java</sourceRoot>
-							<xsdOptions>
 
-								<xsdOption>
-								<extensionArgs>
-										</extensionArgs>
-									<packagename>org.sonar.plugins.powershell.issues</packagename>
-									<xsd>src/main/resources/schemas/issuesSchema.xsd</xsd>
-								</xsdOption>
-
-							</xsdOptions>
-						</configuration>
-					</execution>
-
-				</executions>
-			</plugin> -->
 			<plugin>
 				<groupId>org.sonarsource.sonar-packaging-maven-plugin</groupId>
 				<artifactId>sonar-packaging-maven-plugin</artifactId>

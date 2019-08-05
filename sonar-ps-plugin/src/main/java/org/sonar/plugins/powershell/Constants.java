@@ -7,5 +7,6 @@ public final class Constants {
 	public static final String FILE_SUFFIXES = "sonar.ps.file.suffixes";
 	public static final String PS_EXECUTABLE = "sonar.ps.executable";
 	public static final String SKIP_PLUGIN = "sonar.ps.plugin.skip";
+	public static final String EXTERNAL_RULES_SKIP_LIST = "sonar.ps.external.rules.skip";
 
 }

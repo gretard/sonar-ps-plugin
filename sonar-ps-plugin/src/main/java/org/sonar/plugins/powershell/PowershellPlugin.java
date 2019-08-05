@@ -26,6 +26,12 @@ public class PowershellPlugin implements Plugin {
 				.description("Suffixes supported by the plugin").defaultValue(".ps1,.psm1,.psd1")
 				.type(PropertyType.STRING).build());
 
+		context.addExtension(PropertyDefinition.builder(Constants.EXTERNAL_RULES_SKIP_LIST).name("External rules reporting skip list")
+				.description("List of repoId:ruleId pairs to skip reporting").multiValues(true)
+				.type(PropertyType.STRING).build());
+
+				
+	
 		context.addExtensions(PowershellLanguage.class, PowershellQualityProfile.class);
 		context.addExtensions(ScriptAnalyzerRulesDefinition.class, ScriptAnalyzerSensor.class);
 		context.addExtension(TokenizerSensor.class);
