@@ -28,7 +28,7 @@ public class HalsteadComplexityFiller implements IFiller {
 			int totalOperands = 0;
 			int totalOperators = 0;
 
-			for (final Token token : tokens.getToken()) {
+			for (final Token token : tokens.getTokens()) {
 				if (skipTypes.contains(token.getKind()) || token.getText() == null) {
 					continue;
 				}

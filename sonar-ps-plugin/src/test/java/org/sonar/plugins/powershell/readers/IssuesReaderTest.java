@@ -28,7 +28,6 @@ public class IssuesReaderTest {
 	@Test
 	public void testReadIssuesMapping() throws Throwable {
 		File file = temp.newFile("main", "results.xml");
-
 		FileUtils.copyURLToFile(getClass().getResource("/results/psanalyzerSingle.xml"), file);
 		List<PsIssue> issues = sut.read(file);
 		Assert.assertEquals(1, issues.size());

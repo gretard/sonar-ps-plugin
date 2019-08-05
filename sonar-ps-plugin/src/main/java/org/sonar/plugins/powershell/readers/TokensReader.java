@@ -32,16 +32,16 @@ public class TokensReader {
 				token.setValue(getChildByName(node, "Value").getTextContent());
 				token.setTokenFlags(getChildByName(node, "TokenFlags").getTextContent());
 				token.setKind(getChildByName(node, "Kind").getTextContent());
-				token.setCType(getChildByName(node, "CType").getTextContent());
+				token.setcType(getChildByName(node, "CType").getTextContent());
 
 				token.setStartLineNumber(Integer.parseInt(getChildByName(node, "StartLineNumber").getTextContent()));
 				token.setEndLineNumber(Integer.parseInt(getChildByName(node, "EndLineNumber").getTextContent()));
-				token.setStartOffset(Integer.parseInt(getChildByName(node, "StartOffset").getTextContent()));
-				token.setEndColumnNumber(Integer.parseInt(getChildByName(node, "EndOffset").getTextContent()));
+				token.setStartOffset(Long.parseLong(getChildByName(node, "StartOffset").getTextContent()));
+				token.setEndOffset(Long.parseLong(getChildByName(node, "EndOffset").getTextContent()));
 				token.setStartColumnNumber(
 						Integer.parseInt(getChildByName(node, "StartColumnNumber").getTextContent()));
 				token.setEndColumnNumber(Integer.parseInt(getChildByName(node, "EndColumnNumber").getTextContent()));
-				tokens.getToken().add(token);
+				tokens.getTokens().add(token);
 			} catch (Exception e) {
 				LOGGER.warn("Unexpected error reading results", e);
 			}

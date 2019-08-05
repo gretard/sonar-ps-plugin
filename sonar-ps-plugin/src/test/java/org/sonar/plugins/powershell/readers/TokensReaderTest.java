@@ -23,7 +23,7 @@ public class TokensReaderTest {
 
 		FileUtils.copyURLToFile(getClass().getResource("/results/tokens.xml"), file);
 		Tokens tokens = sut.read(file);
-		Assert.assertEquals(76, tokens.getToken().size());
+		Assert.assertEquals(76, tokens.getTokens().size());
 
 	}
 
@@ -33,15 +33,15 @@ public class TokensReaderTest {
 
 		FileUtils.copyURLToFile(getClass().getResource("/results/tokensSingle.xml"), file);
 		Tokens tokens = sut.read(file);
-		Assert.assertEquals(1, tokens.getToken().size());
-		Assert.assertEquals(10, tokens.getComplexity().intValue());
-		Token token = tokens.getToken().get(0);
-		Assert.assertEquals("Token", token.getCType());
+		Assert.assertEquals(1, tokens.getTokens().size());
+		Assert.assertEquals(10, tokens.getComplexity());
+		Token token = tokens.getTokens().get(0);
+		Assert.assertEquals("Token", token.getcType());
 		Assert.assertEquals(32, token.getEndColumnNumber());
-		Assert.assertEquals(1, token.getEndLineNumber());
-		Assert.assertEquals(0, token.getEndOffset());
+		Assert.assertEquals(2, token.getEndLineNumber());
+		Assert.assertEquals(31, token.getEndOffset());
 		Assert.assertEquals("Comment", token.getKind());
-		Assert.assertEquals(1, token.getStartColumnNumber());
+		Assert.assertEquals(4, token.getStartColumnNumber());
 		Assert.assertEquals(1, token.getStartLineNumber());
 		Assert.assertEquals("#Import-Module PSScriptAnalyzer", token.getText());
 		Assert.assertEquals("ParseModeInvariant", token.getTokenFlags());

@@ -20,7 +20,7 @@ public class HighlightingFiller implements IFiller {
 
 		try {
 			final NewHighlighting highlighting = context.newHighlighting().onFile(f);
-			for (final Token token : tokens.getToken()) {
+			for (final Token token : tokens.getTokens()) {
 				highlightToken(highlighting, token);
 			}
 			synchronized (context) {

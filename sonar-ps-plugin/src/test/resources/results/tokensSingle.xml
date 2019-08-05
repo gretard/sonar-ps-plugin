@@ -7,10 +7,10 @@
 		<Kind>Comment</Kind>
 		<StartLineNumber>1</StartLineNumber>
 		<CType>Token</CType>
-		<EndLineNumber>1</EndLineNumber>
-		<StartOffset>1</StartOffset>
+		<EndLineNumber>2</EndLineNumber>
+		<StartOffset>3</StartOffset>
 		<EndOffset>31</EndOffset>
-		<StartColumnNumber>1</StartColumnNumber>
+		<StartColumnNumber>4</StartColumnNumber>
 		<EndColumnNumber>32</EndColumnNumber>
 	</Token>
 </Tokens>

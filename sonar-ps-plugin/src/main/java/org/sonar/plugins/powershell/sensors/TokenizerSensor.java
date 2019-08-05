@@ -102,7 +102,6 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 							return;
 						}
 						final File tokensFile = new File(resultsFile);
-
 						if (!tokensFile.exists() || tokensFile.length() <= 0) {
 							LOGGER.warn(String.format(
 									"Tokenizer did not run successfully on %s file. Please check file contents.",
