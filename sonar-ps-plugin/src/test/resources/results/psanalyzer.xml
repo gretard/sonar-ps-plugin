@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Objects>
+  <Object Type="System.Management.Automation.PSCustomObject">
+    <Property Name="RuleName" Type="System.String">PSAvoidUsingPositionalParameters</Property>
+    <Property Name="Message" Type="System.String">Cmdlet 'write-output' has positional parameter. Please use named parameters instead of positional parameters when calling a command.</Property>
+    <Property Name="Line" Type="System.Int32">5</Property>
+    <Property Name="Column" Type="System.Int32">3</Property>
+    <Property Name="Severity" Type="Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticSeverity">Information</Property>
+    <Property Name="File" Type="System.String">C:\test.ps1</Property>
+  </Object>
+  <Object Type="System.Management.Automation.PSCustomObject">
+    <Property Name="RuleName" Type="System.String">PSAvoidUsingPositionalParameters</Property>
+    <Property Name="Message" Type="System.String">Cmdlet 'write-output' has positional parameter. Please use named parameters instead of positional parameters when calling a command.</Property>
+    <Property Name="Line" Type="System.Int32">6</Property>
+    <Property Name="Column" Type="System.Int32">3</Property>
+    <Property Name="Severity" Type="Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticSeverity">Information</Property>
+    <Property Name="File" Type="System.String">C:\test.ps1</Property>
+  </Object>
+  <Object Type="System.Management.Automation.PSCustomObject">
+    <Property Name="RuleName" Type="System.String">PSAvoidUsingPositionalParameters</Property>
+    <Property Name="Message" Type="System.String">Cmdlet 'write-output' has positional parameter. Please use named parameters instead of positional parameters when calling a command.</Property>
+    <Property Name="Line" Type="System.Int32">7</Property>
+    <Property Name="Column" Type="System.Int32">3</Property>
+    <Property Name="Severity" Type="Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticSeverity">Information</Property>
+    <Property Name="File" Type="System.String">C:\test.ps1</Property>
+  </Object>
+  <Object Type="System.Management.Automation.PSCustomObject">
+    <Property Name="RuleName" Type="System.String">PSAvoidUsingPositionalParameters</Property>
+    <Property Name="Message" Type="System.String">Cmdlet 'write-output' has positional parameter. Please use named parameters instead of positional parameters when calling a command.</Property>
+    <Property Name="Line" Type="System.Int32">8</Property>
+    <Property Name="Column" Type="System.Int32">3</Property>
+    <Property Name="Severity" Type="Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticSeverity">Information</Property>
+    <Property Name="File" Type="System.String">C:\test.ps1</Property>
+  </Object>
+</Objects>

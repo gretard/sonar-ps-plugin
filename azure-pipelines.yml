@@ -31,3 +31,8 @@ steps:
     SourceFolder: '$(system.defaultworkingdirectory)'
     Contents: '**/*.jar'
     TargetFolder: '$(build.artifactstagingdirectory)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: '$(Build.artifactstagingdirectory)' 
+    artifactName: 'build-$(Agent.OS)'    

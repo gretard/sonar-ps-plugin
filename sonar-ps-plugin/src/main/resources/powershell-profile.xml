@@ -68,7 +68,7 @@
             <repositoryKey>ps-psanalyzer</repositoryKey>
         </rule>
         <rule>
-            <key>PSAvoidUsingUserNameAndPassWordParams</key>
+            <key>PSAvoidUsingUsernameAndPasswordParams</key>
             <repositoryKey>ps-psanalyzer</repositoryKey>
         </rule>
         <rule>
@@ -97,6 +97,18 @@
         </rule>
         <rule>
             <key>PSAvoidUsingWriteHost</key>
+            <repositoryKey>ps-psanalyzer</repositoryKey>
+        </rule>
+        <rule>
+            <key>PSUseCompatibleCommands</key>
+            <repositoryKey>ps-psanalyzer</repositoryKey>
+        </rule>
+        <rule>
+            <key>PSUseCompatibleSyntax</key>
+            <repositoryKey>ps-psanalyzer</repositoryKey>
+        </rule>
+        <rule>
+            <key>PSUseCompatibleTypes</key>
             <repositoryKey>ps-psanalyzer</repositoryKey>
         </rule>
         <rule>
@@ -153,6 +165,10 @@
         </rule>
         <rule>
             <key>PSUseConsistentWhitespace</key>
+            <repositoryKey>ps-psanalyzer</repositoryKey>
+        </rule>
+        <rule>
+            <key>PSUseCorrectCasing</key>
             <repositoryKey>ps-psanalyzer</repositoryKey>
         </rule>
         <rule>

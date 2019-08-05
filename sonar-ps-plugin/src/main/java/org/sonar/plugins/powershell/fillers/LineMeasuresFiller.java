@@ -26,7 +26,7 @@ public class LineMeasuresFiller implements IFiller {
 
 			final long[] lines = new long[f.lines() + 1];
 
-			for (final Token token : tokens.getToken()) {
+			for (final Token token : tokens.getTokens()) {
 
 				if (skipTypes.contains(token.getKind()) || token.getText() == null) {
 					continue;

@@ -33,11 +33,12 @@ Currently there is a possibility to override the following options either on ser
 - **sonar.ps.executable** - allows to specify powershell executable, defaults to *powershell.exe* (since version 0.3.0)
 - **sonar.ps.plugin.skip** - if set to true - skips plugin in general, meaning that no sensors are run, defaults to *false* (since version 0.3.0)
 - **sonar.ps.tokenizer.timeout** - maximum number of seconds to wait for tokenizer results,  defaults to *3600* (since version 0.4.0)
-
+- **sonar.ps.external.rules.skip** - list of repo:ruleId comma separated pairs to skip reporting of issues found by rules (since version 0.5.0)
 
 ## Requirements ##
 Different plugin versions supports the following:
 
+- 0.5.0 - Sonarqube version 6.7.7+ and PSScriptAnalyzer version 1.18.1 rules
 - 0.3.0 - Sonarqube version 6.3+ and PSScriptAnalyzer version 1.17.1 rules
 - 0.2.2 - Sonarqube 5.6+ version and PSScriptAnalyzer version 1.17.1 rules
 

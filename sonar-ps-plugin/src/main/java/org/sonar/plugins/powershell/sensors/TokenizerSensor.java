@@ -7,8 +7,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import javax.xml.bind.JAXBContext;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.sonar.api.batch.fs.FilePredicates;
@@ -27,6 +25,7 @@ import org.sonar.plugins.powershell.fillers.HalsteadComplexityFiller;
 import org.sonar.plugins.powershell.fillers.HighlightingFiller;
 import org.sonar.plugins.powershell.fillers.IFiller;
 import org.sonar.plugins.powershell.fillers.LineMeasuresFiller;
+import org.sonar.plugins.powershell.readers.TokensReader;
 
 public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.sensor.Sensor {
 
@@ -36,7 +35,7 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 
 	private final IFiller[] fillers = new IFiller[] { new LineMeasuresFiller(), new CpdFiller(),
 			new HighlightingFiller(), new HalsteadComplexityFiller(), new CComplexityFiller() };
-
+	private final TokensReader reader = new TokensReader();
 	private final TempFolder folder;
 
 	public TokenizerSensor(final TempFolder folder) {
@@ -74,7 +73,7 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 			final String analysisFile = SystemUtils.IS_OS_WINDOWS
 					? String.format("'%s'", inputFile.file().getAbsolutePath())
 					: inputFile.file().getAbsolutePath();
-			
+
 			// skip reporting temp files
 			if (analysisFile.contains(".scannerwork")) {
 				continue;
@@ -110,7 +109,7 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 							return;
 						}
 
-						final Tokens tokens = readTokens(tokensFile);
+						final Tokens tokens = reader.read(tokensFile);
 						for (final IFiller filler : fillers) {
 							filler.fill(context, inputFile, tokens);
 						}
@@ -137,13 +136,6 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 			LOGGER.warn("Unexpected error while running waiting for executor service to finish", e);
 
 		}
-
-	}
-
-	private static Tokens readTokens(final File file) throws Exception {
-		final JAXBContext jaxbContext = JAXBContext.newInstance(Tokens.class);
-		final Tokens issues = (Tokens) jaxbContext.createUnmarshaller().unmarshal(file);
-		return issues;
 
 	}
 

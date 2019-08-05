@@ -193,8 +193,8 @@
         <severity>INFO</severity>
     </rule>
     <rule>
-        <key>PSAvoidUsingUserNameAndPassWordParams</key>
-        <internalKey>PSAvoidUsingUserNameAndPassWordParams</internalKey>
+        <key>PSAvoidUsingUsernameAndPasswordParams</key>
+        <internalKey>PSAvoidUsingUsernameAndPasswordParams</internalKey>
         <name>Avoid Using Username and Password Parameters</name>
         <description>Functions should take in a Credential parameter of type PSCredential (with a Credential transformation attribute defined after it in PowerShell 4.0 or earlier) or set the Password parameter to type SecureString.</description>
         <cardinality>SINGLE</cardinality>
@@ -281,6 +281,42 @@
         <internalKey>PSAvoidUsingWriteHost</internalKey>
         <name>Avoid Using Write-Host</name>
         <description>Avoid using the Write-Host cmdlet. Instead, use Write-Output, Write-Verbose, or Write-Information. Because Write-Host is host-specific, its implementation might vary unpredictably. Also, prior to PowerShell 5.0, Write-Host did not write to a stream, so users cannot suppress it, capture its value, or redirect it.</description>
+        <cardinality>SINGLE</cardinality>
+        <remediationFunction>LINEAR</remediationFunction>
+        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <remediationFunctionBaseEffort />
+        <debtRemediationFunctionCoefficient>5min</debtRemediationFunctionCoefficient>
+        <severity>MAJOR</severity>
+    </rule>
+    <rule>
+        <key>PSUseCompatibleCommands</key>
+        <internalKey>PSUseCompatibleCommands</internalKey>
+        <name>Use compatible commands</name>
+        <description>Use commands compatible with the given PowerShell version and operating system</description>
+        <cardinality>SINGLE</cardinality>
+        <remediationFunction>LINEAR</remediationFunction>
+        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <remediationFunctionBaseEffort />
+        <debtRemediationFunctionCoefficient>5min</debtRemediationFunctionCoefficient>
+        <severity>MAJOR</severity>
+    </rule>
+    <rule>
+        <key>PSUseCompatibleSyntax</key>
+        <internalKey>PSUseCompatibleSyntax</internalKey>
+        <name>Use compatible syntax</name>
+        <description>Use script syntax compatible with the given PowerShell versions</description>
+        <cardinality>SINGLE</cardinality>
+        <remediationFunction>LINEAR</remediationFunction>
+        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <remediationFunctionBaseEffort />
+        <debtRemediationFunctionCoefficient>5min</debtRemediationFunctionCoefficient>
+        <severity>MAJOR</severity>
+    </rule>
+    <rule>
+        <key>PSUseCompatibleTypes</key>
+        <internalKey>PSUseCompatibleTypes</internalKey>
+        <name>Use compatible types</name>
+        <description>Use types compatible with the given PowerShell version and operating system</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <descriptionFormat>MARKDOWN</descriptionFormat>
@@ -455,6 +491,18 @@
         <remediationFunctionBaseEffort />
         <debtRemediationFunctionCoefficient>5min</debtRemediationFunctionCoefficient>
         <severity>MAJOR</severity>
+    </rule>
+    <rule>
+        <key>PSUseCorrectCasing</key>
+        <internalKey>PSUseCorrectCasing</internalKey>
+        <name>Use exact casing of cmdlet/function name.</name>
+        <description>For better readability and consistency, use the exact casing of the cmdlet/function.</description>
+        <cardinality>SINGLE</cardinality>
+        <remediationFunction>LINEAR</remediationFunction>
+        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <remediationFunctionBaseEffort />
+        <debtRemediationFunctionCoefficient>2min</debtRemediationFunctionCoefficient>
+        <severity>INFO</severity>
     </rule>
     <rule>
         <key>PSUseDeclaredVarsMoreThanAssignments</key>

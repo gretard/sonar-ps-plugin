@@ -30,7 +30,7 @@ public class ScriptAnalyzerSensorTest {
 		SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot());
 		if (SystemUtils.IS_OS_WINDOWS) {
 			ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "powershell.exe");
-		}else {
+		} else {
 			ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "pwsh");
 		}
 		File baseFile = folder.newFile("test.ps1");
@@ -43,6 +43,30 @@ public class ScriptAnalyzerSensorTest {
 		s.execute(ctxTester);
 
 		Assert.assertEquals(4, ctxTester.allIssues().size());
+
+	}
+
+	@Test
+	public void testExecuteAndSkipReporting() throws IOException {
+
+		SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot());
+		if (SystemUtils.IS_OS_WINDOWS) {
+			ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "powershell.exe");
+		} else {
+			ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "pwsh");
+		}
+		ctxTester.settings().setProperty(Constants.EXTERNAL_RULES_SKIP_LIST,
+				"ps-psanalyzer:PSAvoidUsingPositionalParameters");
+		File baseFile = folder.newFile("test.ps1");
+		FileUtils.copyURLToFile(getClass().getResource("/testFiles/test.ps1"), baseFile);
+		DefaultInputFile ti = new TestInputFileBuilder("test", "test.ps1")
+				.initMetadata(new String(Files.readAllBytes(baseFile.toPath()))).build();
+		ctxTester.fileSystem().add(ti);
+
+		ScriptAnalyzerSensor s = new ScriptAnalyzerSensor(temp);
+		s.execute(ctxTester);
+
+		Assert.assertEquals(0, ctxTester.allIssues().size());
 
 	}
 
