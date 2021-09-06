@@ -37,7 +37,7 @@ Currently there is a possibility to override the following options either on ser
 
 ## Requirements ##
 Different plugin versions supports the following:
-
+- 0.5.1 - Sonarqube version 9+ and PSScriptAnalyzer version 1.20 rules
 - 0.5.0 - Sonarqube version 6.7.7+ and PSScriptAnalyzer version 1.18.1 rules
 - 0.3.0 - Sonarqube version 6.3+ and PSScriptAnalyzer version 1.17.1 rules
 - 0.2.2 - Sonarqube 5.6+ version and PSScriptAnalyzer version 1.17.1 rules
