@@ -8,19 +8,19 @@ import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.powershell.ast.Tokens;
 
 public class CComplexityFiller implements IFiller {
-	private static final Logger LOGGER = Loggers.get(CComplexityFiller.class);
+    private static final Logger LOGGER = Loggers.get(CComplexityFiller.class);
 
-	@Override
-	public void fill(final SensorContext context, final InputFile f, final Tokens tokens) {
-		try {
-			synchronized (context) {
-				context.<Integer>newMeasure().on(f).forMetric(CoreMetrics.COMPLEXITY).withValue(tokens.getComplexity())
-						.save();
-			}
-		} catch (final Throwable e) {
-			LOGGER.warn("Exception while saving tokens", e);
-		}
+    @Override
+    public void fill(final SensorContext context, final InputFile f, final Tokens tokens) {
+        try {
+            synchronized (context) {
+                context.<Integer>newMeasure().on(f).forMetric(CoreMetrics.COMPLEXITY).withValue(tokens.getComplexity())
+                        .save();
+            }
+        } catch (final Throwable e) {
+            LOGGER.warn("Exception while saving tokens", e);
+        }
 
-	}
+    }
 
 }

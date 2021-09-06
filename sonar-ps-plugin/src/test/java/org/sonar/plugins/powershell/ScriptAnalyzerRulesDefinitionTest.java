@@ -7,13 +7,11 @@ import org.sonar.api.server.rule.RulesDefinition.Context;
 
 public class ScriptAnalyzerRulesDefinitionTest {
 
-	@Test
-	public void testDefine() {
-		Context t = new RulesDefinition.Context();
-		ScriptAnalyzerRulesDefinition def = new ScriptAnalyzerRulesDefinition();
-		def.define(t);
-		Assert.assertEquals(1,
-				t.repository(ScriptAnalyzerRulesDefinition.getRepositoryKeyForLanguage()).rules().size());
-	}
+    @Test
+    public void testDefine() {
+        Context context = new RulesDefinition.Context();
+        ScriptAnalyzerRulesDefinition sut = new ScriptAnalyzerRulesDefinition();
+        sut.define(context);
+        Assert.assertEquals(65, context.repository(Constants.REPO_KEY).rules().size());
+    }
 }
-	

@@ -15,44 +15,43 @@ import org.sonar.plugins.powershell.PowershellLanguage;
 
 public abstract class BaseSensor implements org.sonar.api.batch.sensor.Sensor {
 
-	private static final Logger LOGGER = Loggers.get(BaseSensor.class);
+    private static final Logger LOGGER = Loggers.get(BaseSensor.class);
 
-	protected static String read(Process process) throws IOException {
-		return "input: " + read(process, process.getInputStream()) + " error: "
-				+ read(process, process.getErrorStream());
-	}
+    @Override
+    public void describe(final SensorDescriptor descriptor) {
+        descriptor.onlyOnLanguage(PowershellLanguage.KEY).name(this.getClass().getSimpleName());
+    }
 
-	protected static String read(Process process, InputStream stream) throws IOException {
-		final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-		final StringBuilder builder = new StringBuilder();
-		String line = null;
-		while ((line = reader.readLine()) != null) {
-			builder.append(line);
-			builder.append(System.getProperty("line.separator"));
-		}
-		reader.close();
-		return builder.toString();
+    @Override
+    public void execute(final SensorContext context) {
+        final Settings settings = context.settings();
+        final boolean skipPlugin = settings.getBoolean(Constants.SKIP_PLUGIN);
 
-	}
+        if (skipPlugin) {
+            LOGGER.debug("Skipping sensor as skip plugin flag is set: " + Constants.SKIP_PLUGIN);
+            return;
+        }
 
-	@Override
-	public void describe(final SensorDescriptor descriptor) {
-		descriptor.onlyOnLanguage(PowershellLanguage.KEY).name(this.getClass().getSimpleName());
-	}
+        innerExecute(context);
 
-	@Override
-	public void execute(final SensorContext context) {
-		final Settings settings = context.settings();
-		final boolean skipPlugin = settings.getBoolean(Constants.SKIP_PLUGIN);
+    }
 
-		if (skipPlugin) {
-			LOGGER.debug("Skipping sensor as skip plugin flag is set: " + Constants.SKIP_PLUGIN);
-			return;
-		}
+    protected abstract void innerExecute(final SensorContext context);
 
-		innerExecute(context);
+    protected static String read(Process process) throws IOException {
+        return "input: " + read(process.getInputStream()) + " error: " + read(process.getErrorStream());
+    }
 
-	}
+    protected static String read(InputStream stream) throws IOException {
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+        final StringBuilder builder = new StringBuilder();
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            builder.append(line);
+            builder.append(System.getProperty("line.separator"));
+        }
+        reader.close();
+        return builder.toString();
 
-	protected abstract void innerExecute(final SensorContext context);
+    }
 }

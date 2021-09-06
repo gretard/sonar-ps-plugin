@@ -1,19 +1,45 @@
 package org.sonar.plugins.powershell;
 
-import org.sonar.api.profiles.ProfileDefinition;
-import org.sonar.api.profiles.RulesProfile;
-import org.sonar.api.profiles.XMLProfileParser;
-import org.sonar.api.utils.ValidationMessages;
+import java.io.InputStream;
 
-public class PowershellQualityProfile extends ProfileDefinition {
-	private XMLProfileParser xmlProfileParser;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
-	public PowershellQualityProfile(XMLProfileParser xmlProfileParser) {
-		this.xmlProfileParser = xmlProfileParser;
-	}
+import org.sonar.api.server.profile.BuiltInQualityProfilesDefinition;
+import org.sonar.api.utils.log.Logger;
+import org.sonar.api.utils.log.Loggers;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-	public RulesProfile createProfile(final ValidationMessages validation) {
-		return xmlProfileParser.parseResource(getClass().getClassLoader(), "powershell-profile.xml", validation)
-				.setName(Constants.PROFILE_NAME).setLanguage(PowershellLanguage.KEY);
-	}
+public class PowershellQualityProfile implements BuiltInQualityProfilesDefinition {
+    private static final Logger LOGGER = Loggers.get(PowershellQualityProfile.class);
+
+    @Override
+    public void define(final Context context) {
+
+        final NewBuiltInQualityProfile profile = context
+                .createBuiltInQualityProfile(Constants.PROFILE_NAME, PowershellLanguage.KEY).setDefault(true);
+        final String repositoryKey = Constants.REPO_KEY;
+
+        try (final InputStream rulesXml = this.getClass().getClassLoader()
+                .getResourceAsStream(Constants.RULES_DEFINITION_FILE)) {
+
+            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            final DocumentBuilder builder = factory.newDocumentBuilder();
+            final Document xmlDoc = builder.parse(rulesXml);
+            final NodeList nodes = xmlDoc.getElementsByTagName("key");
+            for (int i = 0; i < nodes.getLength(); i++) {
+                final Node node = nodes.item(i);
+                final String key = node.getTextContent();
+                profile.activateRule(repositoryKey, key);
+            }
+
+        } catch (Exception e) {
+            LOGGER.warn("Unexpected error while registering rules", e);
+        }
+        profile.done();
+
+    }
+
 }

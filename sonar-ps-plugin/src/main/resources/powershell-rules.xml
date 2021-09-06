@@ -121,10 +121,34 @@
         <severity>MAJOR</severity>
     </rule>
     <rule>
+        <key>PSAvoidLongLines</key>
+        <internalKey>PSAvoidLongLines</internalKey>
+        <name>Avoid long lines</name>
+        <description>Line lengths should be less than the configured maximum</description>
+        <cardinality>SINGLE</cardinality>
+        <remediationFunction>LINEAR</remediationFunction>
+        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <remediationFunctionBaseEffort />
+        <debtRemediationFunctionCoefficient>5min</debtRemediationFunctionCoefficient>
+        <severity>MAJOR</severity>
+    </rule>
+    <rule>
         <key>PSAvoidNullOrEmptyHelpMessageAttribute</key>
         <internalKey>PSAvoidNullOrEmptyHelpMessageAttribute</internalKey>
         <name>Avoid using null or empty HelpMessage parameter attribute.</name>
         <description>Setting the HelpMessage attribute to an empty string or null value causes PowerShell interpreter to throw an error while executing the corresponding function.</description>
+        <cardinality>SINGLE</cardinality>
+        <remediationFunction>LINEAR</remediationFunction>
+        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <remediationFunctionBaseEffort />
+        <debtRemediationFunctionCoefficient>5min</debtRemediationFunctionCoefficient>
+        <severity>MAJOR</severity>
+    </rule>
+    <rule>
+        <key>PSAvoidOverwritingBuiltInCmdlets</key>
+        <internalKey>PSAvoidOverwritingBuiltInCmdlets</internalKey>
+        <name>Avoid overwriting built in cmdlets</name>
+        <description>Do not overwrite the definition of a cmdlet that is included with PowerShell</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <descriptionFormat>MARKDOWN</descriptionFormat>
@@ -241,6 +265,18 @@
         <severity>MAJOR</severity>
     </rule>
     <rule>
+        <key>PSAvoidUsingDoubleQuotesForConstantString</key>
+        <internalKey>PSAvoidUsingDoubleQuotesForConstantString</internalKey>
+        <name>Avoid using double quotes if the string is constant.</name>
+        <description>Use single quotes if the string is constant.</description>
+        <cardinality>SINGLE</cardinality>
+        <remediationFunction>LINEAR</remediationFunction>
+        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <remediationFunctionBaseEffort />
+        <debtRemediationFunctionCoefficient>2min</debtRemediationFunctionCoefficient>
+        <severity>INFO</severity>
+    </rule>
+    <rule>
         <key>PSAvoidUsingInvokeExpression</key>
         <internalKey>PSAvoidUsingInvokeExpression</internalKey>
         <name>Avoid Using Invoke-Expression</name>
@@ -309,8 +345,8 @@
         <remediationFunction>LINEAR</remediationFunction>
         <descriptionFormat>MARKDOWN</descriptionFormat>
         <remediationFunctionBaseEffort />
-        <debtRemediationFunctionCoefficient>5min</debtRemediationFunctionCoefficient>
-        <severity>MAJOR</severity>
+        <debtRemediationFunctionCoefficient>15min</debtRemediationFunctionCoefficient>
+        <severity>BLOCKER</severity>
     </rule>
     <rule>
         <key>PSUseCompatibleTypes</key>
@@ -421,6 +457,18 @@
         <severity>INFO</severity>
     </rule>
     <rule>
+        <key>PSReviewUnusedParameter</key>
+        <internalKey>PSReviewUnusedParameter</internalKey>
+        <name>ReviewUnusedParameter</name>
+        <description>Ensure all parameters are used within the same script, scriptblock, or function where they are declared.</description>
+        <cardinality>SINGLE</cardinality>
+        <remediationFunction>LINEAR</remediationFunction>
+        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <remediationFunctionBaseEffort />
+        <debtRemediationFunctionCoefficient>5min</debtRemediationFunctionCoefficient>
+        <severity>MAJOR</severity>
+    </rule>
+    <rule>
         <key>PSUseApprovedVerbs</key>
         <internalKey>PSUseApprovedVerbs</internalKey>
         <name>Cmdlet Verbs</name>
@@ -495,8 +543,8 @@
     <rule>
         <key>PSUseCorrectCasing</key>
         <internalKey>PSUseCorrectCasing</internalKey>
-        <name>Use exact casing of cmdlet/function name.</name>
-        <description>For better readability and consistency, use the exact casing of the cmdlet/function.</description>
+        <name>Use exact casing of cmdlet/function/parameter name.</name>
+        <description>For better readability and consistency, use the exact casing of the cmdlet/function/parameter.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <descriptionFormat>MARKDOWN</descriptionFormat>
@@ -539,6 +587,18 @@
         <remediationFunctionBaseEffort />
         <debtRemediationFunctionCoefficient>2min</debtRemediationFunctionCoefficient>
         <severity>INFO</severity>
+    </rule>
+    <rule>
+        <key>PSUseProcessBlockForPipelineCommand</key>
+        <internalKey>PSUseProcessBlockForPipelineCommand</internalKey>
+        <name>Use process block for command that accepts input from pipeline.</name>
+        <description>If a command parameter takes its value from the pipeline, the command must use a process block to bind the input objects from the pipeline to that parameter.</description>
+        <cardinality>SINGLE</cardinality>
+        <remediationFunction>LINEAR</remediationFunction>
+        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <remediationFunctionBaseEffort />
+        <debtRemediationFunctionCoefficient>5min</debtRemediationFunctionCoefficient>
+        <severity>MAJOR</severity>
     </rule>
     <rule>
         <key>PSUsePSCredentialType</key>
@@ -605,6 +665,18 @@
         <internalKey>PSUseToExportFieldsInManifest</internalKey>
         <name>Use the *ToExport module manifest fields.</name>
         <description>In a module manifest, AliasesToExport, CmdletsToExport, FunctionsToExport and VariablesToExport fields should not use wildcards or $null in their entries. During module auto-discovery, if any of these entries are missing or $null or wildcard, PowerShell does some potentially expensive work to analyze the rest of the module.</description>
+        <cardinality>SINGLE</cardinality>
+        <remediationFunction>LINEAR</remediationFunction>
+        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <remediationFunctionBaseEffort />
+        <debtRemediationFunctionCoefficient>5min</debtRemediationFunctionCoefficient>
+        <severity>MAJOR</severity>
+    </rule>
+    <rule>
+        <key>PSUseUsingScopeModifierInNewRunspaces</key>
+        <internalKey>PSUseUsingScopeModifierInNewRunspaces</internalKey>
+        <name>Use 'Using:' scope modifier in RunSpace ScriptBlocks</name>
+        <description>If a ScriptBlock is intended to be run as a new RunSpace, variables inside it should use 'Using:' scope modifier, or be initialized within the ScriptBlock.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
         <descriptionFormat>MARKDOWN</descriptionFormat>

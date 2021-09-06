@@ -5,131 +5,132 @@ import java.util.List;
 
 public class Tokens {
 
-	private int complexity;
+    private int complexity;
 
-	private final List<Token> tokens = new LinkedList<>();
+    private final List<Token> tokens = new LinkedList<>();
 
-	public List<Token> getTokens() {
-		return tokens;
-	}
+    public List<Token> getTokens() {
+        return tokens;
+    }
 
-	public void setComplexity(int complexity) {
-		this.complexity = complexity;
-	}
+    public void setComplexity(int complexity) {
+        this.complexity = complexity;
+    }
 
-	public int getComplexity() {
-		return complexity;
-	}
+    public int getComplexity() {
+        return complexity;
+    }
 
-	public static class Token {
-		private String text;
-		
-		private String value;
-	
+    public static class Token {
+        private String text;
 
-		private String tokenFlags;;
+        private String value;
 
-		private String kind;
+        private String tokenFlags;
 
-		private String cType;
+        private String kind;
 
-		private int startLineNumber;
+        private String cType;
 
-		private int endLineNumber;
+        private int startLineNumber;
 
-		private int startColumnNumber;
+        private int endLineNumber;
 
-		private int endColumnNumber;
+        private int startColumnNumber;
 
-		private long startOffset;
+        private int endColumnNumber;
 
-		private long endOffset;
-		public String getValue() {
-			return value;
-		}
+        private long startOffset;
 
-		public void setValue(String value) {
-			this.value = value;
-		}
-		public String getText() {
-			return text;
-		}
+        private long endOffset;
 
-		public void setText(String text) {
-			this.text = text;
-		}
+        public String getValue() {
+            return value;
+        }
 
-		public String getTokenFlags() {
-			return tokenFlags;
-		}
+        public void setValue(String value) {
+            this.value = value;
+        }
 
-		public void setTokenFlags(String tokenFlags) {
-			this.tokenFlags = tokenFlags;
-		}
+        public String getText() {
+            return text;
+        }
 
-		public String getKind() {
-			return kind;
-		}
+        public void setText(String text) {
+            this.text = text;
+        }
 
-		public void setKind(String kind) {
-			this.kind = kind;
-		}
+        public String getTokenFlags() {
+            return tokenFlags;
+        }
 
-		public String getcType() {
-			return cType;
-		}
+        public void setTokenFlags(String tokenFlags) {
+            this.tokenFlags = tokenFlags;
+        }
 
-		public void setcType(String cType) {
-			this.cType = cType;
-		}
+        public String getKind() {
+            return kind;
+        }
 
-		public int getStartLineNumber() {
-			return startLineNumber;
-		}
+        public void setKind(String kind) {
+            this.kind = kind;
+        }
 
-		public void setStartLineNumber(int startLineNumber) {
-			this.startLineNumber = startLineNumber;
-		}
+        public String getcType() {
+            return cType;
+        }
 
-		public int getEndLineNumber() {
-			return endLineNumber;
-		}
+        public void setcType(String cType) {
+            this.cType = cType;
+        }
 
-		public void setEndLineNumber(int endLineNumber) {
-			this.endLineNumber = endLineNumber;
-		}
+        public int getStartLineNumber() {
+            return startLineNumber;
+        }
 
-		public int getStartColumnNumber() {
-			return startColumnNumber;
-		}
+        public void setStartLineNumber(int startLineNumber) {
+            this.startLineNumber = startLineNumber;
+        }
 
-		public void setStartColumnNumber(int startColumnNumber) {
-			this.startColumnNumber = startColumnNumber;
-		}
+        public int getEndLineNumber() {
+            return endLineNumber;
+        }
 
-		public int getEndColumnNumber() {
-			return endColumnNumber;
-		}
+        public void setEndLineNumber(int endLineNumber) {
+            this.endLineNumber = endLineNumber;
+        }
 
-		public void setEndColumnNumber(int endColumnNumber) {
-			this.endColumnNumber = endColumnNumber;
-		}
+        public int getStartColumnNumber() {
+            return startColumnNumber;
+        }
 
-		public long getStartOffset() {
-			return startOffset;
-		}
+        public void setStartColumnNumber(int startColumnNumber) {
+            this.startColumnNumber = startColumnNumber;
+        }
 
-		public void setStartOffset(long startOffset) {
-			this.startOffset = startOffset;
-		}
+        public int getEndColumnNumber() {
+            return endColumnNumber;
+        }
 
-		public long getEndOffset() {
-			return endOffset;
-		}
+        public void setEndColumnNumber(int endColumnNumber) {
+            this.endColumnNumber = endColumnNumber;
+        }
 
-		public void setEndOffset(long endOffset) {
-			this.endOffset = endOffset;
-		}
-	}
+        public long getStartOffset() {
+            return startOffset;
+        }
+
+        public void setStartOffset(long startOffset) {
+            this.startOffset = startOffset;
+        }
+
+        public long getEndOffset() {
+            return endOffset;
+        }
+
+        public void setEndOffset(long endOffset) {
+            this.endOffset = endOffset;
+        }
+    }
 
 }

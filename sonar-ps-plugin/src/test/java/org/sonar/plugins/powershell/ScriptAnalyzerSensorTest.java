@@ -13,61 +13,61 @@ import org.junit.rules.TemporaryFolder;
 import org.sonar.api.batch.fs.internal.DefaultInputFile;
 import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
-import org.sonar.api.utils.internal.JUnitTempFolder;
+import org.sonar.api.impl.utils.JUnitTempFolder;
 import org.sonar.plugins.powershell.sensors.ScriptAnalyzerSensor;
 
 public class ScriptAnalyzerSensorTest {
 
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
-	@org.junit.Rule
-	public JUnitTempFolder temp = new JUnitTempFolder();
+    @org.junit.Rule
+    public JUnitTempFolder temp = new JUnitTempFolder();
 
-	@Test
-	public void testExecute() throws IOException {
+    @Test
+    public void testExecuteAndFindIssues() throws IOException {
 
-		SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot());
-		if (SystemUtils.IS_OS_WINDOWS) {
-			ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "powershell.exe");
-		} else {
-			ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "pwsh");
-		}
-		File baseFile = folder.newFile("test.ps1");
-		FileUtils.copyURLToFile(getClass().getResource("/testFiles/test.ps1"), baseFile);
-		DefaultInputFile ti = new TestInputFileBuilder("test", "test.ps1")
-				.initMetadata(new String(Files.readAllBytes(baseFile.toPath()))).build();
-		ctxTester.fileSystem().add(ti);
+        SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot());
+        if (SystemUtils.IS_OS_WINDOWS) {
+            ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "powershell.exe");
+        } else {
+            ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "pwsh");
+        }
+        File baseFile = folder.newFile("test.ps1");
+        FileUtils.copyURLToFile(getClass().getResource("/testFiles/test.ps1"), baseFile);
+        DefaultInputFile ti = new TestInputFileBuilder("test", "test.ps1")
+                .initMetadata(new String(Files.readAllBytes(baseFile.toPath()))).build();
+        ctxTester.fileSystem().add(ti);
 
-		ScriptAnalyzerSensor s = new ScriptAnalyzerSensor(temp);
-		s.execute(ctxTester);
+        ScriptAnalyzerSensor s = new ScriptAnalyzerSensor(temp);
+        s.execute(ctxTester);
 
-		Assert.assertEquals(4, ctxTester.allIssues().size());
+        Assert.assertEquals(4, ctxTester.allIssues().size());
 
-	}
+    }
 
-	@Test
-	public void testExecuteAndSkipReporting() throws IOException {
+    @Test
+    public void testExecuteAndSkipReporting() throws IOException {
 
-		SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot());
-		if (SystemUtils.IS_OS_WINDOWS) {
-			ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "powershell.exe");
-		} else {
-			ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "pwsh");
-		}
-		ctxTester.settings().setProperty(Constants.EXTERNAL_RULES_SKIP_LIST,
-				"ps-psanalyzer:PSAvoidUsingPositionalParameters");
-		File baseFile = folder.newFile("test.ps1");
-		FileUtils.copyURLToFile(getClass().getResource("/testFiles/test.ps1"), baseFile);
-		DefaultInputFile ti = new TestInputFileBuilder("test", "test.ps1")
-				.initMetadata(new String(Files.readAllBytes(baseFile.toPath()))).build();
-		ctxTester.fileSystem().add(ti);
+        SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot());
+        if (SystemUtils.IS_OS_WINDOWS) {
+            ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "powershell.exe");
+        } else {
+            ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "pwsh");
+        }
+        ctxTester.settings().setProperty(Constants.EXTERNAL_RULES_SKIP_LIST,
+                "ps-psanalyzer:PSAvoidUsingPositionalParameters");
+        File baseFile = folder.newFile("test.ps1");
+        FileUtils.copyURLToFile(getClass().getResource("/testFiles/test.ps1"), baseFile);
+        DefaultInputFile ti = new TestInputFileBuilder("test", "test.ps1")
+                .initMetadata(new String(Files.readAllBytes(baseFile.toPath()))).build();
+        ctxTester.fileSystem().add(ti);
 
-		ScriptAnalyzerSensor s = new ScriptAnalyzerSensor(temp);
-		s.execute(ctxTester);
+        ScriptAnalyzerSensor s = new ScriptAnalyzerSensor(temp);
+        s.execute(ctxTester);
 
-		Assert.assertEquals(0, ctxTester.allIssues().size());
+        Assert.assertEquals(0, ctxTester.allIssues().size());
 
-	}
+    }
 
 }
