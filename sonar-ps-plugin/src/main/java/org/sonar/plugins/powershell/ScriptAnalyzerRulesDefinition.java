@@ -64,7 +64,7 @@ public class ScriptAnalyzerRulesDefinition implements RulesDefinition {
         final NodeList nodes = parent.getChildNodes();
         final int cnt = nodes.getLength();
         for (int i = 0; i < cnt; i++) {
-            var node = nodes.item(i);
+            Node node = nodes.item(i);
             if (key.equalsIgnoreCase(node.getNodeName())) {
                 return node.getTextContent();
             }
