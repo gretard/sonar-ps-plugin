@@ -23,7 +23,9 @@ You can support this [project and others](https://github.com/gretard) via [Paypa
 1. Download and install SonarQube
 2. Download plugin from the [releases](https://github.com/gretard/sonar-ps-plugin/releases) and copy it to sonarqube's extensions\plugins directory
 3. Start SonarQube and enable rules
-4. Install [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer) into your build machine where you plan to run sonar scanner
+4. Install [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer) into your build machine where you plan to run sonar scanner, quick steps:
+  - In powershell terminal run (more [info](https://learn.microsoft.com/en-us/powershell/utility-modules/psscriptanalyzer/overview?view=ps-modules#installing-psscriptanalyzer)): ```Install-Module -Name PSScriptAnalyzer -Force``` 
+  - Verify if module got installed successfully in poweshell terminal run (more [info](https://learn.microsoft.com/en-us/powershell/utility-modules/psscriptanalyzer/using-scriptanalyzer?source=recommendations&view=ps-modules)): ```Invoke-ScriptAnalyzer -ScriptDefinition '"b" = "b"; function eliminate-file () { }'```
 
 ## Configuration ##
 Currently there is a possibility to override the following options either on server in the Administration tab or on the project configuration files:
