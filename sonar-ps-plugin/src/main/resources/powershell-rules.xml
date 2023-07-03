@@ -423,7 +423,7 @@
     <rule>
         <key>PSPossibleIncorrectUsageOfAssignmentOperator</key>
         <internalKey>PSPossibleIncorrectUsageOfAssignmentOperator</internalKey>
-        <name>'=' is not an assignment operator. Did you mean the equality operator '-eq'?</name>
+        <name>'=' is not an comparison operator. Did you mean the equality operator '-eq'?</name>
         <description>'=' or '==' are not comparison operators in the PowerShell language and rarely needed inside conditional statements.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>
