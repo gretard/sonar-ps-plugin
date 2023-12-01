@@ -133,6 +133,18 @@
         <severity>MAJOR</severity>
     </rule>
     <rule>
+        <key>PSAvoidMultipleTypeAttributes</key>
+        <internalKey>PSAvoidMultipleTypeAttributes</internalKey>
+        <name>Avoid multiple type specifiers on parameters</name>
+        <description>Prameter should not have more than one type specifier.</description>
+        <cardinality>SINGLE</cardinality>
+        <remediationFunction>LINEAR</remediationFunction>
+        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <remediationFunctionBaseEffort />
+        <debtRemediationFunctionCoefficient>5min</debtRemediationFunctionCoefficient>
+        <severity>MAJOR</severity>
+    </rule>
+    <rule>
         <key>PSAvoidNullOrEmptyHelpMessageAttribute</key>
         <internalKey>PSAvoidNullOrEmptyHelpMessageAttribute</internalKey>
         <name>Avoid using null or empty HelpMessage parameter attribute.</name>
@@ -193,6 +205,18 @@
         <severity>MAJOR</severity>
     </rule>
     <rule>
+        <key>PSAvoidSemicolonsAsLineTerminators</key>
+        <internalKey>PSAvoidSemicolonsAsLineTerminators</internalKey>
+        <name>Avoid semicolons as line terminators</name>
+        <description>Line should not end with a semicolon</description>
+        <cardinality>SINGLE</cardinality>
+        <remediationFunction>LINEAR</remediationFunction>
+        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <remediationFunctionBaseEffort />
+        <debtRemediationFunctionCoefficient>5min</debtRemediationFunctionCoefficient>
+        <severity>MAJOR</severity>
+    </rule>
+    <rule>
         <key>PSAvoidShouldContinueWithoutForce</key>
         <internalKey>PSAvoidShouldContinueWithoutForce</internalKey>
         <name>Avoid Using ShouldContinue Without Boolean Force Parameter</name>
@@ -227,6 +251,18 @@
         <remediationFunctionBaseEffort />
         <debtRemediationFunctionCoefficient>15min</debtRemediationFunctionCoefficient>
         <severity>BLOCKER</severity>
+    </rule>
+    <rule>
+        <key>PSAvoidUsingBrokenHashAlgorithms</key>
+        <internalKey>PSAvoidUsingBrokenHashAlgorithms</internalKey>
+        <name>Avoid Using Broken Hash Algorithms</name>
+        <description>Avoid using the broken algorithms MD5 or SHA-1.</description>
+        <cardinality>SINGLE</cardinality>
+        <remediationFunction>LINEAR</remediationFunction>
+        <descriptionFormat>MARKDOWN</descriptionFormat>
+        <remediationFunctionBaseEffort />
+        <debtRemediationFunctionCoefficient>5min</debtRemediationFunctionCoefficient>
+        <severity>MAJOR</severity>
     </rule>
     <rule>
         <key>PSAvoidUsingComputerNameHardcoded</key>
@@ -423,7 +459,7 @@
     <rule>
         <key>PSPossibleIncorrectUsageOfAssignmentOperator</key>
         <internalKey>PSPossibleIncorrectUsageOfAssignmentOperator</internalKey>
-        <name>'=' is not an comparison operator. Did you mean the equality operator '-eq'?</name>
+        <name>'=' is not an assignment operator. Did you mean the equality operator '-eq'?</name>
         <description>'=' or '==' are not comparison operators in the PowerShell language and rarely needed inside conditional statements.</description>
         <cardinality>SINGLE</cardinality>
         <remediationFunction>LINEAR</remediationFunction>

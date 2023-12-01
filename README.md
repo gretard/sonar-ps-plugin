@@ -26,6 +26,7 @@ You can support this [project and others](https://github.com/gretard) via [Paypa
 4. Install [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer) into your build machine where you plan to run sonar scanner, quick steps:
   - In powershell terminal run (more [info](https://learn.microsoft.com/en-us/powershell/utility-modules/psscriptanalyzer/overview?view=ps-modules#installing-psscriptanalyzer)): ```Install-Module -Name PSScriptAnalyzer -Force``` 
   - Verify if module got installed successfully in poweshell terminal run (more [info](https://learn.microsoft.com/en-us/powershell/utility-modules/psscriptanalyzer/using-scriptanalyzer?source=recommendations&view=ps-modules)): ```Invoke-ScriptAnalyzer -ScriptDefinition '"b" = "b"; function eliminate-file () { }'```
+5. You can check [sample project](https://github.com/gretard/sonar-ps-plugin/tree/master/sampleProject) to test plugin and verify configuration 
 
 ## Configuration ##
 Currently there is a possibility to override the following options either on server in the Administration tab or on the project configuration files:
@@ -39,6 +40,7 @@ Currently there is a possibility to override the following options either on ser
 
 ## Requirements ##
 Different plugin versions supports the following:
+- 0.5.3 - Sonarqube version 8.9.2+ and PSScriptAnalyzer version 1.20+ rules, Java 17+
 - 0.5.1 - Sonarqube version 8.9.2+ and PSScriptAnalyzer version 1.20+ rules, Java 11+
 - 0.5.0 - Sonarqube version 6.7.7+ and PSScriptAnalyzer version 1.18.1 rules, Java 8
 - 0.3.0 - Sonarqube version 6.3+ and PSScriptAnalyzer version 1.17.1 rules, Java 8

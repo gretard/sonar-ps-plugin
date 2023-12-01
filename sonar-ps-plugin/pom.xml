@@ -7,7 +7,7 @@
 	<groupId>org.sonar.plugins</groupId>
 	<artifactId>sonar-ps-plugin</artifactId>
 	<packaging>sonar-plugin</packaging>
-	<version>0.5.1</version>
+	<version>0.5.3</version>
 
 	<name>Powershell Plugin for SonarQube</name>
 	<description>Powershell plugin for SonarQube</description>
