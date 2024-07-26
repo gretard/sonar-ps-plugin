@@ -7,7 +7,7 @@
 	<groupId>org.sonar.plugins</groupId>
 	<artifactId>sonar-ps-plugin</artifactId>
 	<packaging>sonar-plugin</packaging>
-	<version>0.5.3</version>
+	<version>0.5.4</version>
 
 	<name>Powershell Plugin for SonarQube</name>
 	<description>Powershell plugin for SonarQube</description>
@@ -95,10 +95,11 @@
 			<plugin>
 				<groupId>org.sonarsource.sonar-packaging-maven-plugin</groupId>
 				<artifactId>sonar-packaging-maven-plugin</artifactId>
-				<version>1.16</version>
+				<version>1.23.0.740</version>
 				<extensions>true</extensions>
 				<configuration>
 					<pluginClass>org.sonar.plugins.powershell.PowershellPlugin</pluginClass>
+					<requiredForLanguages>ps</requiredForLanguages>
 				</configuration>
 			</plugin>
 			<plugin>
