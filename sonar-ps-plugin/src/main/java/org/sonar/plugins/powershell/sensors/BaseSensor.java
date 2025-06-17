@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
-import org.sonar.api.config.Settings;
+import org.sonar.api.config.Configuration;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.powershell.Constants;
@@ -16,6 +16,11 @@ import org.sonar.plugins.powershell.PowershellLanguage;
 public abstract class BaseSensor implements org.sonar.api.batch.sensor.Sensor {
 
     private static final Logger LOGGER = Loggers.get(BaseSensor.class);
+    private final Configuration configuration;
+
+    public BaseSensor(Configuration configuration) {
+        this.configuration = configuration;
+    }
 
     @Override
     public void describe(final SensorDescriptor descriptor) {
@@ -24,8 +29,7 @@ public abstract class BaseSensor implements org.sonar.api.batch.sensor.Sensor {
 
     @Override
     public void execute(final SensorContext context) {
-        final Settings settings = context.settings();
-        final boolean skipPlugin = settings.getBoolean(Constants.SKIP_PLUGIN);
+        boolean skipPlugin = configuration.getBoolean(Constants.SKIP_PLUGIN).orElse(false);
 
         if (skipPlugin) {
             LOGGER.debug("Skipping sensor as skip plugin flag is set: " + Constants.SKIP_PLUGIN);
@@ -33,7 +37,6 @@ public abstract class BaseSensor implements org.sonar.api.batch.sensor.Sensor {
         }
 
         innerExecute(context);
-
     }
 
     protected abstract void innerExecute(final SensorContext context);
@@ -45,13 +48,11 @@ public abstract class BaseSensor implements org.sonar.api.batch.sensor.Sensor {
     protected static String read(InputStream stream) throws IOException {
         final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         final StringBuilder builder = new StringBuilder();
-        String line = null;
+        String line;
         while ((line = reader.readLine()) != null) {
-            builder.append(line);
-            builder.append(System.getProperty("line.separator"));
+            builder.append(line).append(System.lineSeparator());
         }
         reader.close();
         return builder.toString();
-
     }
 }

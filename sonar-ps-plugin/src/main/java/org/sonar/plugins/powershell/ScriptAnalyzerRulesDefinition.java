@@ -1,7 +1,6 @@
 package org.sonar.plugins.powershell;
 
 import java.io.InputStream;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -16,60 +15,64 @@ public class ScriptAnalyzerRulesDefinition implements RulesDefinition {
 
     private static final Logger LOGGER = Loggers.get(ScriptAnalyzerRulesDefinition.class);
 
-    public void define(final Context context) {
+    @Override
+    public void define(Context context) {
         final String repositoryKey = Constants.REPO_KEY;
         final String repositoryName = Constants.REPO_NAME;
         final String languageKey = PowershellLanguage.KEY;
-        defineRulesForLanguage(context, repositoryKey, repositoryName, languageKey);
-    }
 
-    private void defineRulesForLanguage(final Context context, final String repositoryKey, final String repositoryName,
-            String languageKey) {
-        final NewRepository repository = context.createRepository(repositoryKey, languageKey).setName(repositoryName);
+        NewRepository repository = context.createRepository(repositoryKey, languageKey)
+            .setName(repositoryName);
 
-        try (final InputStream rulesXml = this.getClass().getClassLoader()
-                .getResourceAsStream(Constants.RULES_DEFINITION_FILE)) {
+        try (InputStream rulesXml = getClass().getClassLoader().getResourceAsStream(Constants.RULES_DEFINITION_FILE)) {
+            if (rulesXml == null) {
+                LOGGER.warn("Rules definition file not found: {}", Constants.RULES_DEFINITION_FILE);
+                return;
+            }
 
-            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            final DocumentBuilder builder = factory.newDocumentBuilder();
-            final Document xmlDoc = builder.parse(rulesXml);
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document xmlDoc = builder.parse(rulesXml);
+            NodeList ruleNodes = xmlDoc.getElementsByTagName("rule");
 
-            final NodeList nodes = xmlDoc.getElementsByTagName("rule");
-            for (int i = 0; i < nodes.getLength(); i++) {
+            for (int i = 0; i < ruleNodes.getLength(); i++) {
                 try {
-                    final Node node = nodes.item(i);
-                    final String key = getChild(node, "key");
-                    final String name = getChild(node, "name");
-                    final String description = getChild(node, "description");
+                    Node ruleNode = ruleNodes.item(i);
+                    String key = getChild(ruleNode, "key");
+                    String name = getChild(ruleNode, "name");
+                    String description = getChild(ruleNode, "description");
+                    String constantPerIssue = getChild(ruleNode, "debtRemediationFunctionCoefficient");
+                    String severity = getChild(ruleNode, "severity");
 
-                    final String constantPerIssue = getChild(node, "debtRemediationFunctionCoefficient");
-                    final String severity = getChild(node, "severity");
-                    final NewRule rule = repository.createRule(key).setName(name).setMarkdownDescription(description)
-                            .setSeverity(severity);
-                    rule.setDebtRemediationFunction(rule.debtRemediationFunctions().constantPerIssue(constantPerIssue));
-                } catch (final Exception e) {
-                    LOGGER.warn(String.format("Unexpected error while registering rule: %s", i), e);
+                    NewRule rule = repository.createRule(key)
+                        .setName(name)
+                        .setMarkdownDescription(description)
+                        .setSeverity(severity);
 
+                    rule.setDebtRemediationFunction(
+                        rule.debtRemediationFunctions().constantPerIssue(constantPerIssue)
+                    );
+
+                } catch (Exception e) {
+                    LOGGER.warn("Error registering rule at index " + i, e);
                 }
             }
 
-        } catch (final Exception e1) {
-            LOGGER.warn("Unexpected error while registering rules", e1);
+        } catch (Exception e) {
+            LOGGER.warn("Failed to load or parse rule definitions from: " + Constants.RULES_DEFINITION_FILE, e);
         }
-        repository.done();
 
+        repository.done();
     }
 
-    private static String getChild(final Node parent, final String key) {
-        final NodeList nodes = parent.getChildNodes();
-        final int cnt = nodes.getLength();
-        for (int i = 0; i < cnt; i++) {
-            Node node = nodes.item(i);
+    private static String getChild(Node parent, String key) {
+        NodeList children = parent.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            Node node = children.item(i);
             if (key.equalsIgnoreCase(node.getNodeName())) {
-                return node.getTextContent();
+                return node.getTextContent().trim();
             }
         }
         return "";
     }
-
 }

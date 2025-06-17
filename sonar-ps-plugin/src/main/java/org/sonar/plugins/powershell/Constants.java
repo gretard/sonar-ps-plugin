@@ -21,11 +21,11 @@ public final class Constants {
 
     public static final String NAME = "PsAnalyzer";
 
-    public static final String REPO_KEY = PowershellLanguage.KEY.toLowerCase() + "-" + Constants.KEY;
+    public static final String REPO_KEY = PowershellLanguage.KEY + "-" + KEY;
 
-    public static final String REPO_NAME = PowershellLanguage.KEY.toUpperCase() + " " + Constants.NAME;
+    public static final String REPO_NAME = PowershellLanguage.KEY.toUpperCase() + " " + NAME;
 
     private Constants() {
-        throw new IllegalStateException("Constants class");
+        throw new UnsupportedOperationException("Utility class");
     }
 }

@@ -8,7 +8,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.sensor.SensorContext;
-import org.sonar.api.config.Settings;
+import org.sonar.api.config.Configuration;
 import org.sonar.api.utils.TempFolder;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
@@ -17,25 +17,24 @@ import org.sonar.plugins.powershell.fillers.IssuesFiller;
 import org.sonar.plugins.powershell.issues.PsIssue;
 import org.sonar.plugins.powershell.readers.IssuesReader;
 
-public class ScriptAnalyzerSensor extends BaseSensor implements org.sonar.api.batch.sensor.Sensor {
-
-    private final TempFolder folder;
+public class ScriptAnalyzerSensor extends BaseSensor {
 
     private static final Logger LOGGER = Loggers.get(ScriptAnalyzerSensor.class);
 
+    private final TempFolder folder;
+    private final Configuration configuration;
     private final IssuesFiller issuesFiller = new IssuesFiller();
     private final IssuesReader reader = new IssuesReader();
 
-    public ScriptAnalyzerSensor(final TempFolder folder) {
+    public ScriptAnalyzerSensor(final TempFolder folder, final Configuration configuration) {
+        super(configuration);
         this.folder = folder;
+        this.configuration = configuration;
     }
 
     @Override
     protected void innerExecute(final SensorContext context) {
-
-        final Settings settings = context.settings();
-
-        final String powershellExecutable = settings.getString(Constants.PS_EXECUTABLE);
+        final String powershellExecutable = configuration.get(Constants.PS_EXECUTABLE).orElse("powershell");
 
         try {
             final File parserFile = folder.newFile("ps", "scriptAnalyzer.ps1");
@@ -48,30 +47,29 @@ public class ScriptAnalyzerSensor extends BaseSensor implements org.sonar.api.ba
             }
 
             final String scriptFile = parserFile.getAbsolutePath();
-
             final FileSystem fileSystem = context.fileSystem();
             final File baseDir = fileSystem.baseDir();
 
             final String sourceDir = SystemUtils.IS_OS_WINDOWS
-                    ? String.format("'%s'", baseDir.toPath().toFile().getAbsolutePath())
-                    : baseDir.toPath().toFile().getAbsolutePath();
+                    ? String.format("'%s'", baseDir.getAbsolutePath())
+                    : baseDir.getAbsolutePath();
 
             final String outFile = folder.newFile().toPath().toFile().getAbsolutePath();
 
-            final String[] args = new String[] { powershellExecutable, scriptFile, "-inputDir", sourceDir, "-output",
-                    outFile };
+            final String[] args = new String[] {
+                powershellExecutable, scriptFile, "-inputDir", sourceDir, "-output", outFile
+            };
 
             LOGGER.info(String.format("Starting Script-Analyzer using powershell: %s", Arrays.toString(args)));
             final Process process = new ProcessBuilder(args).inheritIO().start();
-
             final int pReturnValue = process.waitFor();
 
             if (pReturnValue != 0) {
                 LOGGER.info(String.format(
-                        "Error executing Powershell Script-Analyzer analyzer. Maybe Script-Analyzer is not installed? Error was: %s",
-                        read(process)));
+                        "Error executing Script-Analyzer. Error was: %s", read(process)));
                 return;
             }
+
             final File outputFile = new File(outFile);
             if (!outputFile.exists() || outputFile.length() <= 0) {
                 LOGGER.warn("Analysis was not run ok, and output file was empty at: " + outFile);
@@ -82,11 +80,8 @@ public class ScriptAnalyzerSensor extends BaseSensor implements org.sonar.api.ba
             this.issuesFiller.fill(context, baseDir, issues);
 
             LOGGER.info(String.format("Script-Analyzer finished, found %s issues at %s", issues.size(), sourceDir));
-
         } catch (Throwable e) {
             LOGGER.warn("Unexpected exception while running analysis", e);
         }
-
     }
-
 }
