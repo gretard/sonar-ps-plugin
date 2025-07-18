@@ -12,7 +12,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.sonar.api.batch.fs.FilePredicates;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.sensor.SensorContext;
-import org.sonar.api.config.Settings;
+import org.sonar.api.config.Configuration;
 import org.sonar.api.utils.TempFolder;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
@@ -44,16 +44,13 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
 
     @Override
     protected void innerExecute(final SensorContext context) {
-
-        final Settings settings = context.settings();
-        final boolean skipAnalysis = settings.getBoolean(Constants.SKIP_TOKENIZER);
-
+        final Configuration config = context.config();
+        final boolean skipAnalysis = config.getBoolean(Constants.SKIP_TOKENIZER).orElse(false);
         if (skipAnalysis) {
             LOGGER.debug("Skipping tokenizer as skip flag is set");
             return;
         }
-
-        final String powershellExecutable = settings.getString(Constants.PS_EXECUTABLE);
+        final String powershellExecutable = config.get("sonar.ps.executable").orElse("powershell.exe");
 
         final File parserFile = folder.newFile("ps", "parser.ps1");
 
@@ -126,17 +123,14 @@ public class TokenizerSensor extends BaseSensor implements org.sonar.api.batch.s
         }
         try {
 
-            long timeout = settings.getLong(Constants.TIMEOUT_TOKENIZER) == 0 ? 3600
-                    : settings.getLong(Constants.TIMEOUT_TOKENIZER);
+            long timeout = config.get("sonar.ps.tokenizer.timeout").map(Long::parseLong).orElse(3600L);
             LOGGER.info("Waiting for file analysis to finish for " + timeout + " seconds");
             service.shutdown();
             service.awaitTermination(timeout, TimeUnit.SECONDS);
             service.shutdownNow();
         } catch (final InterruptedException e) {
             LOGGER.warn("Unexpected error while running waiting for executor service to finish", e);
-
         }
-
     }
 
 }

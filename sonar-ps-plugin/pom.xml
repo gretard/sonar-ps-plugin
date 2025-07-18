@@ -7,15 +7,16 @@
 	<groupId>org.sonar.plugins</groupId>
 	<artifactId>sonar-ps-plugin</artifactId>
 	<packaging>sonar-plugin</packaging>
-	<version>0.5.3</version>
+	<version>0.6.0</version>
 
 	<name>Powershell Plugin for SonarQube</name>
 	<description>Powershell plugin for SonarQube</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<sonar.apiVersion>8.9.2.46101</sonar.apiVersion>
-		<jdk.min.version>1.9</jdk.min.version>
+		<sonar.apiVersion>10.11.0.2468</sonar.apiVersion>
+		    <sonar.testingHarnessVersion>10.7.0.96327</sonar.testingHarnessVersion>
+		<jdk.min.version>17</jdk.min.version>
 	</properties>
 	<issueManagement>
 		<system>GitHub Issues</system>
@@ -41,25 +42,12 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.sonarsource.sonarqube</groupId>
+	   	    <groupId>org.sonarsource.api.plugin</groupId>
 			<artifactId>sonar-plugin-api</artifactId>
 			<version>${sonar.apiVersion}</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.sonarsource.sonarqube/sonar-plugin-api-impl -->
-		<dependency>
-			<groupId>org.sonarsource.sonarqube</groupId>
-			<artifactId>sonar-plugin-api-impl</artifactId>
-			<version>${sonar.apiVersion}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.sonarsource.sonarqube</groupId>
-			<artifactId>sonar-testing-harness</artifactId>
-			<version>${sonar.apiVersion}</version>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
@@ -74,13 +62,21 @@
 		</dependency>
 
 
+
 		<!-- unit tests -->
 		<dependency>
 			<groupId>org.sonarsource.sonarqube</groupId>
 			<artifactId>sonar-testing-harness</artifactId>
-			<version>${sonar.apiVersion}</version>
+			<version>${sonar.testingHarnessVersion}</version>
+			<scope>test</scope>
+			</dependency>
+				<dependency>
+			<groupId>org.sonarsource.sonarqube</groupId>
+			<artifactId>sonar-plugin-api-impl</artifactId>
+			<version>${sonar.testingHarnessVersion}</version>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

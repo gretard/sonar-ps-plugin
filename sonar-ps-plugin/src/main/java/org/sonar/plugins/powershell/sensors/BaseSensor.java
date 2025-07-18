@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
-import org.sonar.api.config.Settings;
+import org.sonar.api.config.Configuration;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.powershell.Constants;
@@ -24,8 +24,8 @@ public abstract class BaseSensor implements org.sonar.api.batch.sensor.Sensor {
 
     @Override
     public void execute(final SensorContext context) {
-        final Settings settings = context.settings();
-        final boolean skipPlugin = settings.getBoolean(Constants.SKIP_PLUGIN);
+        final Configuration config = context.config();
+        final boolean skipPlugin = config.getBoolean(Constants.SKIP_PLUGIN).orElse(false);
 
         if (skipPlugin) {
             LOGGER.debug("Skipping sensor as skip plugin flag is set: " + Constants.SKIP_PLUGIN);
