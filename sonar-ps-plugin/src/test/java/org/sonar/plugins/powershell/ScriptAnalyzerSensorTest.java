@@ -29,9 +29,11 @@ public class ScriptAnalyzerSensorTest {
 
         SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot());
         if (SystemUtils.IS_OS_WINDOWS) {
-            ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "powershell.exe");
+            ctxTester.setSettings(new org.sonar.api.config.internal.MapSettings()
+                    .setProperty(Constants.PS_EXECUTABLE, "powershell.exe"));
         } else {
-            ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "pwsh");
+            ctxTester.setSettings(new org.sonar.api.config.internal.MapSettings()
+                    .setProperty(Constants.PS_EXECUTABLE, "pwsh"));
         }
         File baseFile = folder.newFile("test.ps1");
         FileUtils.copyURLToFile(getClass().getResource("/testFiles/test.ps1"), baseFile);
@@ -50,13 +52,15 @@ public class ScriptAnalyzerSensorTest {
     public void testExecuteAndSkipReporting() throws IOException {
 
         SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot());
+        org.sonar.api.config.internal.MapSettings settings = new org.sonar.api.config.internal.MapSettings();
         if (SystemUtils.IS_OS_WINDOWS) {
-            ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "powershell.exe");
+            settings.setProperty(Constants.PS_EXECUTABLE, "powershell.exe");
         } else {
-            ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "pwsh");
+            settings.setProperty(Constants.PS_EXECUTABLE, "pwsh");
         }
-        ctxTester.settings().setProperty(Constants.EXTERNAL_RULES_SKIP_LIST,
+        settings.setProperty(Constants.EXTERNAL_RULES_SKIP_LIST,
                 "ps-psanalyzer:PSAvoidUsingPositionalParameters");
+        ctxTester.setSettings(settings);
         File baseFile = folder.newFile("test.ps1");
         FileUtils.copyURLToFile(getClass().getResource("/testFiles/test.ps1"), baseFile);
         DefaultInputFile ti = new TestInputFileBuilder("test", "test.ps1")

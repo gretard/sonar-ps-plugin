@@ -5,12 +5,14 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.issue.NewIssue;
 import org.sonar.api.batch.sensor.issue.NewIssueLocation;
 import org.sonar.api.rule.RuleKey;
-import org.sonar.api.scan.filesystem.PathResolver;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.powershell.Constants;
@@ -40,7 +42,11 @@ public class IssuesFiller {
                 if (initialFile.contains(".scannerwork")) {
                     continue;
                 }
-                final String fsFile = new PathResolver().relativePath(sourceDir, new File(initialFile));
+
+                // Calculate relative path
+                final Path sourceDirPath = sourceDir.toPath();
+                final Path initialFilePath = Paths.get(initialFile);
+                final String fsFile = sourceDirPath.relativize(initialFilePath).toString().replace('\\', '/');
 
                 final String message = issue.message;
                 int issueLine = issue.line;
