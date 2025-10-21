@@ -8,7 +8,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.sensor.SensorContext;
-import org.sonar.api.config.Settings;
 import org.sonar.api.utils.TempFolder;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
@@ -33,9 +32,7 @@ public class ScriptAnalyzerSensor extends BaseSensor implements org.sonar.api.ba
     @Override
     protected void innerExecute(final SensorContext context) {
 
-        final Settings settings = context.settings();
-
-        final String powershellExecutable = settings.getString(Constants.PS_EXECUTABLE);
+        final String powershellExecutable = context.config().get(Constants.PS_EXECUTABLE).orElse("powershell.exe");
 
         try {
             final File parserFile = folder.newFile("ps", "scriptAnalyzer.ps1");
