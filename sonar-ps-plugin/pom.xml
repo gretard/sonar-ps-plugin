@@ -68,6 +68,18 @@
 			<version>4.13.1</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.sonarsource.api.plugin</groupId>
+			<artifactId>sonar-plugin-api-test-fixtures</artifactId>
+			<version>${sonar.apiVersion}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.sonarsource.sonarqube</groupId>
+			<artifactId>sonar-plugin-api-impl</artifactId>
+			<version>25.10.0.114319</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

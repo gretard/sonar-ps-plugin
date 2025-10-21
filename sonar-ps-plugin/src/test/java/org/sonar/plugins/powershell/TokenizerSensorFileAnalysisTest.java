@@ -43,11 +43,13 @@ public class TokenizerSensorFileAnalysisTest {
     @Test
     public void testExecute() throws IOException {
         SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot().getAbsoluteFile().toPath());
+        org.sonar.api.config.internal.MapSettings settings = new org.sonar.api.config.internal.MapSettings();
         if (SystemUtils.IS_OS_WINDOWS) {
-            ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "powershell.exe");
+            settings.setProperty(Constants.PS_EXECUTABLE, "powershell.exe");
         } else {
-            ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "pwsh");
+            settings.setProperty(Constants.PS_EXECUTABLE, "pwsh");
         }
+        ctxTester.setSettings(settings);
 
         File baseFile = folder.newFile(key);
         FileUtils.copyURLToFile(getClass().getResource("/testFiles/test.ps1"), baseFile);
@@ -69,11 +71,13 @@ public class TokenizerSensorFileAnalysisTest {
     public void testIfFileIsSkipped() throws IOException {
         final String key = ".scannerwork.ps1";
         SensorContextTester ctxTester = SensorContextTester.create(folder.getRoot().getAbsoluteFile().toPath());
+        org.sonar.api.config.internal.MapSettings settings = new org.sonar.api.config.internal.MapSettings();
         if (SystemUtils.IS_OS_WINDOWS) {
-            ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "powershell.exe");
+            settings.setProperty(Constants.PS_EXECUTABLE, "powershell.exe");
         } else {
-            ctxTester.settings().setProperty(Constants.PS_EXECUTABLE, "pwsh");
+            settings.setProperty(Constants.PS_EXECUTABLE, "pwsh");
         }
+        ctxTester.setSettings(settings);
         File baseFile = folder.newFile(key);
 
         FileUtils.copyURLToFile(getClass().getResource("/testFiles/test.ps1"), baseFile);
